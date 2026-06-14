@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Extract ALL records from Feishu (with pagination) and save as clean_data.json format."""
-import json, subprocess, sys
+import json, os, subprocess, sys
 
-BASE_TOKEN = 'ByUibD4rxaBmHlswtT5cz3PsnNf'
+BASE_TOKEN = os.environ.get('BASE_TOKEN', 'ByUibD4rxaBmHlswtT5cz3PsnNf')
 TABLE_ID = 'tblCQ1JwLliZON3a'
 VIEW_ID = 'vewpI8lyYw'
 
@@ -149,8 +149,48 @@ for name, count in sorted(assignee_counts.items(), key=lambda x: -x[1])[:10]:
     print(f'  {name}: {count}')
 print(f'  ...')
 
-# Save
+# Save tasks
 output = {'records': records}
 with open('/tmp/clean_data.json', 'w', encoding='utf-8') as f:
     json.dump(output, f, ensure_ascii=False, indent=2)
 print(f'\nSaved to /tmp/clean_data.json ({len(json.dumps(output, ensure_ascii=False))} bytes)')
+
+# ========== Fetch People Table ==========
+print('\nFetching people table...')
+people_table_id = 'tblZ7AiIKPFRZuiR'
+cmd = [
+    'lark-cli', 'base', '+record-list',
+    '--base-token', BASE_TOKEN,
+    '--table-id', people_table_id,
+    '--offset', '0', '--limit', '200',
+    '--as', 'user', '--format', 'json'
+]
+result = subprocess.run(cmd, capture_output=True, text=True)
+if result.returncode == 0:
+    pdata = json.loads(result.stdout)
+    prows = pdata['data']['data']
+    pfields = pdata['data']['fields']
+    pfield_to_idx = {name: i for i, name in enumerate(pfields)}
+    name_idx = pfield_to_idx.get('name', pfield_to_idx.get('\u59d3\u540d', 0))
+    dept_idx = pfield_to_idx.get('dept', pfield_to_idx.get('\u90e8\u95e8', 1))
+    id_idx = pfield_to_idx.get('id', pfield_to_idx.get('\u4eba\u5458ID', 2))
+    people = []
+    for row in prows:
+        # name is at index 2, inside objects array
+        name = ''
+        if id_idx < len(row) and isinstance(row[id_idx], list) and len(row[id_idx]) > 0:
+            name = row[id_idx][0].get('name', '') or ''
+            pid = row[id_idx][0].get('id', '') or ''
+        else:
+            pid = ''
+        # dept is at index 1, inside array
+        dept = ''
+        if dept_idx < len(row) and isinstance(row[dept_idx], list) and len(row[dept_idx]) > 0:
+            dept = row[dept_idx][0] or ''
+        if name:
+            people.append({'name': name, 'id': pid or '', 'dept': dept or ''})
+    with open('/tmp/all_people.json', 'w', encoding='utf-8') as f:
+        json.dump(people, f, ensure_ascii=False, indent=2)
+    print(f'Fetched {len(people)} people -> /tmp/all_people.json')
+else:
+    print(f'  Error fetching people: {result.stderr[:200]}')

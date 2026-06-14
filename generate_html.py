@@ -542,6 +542,31 @@ table tr:last-child td {{
 .gantt-bar.progress-notstarted {{ background: var(--gray-4); color: var(--gray-6); }}
 .gantt-bar.progress-progress {{ background: var(--warning); }}
 .gantt-bar.progress-qa {{ background: var(--success); }}
+.gantt-bar.overlap {{
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.15) 0px,
+    rgba(255,255,255,0.15) 4px,
+    transparent 4px,
+    transparent 8px
+  ) !important;
+  box-shadow: 0 0 0 2px var(--danger) inset, 0 0 8px rgba(255,59,48,0.3);
+  z-index: 4;
+}}
+.gantt-bar.overlap-double {{
+  box-shadow: 0 0 0 2px #FF0060 inset, 0 0 12px rgba(255,0,96,0.4);
+}}
+.gantt-overlap-badge {{
+  display: inline-block;
+  background: var(--danger);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 4px;
+  vertical-align: middle;
+}}
 .gantt-milestone {{
   position: absolute;
   width: 10px;
@@ -1282,6 +1307,35 @@ function renderGantt(filtered, adminFiltered) {{
     }});
   }});
 
+  // Detect task overlaps for each person
+  var overlapInfo = {{}};
+  Object.keys(personMap).forEach(function(pName) {{
+    var tasks = personMap[pName];
+    var overlapMap = {{}};
+    for (var i = 0; i < tasks.length; i++) {{
+      var t1 = tasks[i];
+      var sd1 = parseDate(normalizeDate(t1.startDate));
+      var ed1 = parseDate(normalizeDate(t1.endDate));
+      if (!sd1 && !ed1) continue;
+      if (!sd1) sd1 = ed1;
+      if (!ed1) ed1 = sd1;
+      for (var j = i + 1; j < tasks.length; j++) {{
+        var t2 = tasks[j];
+        var sd2 = parseDate(normalizeDate(t2.startDate));
+        var ed2 = parseDate(normalizeDate(t2.endDate));
+        if (!sd2 && !ed2) continue;
+        if (!sd2) sd2 = ed2;
+        if (!ed2) ed2 = sd2;
+        // Check overlap: startA <= endB AND endA >= startB
+        if (sd1 <= ed2 && ed1 >= sd2) {{
+          overlapMap[i] = (overlapMap[i] || 0) + 1;
+          overlapMap[j] = (overlapMap[j] || 0) + 1;
+        }}
+      }}
+    }}
+    overlapInfo[pName] = overlapMap;
+  }});
+
   var personNames = Object.keys(personMap).sort();
 
   // Generate week labels
@@ -1317,7 +1371,18 @@ function renderGantt(filtered, adminFiltered) {{
   personNames.forEach(function(pName) {{
     var tasks = personMap[pName];
     html += '<div class="gantt-person-group">';
-    html += '<div class="gantt-person-name">' + escapeHtml(pName) + ' <span class="dept-tag">(' + tasks.length + ')</span></div>';
+      html += '<div class="gantt-person-name">' + escapeHtml(pName) + ' <span class="dept-tag">(' + tasks.length + ')</span>';
+      // Show overlap badge if this person has overlapping tasks
+      var pOverlapInfo = overlapInfo[pName] || {{}};
+      var hasOverlap = Object.keys(pOverlapInfo).length > 0;
+      if (hasOverlap) {{
+        var maxOverlap = 0;
+        for (var oi in pOverlapInfo) {{
+          if (pOverlapInfo[oi] > maxOverlap) maxOverlap = pOverlapInfo[oi];
+        }}
+        html += ' <span class="gantt-overlap-badge" title="' + maxOverlap + '\u4e2a\u4efb\u52a1\u65f6\u95f4\u91cd\u53e0\">\u26A0 ' + maxOverlap + '\u91cd\u53e0</span>';
+      }}
+      html += '</div>';
     html += '<div class="gantt-row-timeline" style="position:relative;min-height:44px;width:' + totalWidth + 'px">';
 
     // Grid lines
@@ -1348,6 +1413,16 @@ function renderGantt(filtered, adminFiltered) {{
       var progClass = 'progress-notstarted';
       if (r.progress === '\\u8fdb\\u884c\\u4e2d') progClass = 'progress-progress';
       else if (r.progress === 'QA\\u9a8c\\u6536\\u4e2d') progClass = 'progress-qa';
+      // Check overlap
+      var tIdx = tasks.indexOf(r);
+      var isOverlap = false;
+      var overlapCount = 0;
+      if (overlapInfo[pName] && overlapInfo[pName][tIdx]) {{
+        isOverlap = true;
+        overlapCount = overlapInfo[pName][tIdx];
+        progClass += ' overlap';
+        if (overlapCount >= 2) progClass += ' overlap-double';
+      }}
 
       var barTitle = r.title;
       if (barTitle.length > 12) barTitle = barTitle.substring(0, 12) + '..';

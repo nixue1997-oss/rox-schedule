@@ -15,19 +15,15 @@ jobs:
           python-version: '3.10'
       - name: Sync and Generate
         env:
-          BASE_TOKEN: ${{ secrets.BASE_TOKEN }}
+          BASE_TOKEN: \${{ secrets.BASE_TOKEN }}
         run: |
           # Install lark-cli
           npm install -g @lark-opendev/lark-cli 2>/dev/null || true
           
-          # Extract fresh data from Feishu (new view: vewpI8lyYw)
-          # Fetch main tasks
-          lark-cli base +record-list --base-token "$BASE_TOKEN" --table-id tblCQ1JwLliZON3a --view-id vewpI8lyYw --offset 0 --limit 200 --as user --format json > /tmp/records.json 2>/dev/null
+          # Extract fresh data from Feishu (with pagination) + people
+          python3 extract_data.py
           
-          # Fetch people table
-          lark-cli base +record-list --base-token "$BASE_TOKEN" --table-id tblZ7AiIKPFRZuiR --offset 0 --limit 200 --as user --format json > /tmp/people.json 2>/dev/null
-          
-          # Generate HTML
+          # Generate HTML (runs enhance + dept filter automatically)
           python3 generate_html.py
       - name: Commit and Push
         run: |
