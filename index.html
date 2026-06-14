@@ -2379,6 +2379,12 @@ function onPgSearch(val) {
   var tasks = DATA.filter(function(r) { return r.title.indexOf(pfx) === 0; });
   // Strategy 2: extract keyword and fuzzy match subtasks (always add to Strategy 1 results)
   var kw = title.replace(/^(\u3010[^\u3010]+\u3011)?(\u3010\u603b\u3011)?\d{4}\s?/, '');
+  // If keyword extracted from title is too short, use the original search input as fallback
+  if (kw.length < 2) {
+    var searchVal = document.getElementById('pgSearch').value || '';
+    var cleanKw = searchVal.replace(/^(\u3010[^\u3010]+\u3011)?(\u3010\u603b\u3011)?\d{4}\s?/, '');
+    if (cleanKw.length >= 2) kw = cleanKw;
+  }
   if (kw.length >= 2) {
     var kwTasks = DATA.filter(function(r) { return fuzzyMatch(r.title, kw); });
     var existIds = tasks.map(function(r) { return r.id; });
