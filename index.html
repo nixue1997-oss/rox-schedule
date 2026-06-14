@@ -1052,6 +1052,7 @@ function getFilteredData() {
   var progress = document.getElementById('filterProgress').value;
   var person = document.getElementById('filterPerson').value;
   var search = document.getElementById('filterSearch').value.trim().toLowerCase();
+  var dept = document.getElementById('filterDept').value;
 
   var filtered = DATA.filter(function(r) {
     if (region && (!r.region || r.region.indexOf(region) === -1)) return false;
@@ -1061,9 +1062,12 @@ function getFilteredData() {
     } else {
       // When "全部" is selected, show all (default behavior)
     }
-    var dept = document.getElementById('filterDept').value;
     if (dept) {
-      if (!r.assignee || !r.assignee.some(function(p) { return p.dept === dept; })) return false;
+      if (!r.assignee || !r.assignee.some(function(p) {
+        var pDept = '';
+        ALL_PEOPLE.some(function(pp) { if (pp.name === p.name) { pDept = pp.dept; return true; } return false; });
+        return pDept === dept;
+      })) return false;
     }
     if (search && r.title.toLowerCase().indexOf(search) === -1) return false;
     return true;

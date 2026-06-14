@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Add department filter to ROX schedule board HTML."""
+"""Add department filter to ROX schedule board HTML. Fixes: scope + ALL_PEOPLE lookup."""
 import sys
 
 def add_dept_filter(html):
     changes = 0
 
-    # 1. Add department filter dropdown in the filter bar (before 搜索)
+    # 1. Add department filter dropdown in the filter bar
     old_filter = '</div>\n    <div class="filter-group">\n      <label>\u641c\u7d22</label>'
     dept_filter = (
         '</div>\n'
@@ -21,38 +21,85 @@ def add_dept_filter(html):
     if old_filter in html:
         html = html.replace(old_filter, dept_filter, 1)
         changes += 1
-        print("✅ Filter dropdown added")
+        print("✅ Step 1: filter dropdown added")
     else:
         print("❌ Step 1 failed")
 
-    # 2. Add dept filter in DATA.filter section
-    old_person = (
-        "if (person) {\n"
-        "      if (!r.assignee || !r.assignee.some(function(p) { return p.name === person; })) return false;\n"
-        "    } else {\n"
-        "      // When \"\u5168\u90e8\" is selected, show all (default behavior)\n"
-        "    }"
-    )
-    new_person = old_person + (
-        "\n"
+    # 2. Add dept var declaration at top of getFilteredData(), alongside other vars
+    # Remove the old bad var dept from inside DATA.filter first (step 3 handles replacement)
+    old_bad_var = (
         "    var dept = document.getElementById('filterDept').value;\n"
         "    if (dept) {\n"
         "      if (!r.assignee || !r.assignee.some(function(p) { return p.dept === dept; })) return false;\n"
         "    }"
     )
-    if old_person in html:
-        html = html.replace(old_person, new_person, 1)
+    # Blank it out
+    if old_bad_var in html:
+        html = html.replace(old_bad_var, "", 1)
         changes += 1
-        print("✅ DATA.filter dept check added")
+        print("✅ Step 2: removed bad var dept from DATA.filter")
     else:
         print("❌ Step 2 failed")
+        # Debug
+        idx = html.find("var dept = document.getElementById")
+        if idx >= 0:
+            print(f"  Found at {idx}: {html[idx:idx+150]!r}")
 
-    # 3. Add dept filter in adminTasks filter section
-    old_admin = (
+    # 3. Insert corrected dept check into DATA.filter 
+    # The dept check was blanked out, insert after the person else block
+    old_person_else = (
+        "    } else {\n"
+        "      // When \"\u5168\u90e8\" is selected, show all (default behavior)\n"
+        "    }"
+    )
+    corrected_dept_check = (
+        "    } else {\n"
+        "      // When \"\u5168\u90e8\" is selected, show all (default behavior)\n"
+        "    }\n"
+        "    if (dept) {\n"
+        "      if (!r.assignee || !r.assignee.some(function(p) {\n"
+        "        var pDept = '';\n"
+        "        ALL_PEOPLE.some(function(pp) { if (pp.name === p.name) { pDept = pp.dept; return true; } return false; });\n"
+        "        return pDept === dept;\n"
+        "      })) return false;\n"
+        "    }"
+    )
+    if old_person_else in html:
+        html = html.replace(old_person_else, corrected_dept_check, 1)
+        changes += 1
+        print("✅ Step 3: corrected dept check (via ALL_PEOPLE lookup) added")
+    else:
+        print("❌ Step 3 failed")
+
+    # 4. Add var dept at top of getFilteredData() alongside other var declarations
+    old_vars = (
+        "function getFilteredData() {\n"
+        "  var region = document.getElementById('filterRegion').value;\n"
+        "  var progress = document.getElementById('filterProgress').value;\n"
+        "  var person = document.getElementById('filterPerson').value;\n"
+        "  var search = document.getElementById('filterSearch').value.trim().toLowerCase();"
+    )
+    new_vars = (
+        "function getFilteredData() {\n"
+        "  var region = document.getElementById('filterRegion').value;\n"
+        "  var progress = document.getElementById('filterProgress').value;\n"
+        "  var person = document.getElementById('filterPerson').value;\n"
+        "  var search = document.getElementById('filterSearch').value.trim().toLowerCase();\n"
+        "  var dept = document.getElementById('filterDept').value;"
+    )
+    if old_vars in html:
+        html = html.replace(old_vars, new_vars, 1)
+        changes += 1
+        print("✅ Step 4: var dept added at getFilteredData() top level")
+    else:
+        print("❌ Step 4 failed")
+
+    # 5. Add dept check to adminTasks.filter
+    old_admin_filter = (
         "if (person && t.assigneeName !== person) return false;\n"
         "    if (search && t.title.toLowerCase().indexOf(search) === -1) return false;"
     )
-    new_admin = (
+    new_admin_filter = (
         "if (person && t.assigneeName !== person) return false;\n"
         "    if (dept) {\n"
         "      var tDept = '';\n"
@@ -61,15 +108,14 @@ def add_dept_filter(html):
         "    }\n"
         "    if (search && t.title.toLowerCase().indexOf(search) === -1) return false;"
     )
-    if old_admin in html:
-        html = html.replace(old_admin, new_admin, 1)
+    if old_admin_filter in html:
+        html = html.replace(old_admin_filter, new_admin_filter, 1)
         changes += 1
-        print("✅ Admin filter dept check added")
+        print("✅ Step 5: admin filter dept check added")
     else:
-        print("❌ Step 3 failed")
-
-    # 4. Add dept filter population in init()
-    # Insert before the headerInfo line (last line before render())
+        print("❌ Step 5 failed")
+    
+    # 6. Populate department filter in init()
     old_stats = "document.getElementById('headerInfo').textContent = DATA.length + ' \\u4e2a\\u4efb\\u52a1 | ' + allPeople.length + ' \\u4eba';"
     dept_pop = (
         "// Populate department filter\n"
@@ -86,16 +132,13 @@ def add_dept_filter(html):
     if old_stats in html:
         html = html.replace(old_stats, dept_pop, 1)
         changes += 1
-        print("✅ Init dept population added")
+        print("✅ Step 5: init dept population added")
     else:
-        print("❌ Step 4 failed")
+        print("❌ Step 5 failed")
 
-    # 5. Update renderPersonView to respect dept filter
-    # Find the FIRST occurrence of sortedDepts that is in renderPersonView
-    # renderPersonView builds its own deptMap, so we need to filter it there
+    # 7. Update renderPersonView to respect dept filter
     idx = html.find("function renderPersonView()")
     if idx >= 0:
-        # Find the sortedDepts after renderPersonView
         sub = html[idx:]
         sd_idx = sub.find("var sortedDepts = Object.keys(deptMap).sort();")
         if sd_idx >= 0:
@@ -109,15 +152,14 @@ def add_dept_filter(html):
                 "  }\n"
                 "  var sortedDepts = Object.keys(deptMap).sort();\n"
             )
-            # Replace only in the sub-section
             actual_idx = idx + sd_idx
             html = html[:actual_idx] + new_block + html[actual_idx + len(old_line):]
             changes += 1
-            print("✅ renderPersonView dept filter added")
+            print("✅ Step 6: renderPersonView dept filter added")
         else:
-            print("❌ Step 5b: sortedDepts not found in renderPersonView")
+            print("❌ Step 6b sortedDepts not found")
     else:
-        print("❌ Step 5a: renderPersonView not found")
+        print("❌ Step 6a renderPersonView not found")
 
     print(f"\nTotal changes: {changes}")
     return html
