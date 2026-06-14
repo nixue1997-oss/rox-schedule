@@ -12,6 +12,9 @@ def main():
     with open('/tmp/clean_data.json', 'r', encoding='utf-8') as f:
         raw_data = json.load(f)
 
+    with open('/tmp/all_people.json', 'r', encoding='utf-8') as f:
+        all_people_data = json.load(f)
+
     # Transform records
     records = []
     for r in raw_data['records']:
@@ -35,6 +38,10 @@ def main():
     # Escape for embedding in a <script type="application/json"> block
     # Only need to escape </script> which would break HTML parsing
     data_json_safe = data_json_str.replace('</', '<\\/')
+
+    # Serialize all_people data
+    people_json_str = json.dumps(all_people_data, ensure_ascii=False)
+    people_json_safe = people_json_str.replace('</', '<\\/')
 
     # Precompute SHA256 hashes for passwords
     viewer_hash = hashlib.sha256(b'ROX_VIEW_2026').hexdigest()
@@ -217,6 +224,70 @@ body {{
   color: var(--gray-5);
 }}
 
+/* ========== FEISHU OAUTH LOGIN ========== */
+.feishu-login-area {{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}}
+.feishu-login-btn {{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 36px;
+  background: #3370FF;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: var(--font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(51,112,255,0.3);
+}}
+.feishu-login-btn:hover {{
+  background: #2858CC;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51,112,255,0.4);
+}}
+.feishu-login-btn svg {{
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}}
+.feishu-login-title {{
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-7);
+}}
+.feishu-login-desc {{
+  font-size: 13px;
+  color: var(--gray-5);
+  margin-bottom: 4px;
+}}
+.password-fallback-btn {{
+  font-size: 12px;
+  color: var(--gray-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}}
+.password-fallback-btn:hover {{
+  color: var(--gray-5);
+}}
+.feishu-user-info {{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  opacity: 0.85;
+}}
 /* ========== HEADER ========== */
 .header {{
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -355,6 +426,7 @@ body {{
 .stat-card:nth-child(3) {{ border-left-color: var(--success); }}
 .stat-card:nth-child(4) {{ border-left-color: var(--gray-5); }}
 .stat-card:nth-child(5) {{ border-left-color: var(--danger); }}
+.stat-card:nth-child(6) {{ border-left-color: var(--gray-7); }}
 
 /* ========== FILTER BAR ========== */
 .filter-bar {{
@@ -878,21 +950,39 @@ table tr:last-child td {{
 
 <!-- ========== LOGIN OVERLAY ========== -->
 <div class="login-overlay" id="loginOverlay">
-  <div class="login-card">
+  <div class="login-card" id="loginCard">
     <div class="login-logo" id="loginLogo">ROX</div>
-    <h1 id="loginTitle">ROX 项目排期看板</h1>
-    <div class="login-subtitle" id="loginSubtitle">请输入查看密码以继续</div>
-    <input type="password" class="login-input" id="loginInput" placeholder="\u8bf7\u8f93\u5165\u5bc6\u7801" autocomplete="off">
-    <div class="login-error" id="loginError"></div>
-    <div class="login-info" id="loginInfo">
-      <div>\u67e5\u770b\u5bc6\u7801\uff1a<code>ROX_VIEW_2026</code></div>
-      <div>\u7ba1\u7406\u5458\u5bc6\u7801\uff1a<code>ROX_ADMIN_2026</code></div>
+
+    <!-- Feishu OAuth Area (default visible) -->
+    <div id="feishuLoginArea">
+      <div class="feishu-login-title">飞书账号登录</div>
+      <div class="feishu-login-desc">使用飞书账号登录以访问看板</div>
+      <div class="feishu-login-area">
+        <button class="feishu-login-btn" id="feishuLoginBtn" onclick="handleFeishuLogin()">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="4" fill="white"/><path d="M7 8h3v8H7V8zm4 0h3v8h-3V8zm4 0h3v8h-3V8z" fill="#3370FF"/></svg>
+          飞书登录
+        </button>
+      </div>
+      <button class="password-fallback-btn" id="passwordFallbackBtn" onclick="showPasswordLogin()">使用密码登录</button>
     </div>
-    <div class="login-actions">
-      <button class="login-btn login-btn-primary" id="loginBtn" onclick="handleLogin()">\u767b\u5f55</button>
-    </div>
-    <div class="login-mode-hint" id="loginModeHint" onclick="toggleLoginMode()">
-      \u2192 \u5207\u6362\u5230\u7ba1\u7406\u5458\u767b\u5f55
+
+    <!-- Password Login Area (hidden by default) -->
+    <div id="passwordLoginArea" style="display:none">
+      <h1 id="loginTitle">ROX 项目排期看板</h1>
+      <div class="login-subtitle" id="loginSubtitle">请输入查看密码以继续</div>
+      <input type="password" class="login-input" id="loginInput" placeholder="请输入密码" autocomplete="off">
+      <div class="login-error" id="loginError"></div>
+      <div class="login-info" id="loginInfo">
+        <div>查看密码：<code>ROX_VIEW_2026</code></div>
+        <div>管理员密码：<code>ROX_ADMIN_2026</code></div>
+      </div>
+      <div class="login-actions">
+        <button class="login-btn login-btn-primary" id="loginBtn" onclick="handleLogin()">登录</button>
+      </div>
+      <div class="login-mode-hint" id="loginModeHint" onclick="toggleLoginMode()">
+        → 切换到管理员登录
+      </div>
+      <button class="password-fallback-btn" style="margin-top:12px" onclick="showFeishuLogin()">返回飞书登录</button>
     </div>
   </div>
 </div>
@@ -902,6 +992,7 @@ table tr:last-child td {{
   <div class="header-inner">
     <h1>ROX \u9879\u76ee\u6392\u671f\u770b\u677f <small>\u5f00\u53d1\u9636\u6bb5</small></h1>
     <div class="header-actions">
+      <span class="feishu-user-info" id="headerUserInfo" style="display:none"></span>
       <button class="btn btn-outline btn-sm" id="adminBtn" onclick="openAdminLogin()">\u207f\u207f \u7ba1\u7406\u5458</button>
       <button class="btn btn-outline btn-sm" onclick="logoutUser()">\u207f\u207f \u9000\u51fa</button>
       <span style="font-size:12px;opacity:0.7" id="headerInfo"></span>
@@ -1025,17 +1116,25 @@ table tr:last-child td {{
 
 <!-- ========== DATA EMBEDDED AS JSON ========== -->
 <script id="__DATA__" type="application/json">{data_json_safe}</script>
+<script id="__PEOPLE__" type="application/json">{people_json_safe}</script>
 
 <!-- ========== APPLICATION SCRIPT ========== -->
 <script>
 // ======================== DATA LOADING ========================
 var DATA = JSON.parse(document.getElementById('__DATA__').textContent);
+var ALL_PEOPLE = JSON.parse(document.getElementById('__PEOPLE__').textContent);
 
 // SHA256 precomputed hashes
 var HASHES = {{
   view: "{viewer_hash}",
   admin: "{admin_hash}"
 }};
+
+// ======== \u98de\u4e66 OAuth \u914d\u7f6e ========
+const FEISHU_APP_ID = 'REPLACE_WITH_YOUR_APP_ID'; // \u26a0\ufe0f \u9700\u66ff\u6362\u4e3a\u4f60\u7684\u98de\u4e66\u5e94\u7528 App ID
+const REDIRECT_URI = 'https://nixue1997-oss.github.io/rox-schedule/';
+const AUTH_WORKER_URL = 'https://rox-auth.nixue1997.workers.dev/exchange';
+// =============================================
 
 // ======================== STATE ========================
 var currentView = 'card';
@@ -1092,13 +1191,13 @@ async function handleLogin() {{
   try {{
     var hash = await sha256(pwd);
     if (loginMode === 'view' && hash === HASHES.view) {{
-      doLogin('view');
+      doLogin('view', null);
     }} else if (loginMode === 'admin' && hash === HASHES.admin) {{
-      doLogin('admin');
+      doLogin('admin', null);
     }} else if (loginMode === 'view') {{
       // Maybe user meant admin?
       if (hash === HASHES.admin) {{
-        doLogin('admin');
+        doLogin('admin', null);
       }} else {{
         document.getElementById('loginError').textContent = '\\u5bc6\\u7801\\u9519\\u8bef\\uff0c\\u8bf7\\u91cd\\u8bd5';
       }}
@@ -1110,14 +1209,23 @@ async function handleLogin() {{
   }}
 }}
 
-function doLogin(mode) {{
+function doLogin(mode, feishuUser) {{
   var exp = Date.now() + 7 * 24 * 60 * 60 * 1000;
   var session = {{ mode: mode, expires: exp }};
+  if (feishuUser) {{
+    session.feishuUser = feishuUser;
+  }}
   localStorage.setItem('rox_session', JSON.stringify(session));
   adminMode = (mode === 'admin');
   document.getElementById('loginOverlay').classList.add('hidden');
   if (adminMode) {{
     document.getElementById('adminBtn').textContent = '\\u{{1F512}} \\u7ba1\\u7406\\u5458';
+  }}
+  // Show feishu user name in header
+  if (feishuUser && feishuUser.name) {{
+    var userInfoEl = document.getElementById('headerUserInfo');
+    userInfoEl.style.display = 'inline-flex';
+    userInfoEl.textContent = '\\u{{1F464}} ' + feishuUser.name;
   }}
   loadAdminTasks();
   init();
@@ -1134,8 +1242,20 @@ function checkSession() {{
         if (adminMode) {{
           document.getElementById('adminBtn').textContent = '\\u{{1F512}} \\u7ba1\\u7406\\u5458';
         }}
+        // Show feishu user name if available
+        if (session.feishuUser && session.feishuUser.name) {{
+          var userInfoEl = document.getElementById('headerUserInfo');
+          userInfoEl.style.display = 'inline-flex';
+          userInfoEl.textContent = '\\u{{1F464}} ' + session.feishuUser.name;
+        }}
         loadAdminTasks();
         init();
+        return true;
+      }}
+    }} catch(e) {{}}
+  }}
+  return false;
+}}
         return true;
       }}
     }} catch(e) {{}}
@@ -1145,10 +1265,83 @@ function checkSession() {{
 
 function logoutUser() {{
   localStorage.removeItem('rox_session');
+  localStorage.removeItem('feishu_session');
   document.getElementById('loginOverlay').classList.remove('hidden');
   document.getElementById('loginInput').value = '';
   document.getElementById('loginError').textContent = '';
+  document.getElementById('headerUserInfo').style.display = 'none';
+  document.getElementById('headerUserInfo').textContent = '';
   adminMode = false;
+  // Reset to feishu login view
+  showFeishuLogin();
+}}
+
+
+// ======================== FEISHU OAUTH ========================
+function handleFeishuLogin() {{
+  var state = Math.random().toString(36).substring(2, 10);
+  localStorage.setItem('feishu_oauth_state', state);
+  var authUrl = 'https://accounts.feishu.cn/open-apis/authen/v1/authorize' +
+    '?client_id=' + encodeURIComponent(FEISHU_APP_ID) +
+    '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+    '&response_type=code&state=' + state;
+  window.location.href = authUrl;
+}}
+
+function handleFeishuCallback() {{
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+  var state = params.get('state');
+  if (!code) return false;
+
+  // Verify state
+  var savedState = localStorage.getItem('feishu_oauth_state');
+  if (savedState && state && state !== savedState) {{
+    console.warn('OAuth state mismatch');
+  }}
+  localStorage.removeItem('feishu_oauth_state');
+
+  // Clean URL
+  var cleanUrl = window.location.origin + window.location.pathname;
+  window.history.replaceState({{}}, document.title, cleanUrl);
+
+  // Call Cloudflare Worker to exchange code
+  var workerUrl = AUTH_WORKER_URL + '?code=' + encodeURIComponent(code);
+  fetch(workerUrl)
+    .then(function(res) {{ return res.json(); }})
+    .then(function(data) {{
+      if (data.error) {{
+        console.error('Feishu auth failed:', data.error);
+        showPasswordLogin();
+        return;
+      }}
+      var feishuSession = {{
+        name: data.name,
+        email: data.email,
+        user_id: data.user_id,
+        isAdmin: false,
+        loginTime: Date.now()
+      }};
+      localStorage.setItem('feishu_session', JSON.stringify(feishuSession));
+      doLogin('view', feishuSession);
+    }})
+    .catch(function(err) {{
+      console.error('Feishu auth error:', err);
+      // Fallback to password login
+      showPasswordLogin();
+    }});
+  return true;
+}}
+
+function showPasswordLogin() {{
+  document.getElementById('feishuLoginArea').style.display = 'none';
+  document.getElementById('passwordLoginArea').style.display = 'block';
+}}
+
+function showFeishuLogin() {{
+  document.getElementById('feishuLoginArea').style.display = 'block';
+  document.getElementById('passwordLoginArea').style.display = 'none';
+  document.getElementById('loginError').textContent = '';
 }}
 
 // ======================== ADMIN TASKS ========================
@@ -1215,7 +1408,8 @@ function init() {{
   var progOrder = ['\\u672a\\u542f\\u52a8', '\\u8fdb\\u884c\\u4e2d', 'QA\\u9a8c\\u6536\\u4e2d'];
   allProgress = progOrder.filter(function(p) {{ return progSet[p]; }});
   if (allProgress.length === 0) allProgress = Object.keys(progSet);
-  allPeople = Object.keys(personSet).sort();
+  // allPeople derived from ALL_PEOPLE
+  allPeople = ALL_PEOPLE.map(function(p) {{ return p.name; }});
 
   // Populate filter selects
   var selRegion = document.getElementById('filterRegion');
@@ -1230,19 +1424,40 @@ function init() {{
     opt.value = p; opt.textContent = p;
     selProg.appendChild(opt);
   }});
+
+  // Populate person filter from ALL_PEOPLE, grouped by department
   var selPerson = document.getElementById('filterPerson');
-  allPeople.forEach(function(p) {{
-    var opt = document.createElement('option');
-    opt.value = p; opt.textContent = p;
-    selPerson.appendChild(opt);
+  // Group by dept
+  var deptMap = {{}};
+  ALL_PEOPLE.forEach(function(p) {{
+    if (!deptMap[p.dept]) deptMap[p.dept] = [];
+    deptMap[p.dept].push(p);
+  }});
+  var sortedDepts = Object.keys(deptMap).sort();
+  sortedDepts.forEach(function(dept) {{
+    var optgroup = document.createElement('optgroup');
+    optgroup.label = dept;
+    deptMap[dept].sort(function(a,b) {{ return a.name.localeCompare(b.name); }}).forEach(function(p) {{
+      var opt = document.createElement('option');
+      opt.value = p.name;
+      opt.textContent = dept + ' - ' + p.name;
+      optgroup.appendChild(opt);
+    }});
+    selPerson.appendChild(optgroup);
   }});
 
-  // Populate person select for admin form
+  // Populate person select for admin form (use same grouped list)
   var selAP = document.getElementById('newTaskPerson');
-  allPeople.forEach(function(p) {{
-    var opt = document.createElement('option');
-    opt.value = p; opt.textContent = p;
-    selAP.appendChild(opt);
+  sortedDepts.forEach(function(dept) {{
+    var optgroup = document.createElement('optgroup');
+    optgroup.label = dept;
+    deptMap[dept].sort(function(a,b) {{ return a.name.localeCompare(b.name); }}).forEach(function(p) {{
+      var opt = document.createElement('option');
+      opt.value = p.name;
+      opt.textContent = dept + ' - ' + p.name;
+      optgroup.appendChild(opt);
+    }});
+    selAP.appendChild(optgroup);
   }});
 
   // Set default deadline to 7 days from now
@@ -1268,6 +1483,8 @@ function getFilteredData() {{
     if (progress && r.progress !== progress) return false;
     if (person) {{
       if (!r.assignee || !r.assignee.some(function(p) {{ return p.name === person; }})) return false;
+    }} else {{
+      // When "\u5168\u90e8" is selected, show all (default behavior)
     }}
     if (search && r.title.toLowerCase().indexOf(search) === -1) return false;
     return true;
@@ -1325,7 +1542,8 @@ function renderStats(filtered, adminFiltered) {{
     {{ label: '\\u8fdb\\u884c\\u4e2d', value: inProgress, sub: '\\u6267\\u884c\\u4e2d\\u4efb\\u52a1' }},
     {{ label: '\\u672a\\u542f\\u52a8', value: notStarted, sub: '\\u5f85\\u542f\\u52a8\\u4efb\\u52a1' }},
     {{ label: 'QA\\u9a8c\\u6536\\u4e2d', value: qaCount, sub: '\\u7b49\\u5f85\\u9a8c\\u6536' }},
-    {{ label: '\\u6d89\\u53ca\\u4eba\\u5458', value: peopleCount, sub: '\\u5f53\\u524d\\u7b5b\\u9009' }}
+    {{ label: '\\u6d89\\u53ca\\u4eba\\u5458', value: peopleCount, sub: '\\u5f53\\u524d\\u7b5b\\u9009' }},
+    {{ label: '\\u56e2\\u961f\\u6210\\u5458', value: ALL_PEOPLE.length, sub: '\\u5168\\u90e8\\u4eba\\u5458' }}
   ];
 
   document.getElementById('statsRow').innerHTML = cards.map(function(c) {{
@@ -1892,15 +2110,18 @@ function addAdminTask() {{
 }}
 
 // ======================== START ========================
-if (!checkSession()) {{
-  // Show login overlay - init will be called after login
-  document.getElementById('loginOverlay').classList.remove('hidden');
-  // Focus input
-  setTimeout(function() {{ document.getElementById('loginInput').focus(); }}, 300);
-  // Allow Enter key to login
-  document.getElementById('loginInput').addEventListener('keydown', function(e) {{
-    if (e.key === 'Enter') handleLogin();
-  }});
+// Check for Feishu OAuth callback first
+if (!handleFeishuCallback()) {{
+  if (!checkSession()) {{
+    // Show login overlay - init will be called after login
+    document.getElementById('loginOverlay').classList.remove('hidden');
+    // Focus input
+    setTimeout(function() {{ document.getElementById('loginInput').focus(); }}, 300);
+    // Allow Enter key to login
+    document.getElementById('loginInput').addEventListener('keydown', function(e) {{
+      if (e.key === 'Enter') handleLogin();
+    }});
+  }}
 }}
 </script>
 </body>
