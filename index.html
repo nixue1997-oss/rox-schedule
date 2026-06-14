@@ -818,13 +818,90 @@ z-index:199;overflow:hidden;animation:slideUp .3s ease }
 .fab:active { transform: scale(0.95); }
 
 @media (max-width: 768px) {
-  .header-inner { flex-direction: column; align-items: flex-start; }
-  .header-actions { width: 100%; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .filter-bar { flex-direction: column; align-items: stretch; }
-  .filter-stats { margin-left: 0; }
+  /* Header */
+  .header { padding: 12px 16px; }
+  .header-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .header h1 { font-size: 16px; }
+  .header h1 small { font-size: 11px; margin-left: 6px; }
+  .header-actions { width: 100%; justify-content: space-between; }
+  .container { padding: 12px 10px; }
+
+  /* Stats */
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+  .stat-card { padding: 12px 14px; }
+  .stat-card .value { font-size: 22px; }
+  .stat-card .label { font-size: 11px; }
+
+  /* Filter bar */
+  .filter-bar { padding: 10px 12px; gap: 8px; }
+  .filter-group { flex-wrap: wrap; }
+  .filter-group label { font-size: 12px; }
+  .filter-group select { min-width: 80px; font-size: 12px; padding: 4px 8px; }
+  .multi-select { min-width: 90px; }
+  .multi-select-trigger { font-size: 12px; padding: 4px 8px; min-height: 26px; }
+  .multi-select-panel { max-height: 200px; }
+  .person-search input { min-width: 100px; font-size: 12px; }
+  .filter-search { min-width: 100%; font-size: 12px; }
+  .filter-stats { margin-left: 0; font-size: 11px; width: 100%; text-align: center; }
+
+  /* View tabs - horizontal scroll */
+  .view-tabs { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .view-tabs::-webkit-scrollbar { display: none; }
+  .view-tab { padding: 6px 12px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+
+  /* Card grid */
+  .card-grid { grid-template-columns: 1fr; gap: 8px; }
+  .task-card { padding: 10px 12px; }
+  .task-card .card-title { font-size: 13px; }
+  .task-card .card-meta { font-size: 11px; }
+
+  /* Table */
+  .table-wrapper { font-size: 12px; }
+  table th, table td { padding: 8px 10px; font-size: 11px; }
+
+  /* Gantt */
+  .gantt-wrapper { padding: 10px; }
+  .gantt-person-col, .gantt-person-name { min-width: 80px; max-width: 80px; font-size: 11px; padding: 6px 6px; }
+  .gantt-bar { height: 22px; font-size: 9px; top: 8px; }
+  .gantt-week-label { font-size: 10px; padding: 4px 0; }
+
+  /* Person view */
+  .person-cards { grid-template-columns: 1fr; }
+  .person-dept-group { margin-bottom: 12px; }
+  .person-item { padding: 8px 12px; }
+  .person-avatar { width: 30px; height: 30px; font-size: 12px; margin-right: 10px; }
+  .person-tasks { padding-left: 40px; }
+  .person-task-card { padding: 6px 10px; font-size: 12px; }
+
+  /* Parent gantt */
+  .parent-gantt-wrap .pg-header { padding: 8px; }
+  .parent-gantt-wrap .pg-header input { min-width: 150px; font-size: 12px; }
+
+  /* FAB */
+  .fab-add { width: 46px; height: 46px; bottom: 20px; right: 16px; font-size: 24px; }
+  .add-task-panel { width: calc(100vw - 32px); right: 16px; bottom: 76px; }
+
+  /* Modal */
+  .modal { padding: 20px; margin: 16px; width: calc(100% - 32px); }
+  .modal h2 { font-size: 16px; }
   .form-row { grid-template-columns: 1fr; }
-  .card-grid { grid-template-columns: 1fr; }
+
+  /* Delete button */
+  .delete-btn { font-size: 12px; padding: 2px 4px; }
+}
+
+@media (max-width: 480px) {
+  .header { padding: 10px 12px; }
+  .header h1 { font-size: 15px; }
+  .header h1 small { display: none; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .stat-card { padding: 10px 12px; border-radius: 8px; }
+  .stat-card .value { font-size: 20px; }
+  .stat-card .label { font-size: 10px; }
+  .stat-card .sub { display: none; }
+  .filter-bar { padding: 8px 10px; gap: 6px; }
+  .view-tab { padding: 5px 10px; font-size: 11px; }
+  .container { padding: 10px 8px; }
 }
 </style>
 </head>
