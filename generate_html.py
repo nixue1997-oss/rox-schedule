@@ -265,6 +265,46 @@ body {{
   border-color: var(--primary);
   box-shadow: 0 0 0 2px var(--primary-bg);
 }}
+
+/* ===== Multi-select filters ===== */
+.multi-select {{ position: relative; min-width: 110px; }}
+.multi-select-trigger {{ display: flex; align-items: center; justify-content: space-between;
+  padding: 5px 10px; background: #fff; border: 1px solid var(--gray-3);
+  border-radius: var(--radius-sm); cursor: pointer; font-size: 13px;
+  min-height: 29px; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+.multi-select-trigger .ms-count {{ font-size: 12px; color: var(--primary); margin-right: 4px; }}
+.multi-select-trigger .ms-arrow {{ font-size: 10px; opacity: 0.5; flex-shrink: 0; }}
+.multi-select-panel {{ position: absolute; top: 100%; left: 0; min-width: 100%;
+  z-index: 200; background: #fff; border: 1px solid var(--gray-3);
+  border-radius: var(--radius-sm); max-height: 240px; overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 4px 0; }}
+.multi-select-panel label {{ display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; font-size: 12px; cursor: pointer; white-space: nowrap; }}
+.multi-select-panel label:hover {{ background: var(--gray-2); }}
+.multi-select-panel input[type=checkbox] {{ margin: 0; flex-shrink: 0; }}
+
+/* Person search */
+.person-search {{ position: relative; }}
+.person-search input {{ padding: 5px 10px; border: 1px solid var(--gray-3);
+  border-radius: var(--radius-sm); font-size: 13px; background: #fff;
+  min-width: 140px; outline: none; }}
+.person-search input:focus {{ border-color: var(--primary); }}
+.ps-results {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
+  background: #fff; border: 1px solid var(--gray-3); border-radius: var(--radius-sm);
+  max-height: 200px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  display: none; }}
+.ps-item {{ padding: 5px 10px; font-size: 12px; cursor: pointer; }}
+.ps-item:hover {{ background: var(--gray-2); }}
+
+/* Parent gantt */
+.parent-gantt-wrap {{ padding: 0; }}
+.parent-gantt-wrap .pg-header {{ display: flex; gap: 8px; align-items: center; margin-bottom: 12px; padding: 12px; background: var(--gray-1); border-radius: var(--radius); flex-wrap: wrap; }}
+.parent-gantt-wrap .pg-header input {{ flex: 1; min-width: 200px; padding: 6px 10px; border: 1px solid var(--gray-3); border-radius: 6px; font-size: 13px; background: #fff; }}
+.psg-item {{ padding: 6px 12px; font-size: 12px; cursor: pointer; }}
+.psg-item:hover {{ background: var(--gray-2); }}
+.pg-group-title {{ font-size: 15px; font-weight: 600; margin-bottom: 4px; }}
+.pg-group-subtitle {{ font-size: 12px; color: var(--gray-5); margin-bottom: 10px; }}
+
 .filter-search {{
   padding: 5px 10px;
   border: 1px solid var(--gray-3);
@@ -758,49 +798,24 @@ table tr:last-child td {{
 }}
 
 /* ========== RESPONSIVE ========== */
-/* ===== Multi-select department ===== */
-.multi-select {{ position: relative; min-width: 140px; }}
-.multi-select-trigger {{ display: flex; align-items: center; justify-content: space-between;
-  padding: 6px 10px; background: var(--gray-1); border: 1px solid var(--gray-3);
-  border-radius: 6px; cursor: pointer; font-size: 13px; min-height: 34px; gap: 4px;
-  flex-wrap: wrap; }}
-.multi-select-trigger .dept-tag {{ background: var(--primary); color: #fff; font-size: 11px;
-  padding: 1px 6px; border-radius: 3px; }}
-.multi-select-trigger .dropdown-arrow {{ margin-left: auto; font-size: 10px; opacity: 0.6; }}
-.multi-select-panel {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
-  background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 6px;
-  max-height: 250px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 4px 0; }}
-.multi-select-panel label {{ display: flex; align-items: center; gap: 6px;
-  padding: 5px 10px; font-size: 12px; cursor: pointer; }}
-.multi-select-panel label:hover {{ background: var(--gray-2); }}
-.multi-select-panel input[type="checkbox"] {{ margin: 0; }}
-
-/* ===== Person search ===== */
-.person-search-wrap {{ position: relative; }}
-.person-search-wrap input {{ width: 100%; padding: 6px 10px; border: 1px solid var(--gray-3);
-  border-radius: 6px; font-size: 13px; background: var(--gray-1); min-width: 150px; }}
-.person-search-results {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
-  background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 6px;
-  max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: none; }}
-.person-search-results .sr-item {{ padding: 5px 10px; font-size: 12px; cursor: pointer; }}
-.person-search-results .sr-item:hover {{ background: var(--gray-2); }}
-
-/* ===== Parent Gantt ===== */
-.parent-gantt-bar {{ margin-top: 12px; padding: 12px; background: var(--gray-1);
-  border: 1px solid var(--gray-3); border-radius: 8px; }}
-.parent-gantt-bar .pg-search {{ display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }}
-.parent-gantt-bar .pg-search input {{ flex: 1; padding: 6px 10px; border: 1px solid var(--gray-3);
-  border-radius: 6px; font-size: 13px; background: #fff; }}
-.pg-suggest {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
-  background: #fff; border: 1px solid var(--gray-3); border-radius: 6px;
-  max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: none; }}
-.pg-si {{ padding: 6px 10px; font-size: 12px; cursor: pointer; }}
-.pg-si:hover {{ background: var(--gray-2); }}
-.parent-gantt-group-label {{ font-size: 15px; font-weight: 600; margin-bottom: 6px; }}
-.parent-gantt-total {{ font-size: 12px; color: var(--gray-5); margin-bottom: 10px; }}
+.person-view {{ margin-top: 8px; }}
+.person-view h3 {{ font-size: 16px; margin-bottom: 12px; }}
+.person-stats {{ display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }}
+.person-stat {{ background: var(--gray-1); padding: 8px 14px; border-radius: var(--radius); font-size: 13px; }}
+.person-stat strong {{ color: var(--primary); }}
+.person-cards {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }}
+.person-card {{ background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 12px; }}
+.person-card h4 {{ font-size: 14px; margin-bottom: 8px; color: var(--primary); }}
+.person-card .pc-stat {{ font-size: 12px; color: var(--gray-5); margin-bottom: 4px; }}
+.person-task {{ font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--gray-3); }}
+.person-task:last-child {{ border-bottom: none; }}
+.person-task .pt-progress {{ display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; margin-left: 6px; }}
+.fab {{ position: fixed; bottom: 24px; right: 24px; width: 50px; height: 50px; border-radius: 50%;
+  background: var(--primary); color: #fff; border: none; font-size: 24px;
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.2); z-index: 100;
+  display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }}
+.fab:hover {{ transform: scale(1.1); }}
+.fab:active {{ transform: scale(0.95); }}
 
 @media (max-width: 768px) {{
   .header-inner {{ flex-direction: column; align-items: flex-start; }}
@@ -833,38 +848,69 @@ table tr:last-child td {{
 
   <!-- Filter Bar -->
   <div class="filter-bar" id="filterBar">
+    <!-- Region multi-select -->
     <div class="filter-group">
       <label>\u5730\u533a</label>
-      <select id="filterRegion" onchange="applyFilters()">
-        <option value="">\u5168\u90e8</option>
-      </select>
+      <div class="multi-select" id="msRegion">
+        <div class="multi-select-trigger" onclick="toggleMsPanel('region')">
+          <span class="ms-count"></span><span class="ms-label">\u5168\u90e8</span>
+          <span class="ms-arrow">\u25bc</span>
+        </div>
+        <div class="multi-select-panel" id="msPanel_region" style="display:none">
+          <label><input type="checkbox" data-all="region" checked onchange="toggleMsAll('region')"> \u5168\u90e8</label>
+          <div id="msCheckboxes_region"></div>
+        </div>
+      </div>
+      <input type="hidden" id="filterRegion" value="ALL">
     </div>
+    <!-- Progress multi-select -->
     <div class="filter-group">
       <label>\u8fdb\u5c55</label>
-      <select id="filterProgress" onchange="applyFilters()">
-        <option value="">\u5168\u90e8</option>
-      </select>
+      <div class="multi-select" id="msProgress">
+        <div class="multi-select-trigger" onclick="toggleMsPanel('progress')">
+          <span class="ms-count"></span><span class="ms-label">\u5168\u90e8</span>
+          <span class="ms-arrow">\u25bc</span>
+        </div>
+        <div class="multi-select-panel" id="msPanel_progress" style="display:none">
+          <label><input type="checkbox" data-all="progress" checked onchange="toggleMsAll('progress')"> \u5168\u90e8</label>
+          <div id="msCheckboxes_progress"></div>
+        </div>
+      </div>
+      <input type="hidden" id="filterProgress" value="ALL">
     </div>
+    <!-- Department multi-select -->
     <div class="filter-group">
       <label>\u90e8\u95e8</label>
-      <div class="multi-select" id="deptSelectContainer">
-        <div class="multi-select-trigger" onclick="event.stopPropagation();toggleDeptPanel(event)">
-          <span id="deptSelectLabel">\u5168\u90e8</span>
-          <span class="dropdown-arrow">\u25bc</span>
+      <div class="multi-select" id="msDept">
+        <div class="multi-select-trigger" onclick="toggleMsPanel('dept')">
+          <span class="ms-count"></span><span class="ms-label">\u5168\u90e8</span>
+          <span class="ms-arrow">\u25bc</span>
         </div>
-        <div class="multi-select-panel" id="deptPanel" style="display:none">
-          <label><input type="checkbox" id="deptAllCheck" checked onchange="toggleDeptAll(this)"> \u5168\u90e8</label>
-          <div id="deptCheckboxes"></div>
+        <div class="multi-select-panel" id="msPanel_dept" style="display:none">
+          <label><input type="checkbox" data-all="dept" checked onchange="toggleMsAll('dept')"> \u5168\u90e8</label>
+          <div id="msCheckboxes_dept"></div>
         </div>
       </div>
+      <input type="hidden" id="filterDept" value="ALL">
     </div>
+    <!-- Person search + multi-select -->
     <div class="filter-group">
       <label>\u6267\u884c\u4eba</label>
-      <div class="person-search-wrap">
-        <input type="text" id="filterPersonSearch" placeholder="\u641c\u7d22\u59d3\u540d\u6216\u90e8\u95e8..." oninput="onPersonSearchInput(this.value)" onfocus="onPersonSearchFocus()" onblur="setTimeout(function(){{document.getElementById('personSearchResults').style.display='none';}},200)" autocomplete="off">
-        <div class="person-search-results" id="personSearchResults"></div>
-        <input type="hidden" id="filterPerson" value="">
+      <div class="person-search">
+        <input type="text" id="filterPersonSearch" placeholder="\u641c\u7d22\u59d3\u540d..." oninput="onPersonSearch(this.value)" onfocus="onPersonSearch(this.value)" onblur="setTimeout(function(){{ document.getElementById('psResults').style.display='none'; }},200)" autocomplete="off">
+        <div class="ps-results" id="psResults"></div>
       </div>
+      <div class="multi-select" id="msPerson" style="min-width:80px">
+        <div class="multi-select-trigger" onclick="toggleMsPanel('person')">
+          <span class="ms-count"></span><span class="ms-label">\u5168\u90e8</span>
+          <span class="ms-arrow">\u25bc</span>
+        </div>
+        <div class="multi-select-panel" id="msPanel_person" style="display:none">
+          <label><input type="checkbox" data-all="person" checked onchange="toggleMsAll('person')"> \u5168\u90e8</label>
+          <div style="max-height:300px;overflow-y:auto" id="msCheckboxes_person"></div>
+        </div>
+      </div>
+      <input type="hidden" id="filterPerson" value="ALL">
     </div>
     <div class="filter-group">
       <label>\u641c\u7d22</label>
@@ -876,6 +922,7 @@ table tr:last-child td {{
   <!-- View Tabs -->
   <div class="view-tabs">
     <button class="view-tab active" data-view="card" onclick="switchView('card')">\u5361\u7247\u89c6\u56fe</button>
+    <button class="view-tab" data-view="person" onclick="switchView('person')">\u4eba\u5458\u89c6\u56fe</button>
     <button class="view-tab" data-view="table" onclick="switchView('table')">\u8868\u683c\u89c6\u56fe</button>
     <button class="view-tab" data-view="gantt" onclick="switchView('gantt')">\u7518\u7279\u56fe</button>
     <button class="view-tab" data-view="parentgantt" onclick="switchView('parentgantt')">\u5b50\u4efb\u52a1\u7518\u7279</button>
@@ -883,16 +930,17 @@ table tr:last-child td {{
 
   <!-- Content Area -->
   <div id="cardView" class="fade-in"></div>
+  <div id="personView" class="fade-in" style="display:none">
+    <div class="person-view" id="personViewInner"></div>
+  </div>
   <div id="tableView" class="fade-in" style="display:none"></div>
   <div id="ganttView" class="fade-in" style="display:none"></div>
-  <div id="parentGanttView" class="fade-in" style="display:none">
-    <div class="parent-gantt-bar">
-      <div class="pg-search">
-        <input type="text" id="parentGanttSearch" placeholder="\u641c\u7d22\u4efb\u52a1\u540d\u79f0\uff0c\u67e5\u770b\u540c\u7248\u672c\u6392\u671f..." oninput="onParentGanttSearch(this.value)" autocomplete="off">
-        <div id="parentGanttSuggest" class="pg-suggest"></div>
-      </div>
-      <div id="parentGanttResult"></div>
+  <div id="parentGanttView" class="fade-in parent-gantt-wrap" style="display:none">
+    <div class="pg-header">
+      <input type="text" id="pgSearch" placeholder="\u641c\u7d22\u4efb\u52a1\uff0c\u67e5\u770b\u540c\u7248\u672c\u6240\u6709\u4efb\u52a1\u6392\u671f\u7518\u7279\u56fe..." oninput="onPgSearch(this.value)" autocomplete="off">
+      <div class="ps-results" id="pgSuggest"></div>
     </div>
+    <div id="pgResult"></div>
   </div>
 </div>
 
@@ -957,201 +1005,6 @@ table tr:last-child td {{
 // ======================== DATA LOADING ========================
 var DATA = JSON.parse(document.getElementById('__DATA__').textContent);
 var ALL_PEOPLE = JSON.parse(document.getElementById('__PEOPLE__').textContent);
-// ======================== Multi-Select Department ========================
-function toggleDeptPanel(e) {{
-  if (e) e.stopPropagation();
-  var panel = document.getElementById('deptPanel');
-  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-}}
-document.addEventListener('click', function(e) {{
-  var container = document.getElementById('deptSelectContainer');
-  if (container && !container.contains(e.target)) {{
-    document.getElementById('deptPanel').style.display = 'none';
-  }}
-}});
-function toggleDeptAll(cb) {{
-  var cbs = document.querySelectorAll('#deptCheckboxes input[type=checkbox]');
-  cbs.forEach(function(c) {{ c.checked = cb.checked; }});
-  onDeptChange();
-}}
-function onDeptChange() {{
-  var cbs = document.querySelectorAll('#deptCheckboxes input[type=checkbox]');
-  var checked = [];
-  cbs.forEach(function(c) {{ if (c.checked) checked.push(c.value); }});
-  var allCb = document.getElementById('deptAllCheck');
-  if (checked.length === 0) {{
-    allCb.checked = true;
-    document.getElementById('deptSelectLabel').textContent = '全部';
-  }} else if (checked.length <= 3) {{
-    document.getElementById('deptSelectLabel').textContent = checked.join(', ');
-  }} else {{
-    document.getElementById('deptSelectLabel').textContent = checked.length + '个部门';
-  }}
-  applyFilters();
-}}
-
-// ======================== Person Search ========================
-var _allPersonList = [];
-function initPersonSearch() {{
-  _allPersonList = ALL_PEOPLE.map(function(p) {{
-    return {{ label: p.dept + ' - ' + p.name, value: p.name, dept: p.dept }};
-  }});
-}}
-function onPersonSearchInput(val) {{
-  var resultsDiv = document.getElementById('personSearchResults');
-  if (!val) {{ resultsDiv.style.display = 'none'; document.getElementById('filterPerson').value = ''; applyFilters(); return; }}
-  var q = val.toLowerCase();
-  var matched = _allPersonList.filter(function(item) {{
-    return item.label.toLowerCase().indexOf(q) >= 0 || item.value.toLowerCase().indexOf(q) >= 0;
-  }});
-  if (matched.length === 0) {{ resultsDiv.style.display = 'none'; return; }}
-  var html = '';
-  matched.slice(0, 20).forEach(function(m) {{
-    html += '<div class="sr-item" onmousedown="selectPerson('' + m.value.replace(/'/g, "\\'") + '','' + m.label.replace(/'/g, "\\'") + '')">' + m.label + '</div>';
-  }});
-  resultsDiv.innerHTML = html;
-  resultsDiv.style.display = 'block';
-}}
-function onPersonSearchFocus() {{
-  var val = document.getElementById('filterPersonSearch').value;
-  if (val) onPersonSearchInput(val);
-}}
-function selectPerson(name, label) {{
-  document.getElementById('filterPersonSearch').value = label;
-  document.getElementById('filterPerson').value = name;
-  document.getElementById('personSearchResults').style.display = 'none';
-  applyFilters();
-}}
-
-// ======================== Parent Task Gantt ========================
-var _parentGanttTimer = null;
-function onParentGanttSearch(val) {{
-  clearTimeout(_parentGanttTimer);
-  var suggestDiv = document.getElementById('parentGanttSuggest');
-  if (!val || val.length < 1) {{ suggestDiv.style.display = 'none'; return; }}
-  _parentGanttTimer = setTimeout(function() {{
-    var q = val.toLowerCase();
-    var matches = DATA.filter(function(r) {{ return r.title.toLowerCase().indexOf(q) >= 0; }}).slice(0, 20);
-    if (matches.length === 0) {{ suggestDiv.style.display = 'none'; return; }}
-    var html = '';
-    matches.forEach(function(m) {{
-      var displayTitle = m.title.length > 40 ? m.title.substring(0, 40) + '...' : m.title;
-      html += '<div class="pg-si" onmousedown="selectParentTask('' + m.title.replace(/'/g, "\\'") + '')">' + displayTitle + '</div>';
-    }});
-    suggestDiv.innerHTML = html;
-    suggestDiv.style.display = 'block';
-  }}, 200);
-}}
-function selectParentTask(title) {{
-  document.getElementById('parentGanttSearch').value = title;
-  document.getElementById('parentGanttSuggest').style.display = 'none';
-  renderParentGanttForTask(title);
-}}
-function renderParentGanttView() {{
-  var resultDiv = document.getElementById('parentGanttResult');
-  if (!resultDiv.innerHTML) {{
-    resultDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray-5);font-size:13px">\u5728\u4e0a\u65b9\u641c\u7d22\u6846\u4e2d\u8f93\u5165\u4efb\u52a1\u540d\u79f0\uff0c\u67e5\u770b\u540c\u7248\u672c\u7684\u6240\u6709\u4efb\u52a1\u6392\u671f\u7518\u7279\u56fe</div>';
-  }}
-}}
-function renderParentGanttForTask(title) {{
-  var resultDiv = document.getElementById('parentGanttResult');
-  var task = null;
-  for (var i = 0; i < DATA.length; i++) {{
-    if (DATA[i].title === title) {{ task = DATA[i]; break; }}
-  }}
-  if (!task) {{ resultDiv.innerHTML = '<div style="color:var(--danger)">\u672a\u627e\u5230\u8be5\u4efb\u52a1</div>'; return; }}
-  
-  var m = title.match(/^(【[^【]+】【总】\d{{4}})/);
-  if (!m) {{ 
-    renderSimpleGantt([task], resultDiv);
-    return;
-  }}
-  var prefix = m[1];
-  var groups = window._prefixGroups || {{}};
-  var groupTasks = groups[prefix] || [task];
-  
-  groupTasks.sort(function(a, b) {{ 
-    var da = a.endDate ? new Date(a.endDate) : new Date('2099/12/31');
-    var db = b.endDate ? new Date(b.endDate) : new Date('2099/12/31');
-    return da - db;
-  }});
-  
-  var html = '<div class="parent-gantt-group-label">' + prefix + '</div>';
-  html += '<div class="parent-gantt-total">\u5171 ' + groupTasks.length + ' \u4e2a\u4efb\u52a1</div>';
-  resultDiv.innerHTML = html;
-  renderSimpleGantt(groupTasks, resultDiv);
-}}
-function renderSimpleGantt(tasks, container) {{
-  var minDate = null, maxDate = null;
-  tasks.forEach(function(r) {{
-    var sd = r.startDate ? normalizeDate(r.startDate) : null;
-    var ed = r.endDate ? normalizeDate(r.endDate) : null;
-    if (sd) {{ var d = new Date(sd); if (!minDate || d < minDate) minDate = d; }}
-    if (ed) {{ var d = new Date(ed); if (!maxDate || d > maxDate) maxDate = d; }}
-  }});
-  if (!minDate && !maxDate) {{ container.innerHTML += '<div style="padding:10px;color:var(--gray-5)">\u6682\u65e0\u65e5\u671f\u4fe1\u606f</div>'; return; }}
-  if (!minDate) minDate = maxDate;
-  if (!maxDate) maxDate = minDate;
-  var start = new Date(minDate); start.setDate(start.getDate() - 7);
-  var end = new Date(maxDate); end.setDate(end.getDate() + 14);
-  
-  var totalDays = Math.ceil((end - start) / (1000*60*60*24));
-  var today = new Date();
-  today.setHours(0,0,0,0);
-  
-  var html = '<div style="overflow-x:auto;font-size:12px">';
-  html += '<div style="display:flex;position:sticky;top:0;background:var(--gray-1);z-index:2;border-bottom:1px solid var(--gray-3);min-width:' + (150 + totalDays*14) + 'px">';
-  html += '<div style="width:150px;flex-shrink:0;padding:4px 6px;font-weight:600">\u4efb\u52a1</div>';
-  for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {{
-    html += '<div style="width:14px;flex-shrink:0;text-align:center;font-size:9px;padding-top:2px;';
-    if (d.getDay() === 0 || d.getDay() === 6) html += 'color:var(--gray-4);';
-    html += '">';
-    if (d.getDate() === 1) html += d.getMonth() + 1;
-    html += '</div>';
-  }}
-  html += '</div>';
-  
-  tasks.forEach(function(r) {{
-    var sd = r.startDate ? normalizeDate(r.startDate) : null;
-    var ed = r.endDate ? normalizeDate(r.endDate) : null;
-    var sdDate = sd ? new Date(sd) : null;
-    var edDate = ed ? new Date(ed) : null;
-    if (!sdDate && edDate) sdDate = edDate;
-    if (!edDate && sdDate) edDate = sdDate;
-    
-    var progStyle = 'background:var(--gray-4);';
-    if (r.progress === '进行中') progStyle = 'background:var(--warning);';
-    else if (r.progress === 'QA验收中') progStyle = 'background:var(--success);';
-    
-    var assigneeStr = r.assignee ? r.assignee.map(function(p) {{ return p.name; }}).join(', ') : '';
-    var titleShort = r.title.length > 25 ? r.title.substring(0, 25) + '...' : r.title;
-    
-    html += '<div style="display:flex;align-items:center;min-width:' + (150 + totalDays*14) + 'px;border-bottom:1px solid var(--gray-3);">';
-    html += '<div style="width:150px;flex-shrink:0;padding:3px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px" title="' + r.title.replace(/"/g, '&quot;') + '">' + titleShort + '</div>';
-    
-    for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {{
-      var dayStart = new Date(d);
-      dayStart.setHours(0,0,0,0);
-      var dayEnd = new Date(dayStart);
-      dayEnd.setHours(23,59,59,999);
-      
-      var inRange = sdDate && edDate && dayEnd >= sdDate && dayStart <= edDate;
-      var isToday = dayStart.getTime() === today.getTime();
-      
-      var cellStyle = 'width:14px;flex-shrink:0;height:20px;';
-      if (isToday) cellStyle += 'border-left:1px solid var(--danger);';
-      if (inRange) cellStyle += progStyle;
-      else cellStyle += 'background:var(--gray-1);';
-      html += '<div style="' + cellStyle + '"></div>';
-    }}
-    html += '</div>';
-  }});
-  
-  html += '</div>';
-  container.innerHTML += html;
-}}
-
-
 
 
 // ======================== STATE ========================
@@ -1224,130 +1077,124 @@ function init() {{
     if (r.assignee) r.assignee.forEach(function(p) {{ personSet[p.name] = true; }});
   }});
   allRegions = Object.keys(regionSet).sort();
-  // Order progress in a meaningful way
-  var progOrder = ['\\u672a\\u542f\\u52a8', '\\u8fdb\\u884c\\u4e2d', 'QA\\u9a8c\\u6536\\u4e2d'];
+  var progOrder = ['\u672a\u542f\u52a8', '\u8fdb\u884c\u4e2d', 'QA\u9a8c\u6536\u4e2d'];
   allProgress = progOrder.filter(function(p) {{ return progSet[p]; }});
   if (allProgress.length === 0) allProgress = Object.keys(progSet);
-  // allPeople derived from ALL_PEOPLE
   allPeople = ALL_PEOPLE.map(function(p) {{ return p.name; }});
 
-  // Populate filter selects
-  var selRegion = document.getElementById('filterRegion');
-  allRegions.forEach(function(r) {{
-    var opt = document.createElement('option');
-    opt.value = r; opt.textContent = r;
-    selRegion.appendChild(opt);
-  }});
-  var selProg = document.getElementById('filterProgress');
-  var emptyOpt = document.createElement('option');
-  emptyOpt.value = '(空)'; emptyOpt.textContent = '(空)';
-  selProg.appendChild(emptyOpt);
-  allProgress.forEach(function(p) {{
-    var opt = document.createElement('option');
-    opt.value = p; opt.textContent = p;
-    selProg.appendChild(opt);
-  }});
+  // Populate multi-select checkboxes
+  msPopulate('region', allRegions, allRegions);
 
-  // Initialize person search
-  initPersonSearch();
+  // Progress: add empty option
+  if (progSet['']) allProgress.unshift('(\u7a7a)');
+  msPopulate('progress', allProgress, allProgress);
 
-  // Populate department checkboxes
-  var deptSet = {{}};
+  // Department
+  var deptMap = {{}}, deptList = [];
   ALL_PEOPLE.forEach(function(p) {{
-    if (p.dept) deptSet[p.dept] = true;
+    if (p.dept && !deptMap[p.dept]) {{ deptMap[p.dept] = true; deptList.push(p.dept); }}
   }});
-  var deptList = Object.keys(deptSet).sort();
-  var deptCbContainer = document.getElementById('deptCheckboxes');
-  if (deptCbContainer) {{
-    deptList.forEach(function(d) {{
-      var label = document.createElement('label');
-      var cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.value = d;
-      cb.checked = true;
-      cb.onchange = onDeptChange;
-      label.appendChild(cb);
-      label.appendChild(document.createTextNode(' ' + d));
-      deptCbContainer.appendChild(label);
-    }});
-  }}
+  deptList.sort();
+  msPopulate('dept', deptList, deptList);
 
-
-  // Build parent-child groups by title prefix
-  window._prefixGroups = {{}};
-  DATA.forEach(function(r) {{
-    var m = r.title.match(/^(【[^【]+】【总】\d{{4}})/);
-    if (m) {{
-      var prefix = m[1];
-      if (!window._prefixGroups[prefix]) window._prefixGroups[prefix] = [];
-      window._prefixGroups[prefix].push(r);
-    }}
+  // Person: by dept groups
+  var sortedDepts2 = Object.keys(deptMap).sort();
+  var personOpts = [];
+  sortedDepts2.forEach(function(d) {{
+    ALL_PEOPLE.filter(function(p) {{ return p.dept === d; }})
+      .sort(function(a,b) {{ return a.name.localeCompare(b.name); }})
+      .forEach(function(p) {{ personOpts.push(p.name); }});
   }});
-    // Populate person select for admin form (use same grouped list)
+  msPopulate('person', personOpts, personOpts);
+
+  // Init person search data
+  _psData = ALL_PEOPLE.map(function(p) {{ return {{ name: p.name, dept: p.dept, label: p.dept + ' - ' + p.name }}; }});
+
+  // Populate admin form person select (same grouped list)
   var selAP = document.getElementById('newTaskPerson');
-  sortedDepts.forEach(function(dept) {{
-    var optgroup = document.createElement('optgroup');
-    optgroup.label = dept;
-    deptMap[dept].sort(function(a,b) {{ return a.name.localeCompare(b.name); }}).forEach(function(p) {{
-      var opt = document.createElement('option');
-      opt.value = p.name;
-      opt.textContent = dept + ' - ' + p.name;
-      optgroup.appendChild(opt);
-    }});
-    selAP.appendChild(optgroup);
+  sortedDepts2.forEach(function(dept) {{
+    var og = document.createElement('optgroup');
+    og.label = dept;
+    ALL_PEOPLE.filter(function(p) {{ return p.dept === dept; }})
+      .sort(function(a,b) {{ return a.name.localeCompare(b.name); }})
+      .forEach(function(p) {{
+        var o = document.createElement('option');
+        o.value = p.name; o.textContent = dept + ' - ' + p.name;
+        og.appendChild(o);
+      }});
+    selAP.appendChild(og);
   }});
 
   // Set default deadline to 7 days from now
-  var deadlineEl = document.getElementById('newTaskDeadline');
-  var future = new Date();
-  future.setDate(future.getDate() + 7);
-  deadlineEl.value = formatDateISO(future);
+  var dl = document.getElementById('newTaskDeadline');
+  var f = new Date(); f.setDate(f.getDate() + 7); dl.value = formatDateISO(f);
 
-  document.getElementById('headerInfo').textContent = DATA.length + ' \\u4e2a\\u4efb\\u52a1 | ' + allPeople.length + ' \\u4eba';
+  document.getElementById('headerInfo').textContent = DATA.length + ' \u4e2a\u4efb\u52a1 | ' + allPeople.length + ' \u4eba';
+
+  // Close multi-select panels on outside click
+  document.addEventListener('click', function(e) {{
+    var hit = false;
+    ['region','progress','dept','person'].forEach(function(k) {{
+      var el = document.getElementById('ms' + k.charAt(0).toUpperCase() + k.slice(1));
+      if (el && el.contains(e.target)) hit = true;
+    }});
+    if (!hit) {{
+      document.querySelectorAll('.multi-select-panel').forEach(function(p) {{ p.style.display = 'none'; }});
+    }}
+  }});
 
   render();
 }}
 
 // ======================== FILTER ========================
 function getFilteredData() {{
-  var region = document.getElementById('filterRegion').value;
-  var progress = document.getElementById('filterProgress').value;
-  var person = document.getElementById('filterPerson').value;
+  var regionVal = document.getElementById('filterRegion').value;
+  var progressVal = document.getElementById('filterProgress').value;
+  var deptVal = document.getElementById('filterDept').value;
+  var personVal = document.getElementById('filterPerson').value;
   var search = document.getElementById('filterSearch').value.trim().toLowerCase();
 
-  // Get selected departments from checkboxes
-  var deptCbs = document.querySelectorAll('#deptCheckboxes input[type=checkbox]');
-  var selectedDepts = [];
-  deptCbs.forEach(function(cb) {{ if (cb.checked) selectedDepts.push(cb.value); }});
+  var regions = regionVal === 'ALL' ? [] : regionVal.split(',');
+  var progressFilter = progressVal === 'ALL' ? [] : progressVal.split(',');
+  var depts = deptVal === 'ALL' ? [] : deptVal.split(',');
+  var persons = personVal === 'ALL' ? [] : personVal.split(',');
 
   var filtered = DATA.filter(function(r) {{
-    if (region && (!r.region || r.region.indexOf(region) === -1)) return false;
-    if (progress === '(空)') {{ if (r.progress !== '') return false; }}
-    else if (progress && r.progress !== progress) return false;
-    if (person) {{
-      if (!r.assignee || !r.assignee.some(function(p) {{ return p.name === person; }})) return false;
+    if (regions.length > 0) {{
+      if (!r.region || !regions.some(function(x) {{ return r.region.indexOf(x) >= 0; }})) return false;
     }}
-    if (selectedDepts.length > 0) {{
-      var rDepts = r.assignee ? r.assignee.map(function(p) {{ 
-        for (var pi = 0; pi < ALL_PEOPLE.length; pi++) {{
-          if (ALL_PEOPLE[pi].name === p.name) return ALL_PEOPLE[pi].dept;
-        }}
-        return '';
-      }}) : [];
-      var hasDept = rDepts.some(function(d) {{ return selectedDepts.indexOf(d) >= 0; }});
-      if (!hasDept) return false;
-    }} else {{
-      // When "\u5168\u90e8" is selected, show all (default behavior)
+    if (progressFilter.length > 0) {{
+      if (!progressFilter.some(function(x) {{
+        if (x === '(\u7a7a)') return !r.progress;
+        return r.progress === x;
+      }})) return false;
+    }}
+    if (depts.length > 0) {{
+      var rDepts = [];
+      if (r.assignee) r.assignee.forEach(function(p) {{
+        ALL_PEOPLE.forEach(function(ap) {{ if (ap.name === p.name && ap.dept) rDepts.push(ap.dept); }});
+      }});
+      if (!depts.some(function(d) {{ return rDepts.indexOf(d) >= 0; }})) return false;
+    }}
+    if (persons.length > 0) {{
+      if (!r.assignee || !r.assignee.some(function(p) {{ return persons.indexOf(p.name) >= 0; }})) return false;
     }}
     if (search && r.title.toLowerCase().indexOf(search) === -1) return false;
     return true;
   }});
 
-  // Include admin tasks in filtered results
   var adminFiltered = adminTasks.filter(function(t) {{
-    if (region && t.region !== region) return false;
-    if (progress && t.progress !== progress) return false;
-    if (person && t.assigneeName !== person) return false;
+    if (regions.length > 0 && regions.indexOf(t.region) === -1) return false;
+    if (progressFilter.length > 0) {{
+      var tp = t.progress;
+      if (!progressFilter.some(function(x) {{ return x === '(\u7a7a)' ? !tp : tp === x; }})) return false;
+    }}
+    if (depts.length > 0) {{
+      var td = null;
+      ALL_PEOPLE.forEach(function(ap) {{ if (ap.name === t.assigneeName && ap.dept) td = ap.dept; }});
+      if (depts.indexOf(td) === -1) return false;
+    }}
+    if (persons.length > 0 && persons.indexOf(t.assigneeName) === -1) return false;
     if (search && t.title.toLowerCase().indexOf(search) === -1) return false;
     return true;
   }});
@@ -1363,14 +1210,16 @@ function render() {{
   renderStats(filtered, adminFiltered);
   document.getElementById('filterStats').textContent = '\\u5df2\\u7b5b\\u9009 ' + (filtered.length + adminFiltered.length) + ' / ' + (DATA.length + adminTasks.length) + ' \\u4e2a\\u4efb\\u52a1';
 
-  if (currentView === 'card') renderCard(filtered, adminFiltered);
+  if (currentView === 'person') renderPersonView();
+  else if (currentView === 'card') renderCard(filtered, adminFiltered);
   else if (currentView === 'table') renderTable(filtered, adminFiltered);
   else if (currentView === 'gantt') renderGantt(filtered, adminFiltered);
-  else if (currentView === 'parentgantt') renderParentGanttView(filtered, adminFiltered);
+  else if (currentView === 'parentgantt') renderParentGantt(filtered, adminFiltered);
 }}
 
 function applyFilters() {{
-  render();
+  if (currentView === 'person') renderPersonView();
+  else render();
 }}
 
 // ======================== STATS ========================
@@ -1799,8 +1648,11 @@ function switchView(view) {{
   currentView = view;
   document.querySelectorAll('.view-tab').forEach(function(t) {{ t.classList.remove('active'); }});
   document.querySelector('.view-tab[data-view="' + view + '"]').classList.add('active');
-  ['cardView','tableView','ganttView','parentGanttView'].forEach(function(id) {{
-    document.getElementById(id).style.display = id.indexOf(view) === 0 || (view === 'parentgantt' && id === 'parentGanttView') ? 'block' : 'none';
+  ['cardView','personView','tableView','ganttView','parentGanttView'].forEach(function(id) {{
+    var show = false;
+    if (view === 'parentgantt' && id === 'parentGanttView') show = true;
+    else if (view !== 'parentgantt' && id.indexOf(view) === 0) show = true;
+    document.getElementById(id).style.display = show ? 'block' : 'none';
   }});
   render();
 }}
@@ -1978,6 +1830,269 @@ function addAdminTask() {{
   render();
 }}
 
+
+// ======================== MULTI-SELECT ========================
+var _msSelected = {{}};
+function msPopulate(key, values, initSelected) {{
+  var box = document.getElementById('msCheckboxes_' + key);
+  if (!box) return;
+  box.innerHTML = '';
+  _msSelected[key] = initSelected.slice();
+  values.forEach(function(v) {{
+    var lb = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = v; cb.checked = true;
+    cb.onchange = function() {{ onMsChange(key); }};
+    lb.appendChild(cb);
+    lb.appendChild(document.createTextNode(' ' + v));
+    box.appendChild(lb);
+  }});
+}}
+
+function toggleMsPanel(key) {{
+  var panel = document.getElementById('msPanel_' + key);
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+}}
+
+function toggleMsAll(key) {{
+  var allCb = document.querySelector('#msPanel_' + key + ' input[data-all]');
+  var cbs = document.querySelectorAll('#msPanel_' + key + ' input[type=checkbox]:not([data-all])');
+  var check = allCb.checked;
+  cbs.forEach(function(c) {{ c.checked = check; }});
+  onMsChange(key);
+}}
+
+function onMsChange(key) {{
+  var cbs = document.querySelectorAll('#msCheckboxes_' + key + ' input[type=checkbox]');
+  var checked = [];
+  cbs.forEach(function(c) {{ if (c.checked) checked.push(c.value); }});
+  var allCb = document.querySelector('#msPanel_' + key + ' input[data-all]');
+  var trigger = document.querySelector('#ms' + key.charAt(0).toUpperCase() + key.slice(1) + ' .ms-label');
+  if (trigger) {{
+    if (checked.length === 0) {{ trigger.textContent = '\\u65e0'; }}
+    else if (checked.length === cbs.length) {{ trigger.textContent = '\\u5168\\u90e8'; }}
+    else if (checked.length <= 2) {{ trigger.textContent = checked.join(', '); }}
+    else {{ trigger.textContent = checked.length + '\\u4e2a'; }}
+  }}
+  if (allCb) allCb.checked = checked.length === cbs.length;
+  var hidden = document.getElementById('filter' + key.charAt(0).toUpperCase() + key.slice(1));
+  if (hidden) hidden.value = checked.length === 0 || checked.length === cbs.length ? 'ALL' : checked.join(',');
+  applyFilters();
+}}
+
+// ======================== PERSON SEARCH ========================
+var _psData = [];
+function onPersonSearch(val) {{
+  var div = document.getElementById('psResults');
+  if (!val) {{ div.style.display = 'none'; return; }}
+  var q = val.toLowerCase();
+  var matched = _psData.filter(function(e) {{ return e.label.toLowerCase().indexOf(q) >= 0 || e.name.toLowerCase().indexOf(q) >= 0; }});
+  if (matched.length === 0) {{ div.style.display = 'none'; return; }}
+  div.innerHTML = '';
+  matched.slice(0, 15).forEach(function(e) {{
+    var item = document.createElement('div');
+    item.className = 'ps-item';
+    item.textContent = e.label;
+    item.setAttribute('data-name', e.name);
+    item.setAttribute('data-label', e.label);
+    item.addEventListener('mousedown', function() {{ selectPerson(e.name, e.label); }});
+    div.appendChild(item);
+  }});
+  div.style.display = 'block';
+}}function selectPerson(name, label) {{
+  // Toggle person in multi-select
+  var cbs = document.querySelectorAll('#msCheckboxes_person input[type=checkbox]');
+  cbs.forEach(function(c) {{ if (c.value === name) {{ c.checked = !c.checked; onMsChange('person'); }} }});
+  document.getElementById('filterPersonSearch').value = '';
+  document.getElementById('psResults').style.display = 'none';
+}}
+
+// ======================== PARENT GANTT ========================
+var _pgTimer = null;
+function onPgSearch(val) {{
+  clearTimeout(_pgTimer);
+  var div = document.getElementById('pgSuggest');
+  if (!val || val.length < 2) {{ div.style.display = 'none'; return; }}
+  _pgTimer = setTimeout(function() {{
+    var q = val.toLowerCase();
+    var m = DATA.filter(function(r) {{ return r.title.toLowerCase().indexOf(q) >= 0; }}).slice(0, 15);
+    if (m.length === 0) {{ div.style.display = 'none'; return; }}
+    var seen = {{}};
+    div.innerHTML = '';
+    m.forEach(function(r) {{
+      var pfx = r.title.match(/^(\\u3010[^\\u3010]+\\u3011\\u3010\\u603b\\u3011\\d{{4}})/);
+      var display = pfx ? pfx[1] : (r.title.length > 35 ? r.title.substring(0,35) + '...' : r.title);
+      if (display.length > 35) display = display.substring(0,35) + '...';
+      if (!seen[display]) {{
+        seen[display] = true;
+        var item = document.createElement('div');
+        item.className = 'psg-item';
+        item.textContent = display;
+        item.addEventListener('mousedown', function() {{ showPgGroup(display); }});
+        div.appendChild(item);
+      }}
+    }});
+    div.style.display = 'block';
+  }}, 250);
+}}function showPgGroup(title) {{
+  document.getElementById('pgSearch').value = title;
+  document.getElementById('pgSuggest').style.display = 'none';
+  var m = title.match(/^(\\u3010[^\\u3010]+\\u3011\\u3010\\u603b\\u3011\\d{{4}})/);
+  var pfx = m ? m[1] : title;
+  var tasks = DATA.filter(function(r) {{ return r.title.indexOf(pfx) === 0; }});
+  if (tasks.length === 0) tasks = DATA.filter(function(r) {{ return r.title === title; }});
+  renderSimpleGantt(tasks, pfx);
+}}
+
+function renderParentGantt(filtered, adminFiltered) {{
+  var div = document.getElementById('pgResult');
+  var title = document.getElementById('pgSearch').value;
+  if (title) {{
+    showPgGroup(title);
+  }} else {{
+    div.innerHTML = '<div style=\"padding:30px 12px;text-align:center;color:var(--gray-5);font-size:13px\">\\u5728\\u4e0a\\u65b9\\u8f93\\u5165\\u4efb\\u52a1\\u540d\\u79f0\\uff0c\\u67e5\\u770b\\u540c\\u7248\\u672c\\u6240\\u6709\\u4efb\\u52a1\\u6392\\u671f\\u7518\\u7279\\u56fe</div>';
+  }}
+}}
+
+function renderSimpleGantt(tasks, label) {{
+  var div = document.getElementById('pgResult');
+  tasks.sort(function(a,b) {{
+    var da = a.endDate ? new Date(a.endDate) : new Date('2099/12/31');
+    var db = b.endDate ? new Date(b.endDate) : new Date('2099/12/31');
+    return da - db;
+  }});
+  var ms = null, me = null;
+  tasks.forEach(function(r) {{
+    var sd = r.startDate ? normalizeDate(r.startDate) : r.endDate ? normalizeDate(r.endDate) : null;
+    var ed = r.endDate ? normalizeDate(r.endDate) : r.startDate ? normalizeDate(r.startDate) : null;
+    if (sd) {{ var d = new Date(sd); if (!ms || d < ms) ms = d; }}
+    if (ed) {{ var d = new Date(ed); if (!me || d > me) me = d; }}
+  }});
+  if (!ms && !me) {{ div.innerHTML = '<div style=\"padding:20px\">\\u6682\\u65e0\\u65e5\\u671f</div>'; return; }}
+  if (!ms) ms = me; if (!me) me = ms;
+  var s = new Date(ms); s.setDate(s.getDate() - 7);
+  var e = new Date(me); e.setDate(e.getDate() + 14);
+  var td = Math.ceil((e - s) / (1000*60*60*24));
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  var h = '<div class=\"pg-group-title\">' + label + '</div>';
+  h += '<div class=\"pg-group-subtitle\">\\u5171 ' + tasks.length + ' \\u4e2a\\u4efb\\u52a1 | ' + ms.toISOString().substring(0,10) + ' ~ ' + me.toISOString().substring(0,10) + '</div>';
+  h += '<div style=\"overflow-x:auto;font-size:12px;border:1px solid var(--gray-3);border-radius:8px\">';
+
+  // Header row
+  h += '<div style=\"display:flex;position:sticky;top:0;background:var(--gray-1);z-index:2;border-bottom:1px solid var(--gray-3);min-width:' + (180 + td*16) + 'px\">';
+  h += '<div style=\"width:180px;flex-shrink:0;padding:6px 8px;font-weight:600;font-size:12px\">\\u4efb\\u52a1</div>';
+  for (var d = new Date(s); d <= e; d.setDate(d.getDate()+1)) {{
+    var isWE = d.getDay() === 0 || d.getDay() === 6;
+    h += '<div style=\"width:16px;flex-shrink:0;text-align:center;font-size:8px;padding-top:2px;';
+    if (isWE) h += 'color:var(--gray-4);';
+    h += '\">' + (d.getDate() === 1 ? d.getMonth()+1+'/' : '') + '</div>';
+  }}
+  h += '</div>';
+
+  // Task rows
+  tasks.forEach(function(r) {{
+    var sd = r.startDate ? normalizeDate(r.startDate) : r.endDate ? normalizeDate(r.endDate) : null;
+    var ed = r.endDate ? normalizeDate(r.endDate) : r.startDate ? normalizeDate(r.startDate) : null;
+    var sdd = sd ? new Date(sd) : null;
+    var edd = ed ? new Date(ed) : null;
+
+    var clr = 'var(--gray-4)';
+    if (r.progress === '\\u8fdb\\u884c\\u4e2d') clr = 'var(--warning)';
+    else if (r.progress === 'QA\\u9a8c\\u6536\\u4e2d') clr = 'var(--success)';
+    var ts = r.title.length > 22 ? r.title.substring(0,22) + '...' : r.title;
+
+    h += '<div style=\"display:flex;align-items:center;min-width:' + (180 + td*16) + 'px;border-bottom:1px solid var(--gray-3)\">';
+    h += '<div style=\"width:180px;flex-shrink:0;padding:3px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px\" title=\"' + r.title.replace(/\"/g, '&quot;') + '\">' + ts + '</div>';
+
+    for (var d = new Date(s); d <= e; d.setDate(d.getDate()+1)) {{
+      var ds = new Date(d); ds.setHours(0,0,0,0);
+      var de2 = new Date(ds); de2.setHours(23,59,59,999);
+      var inR = sdd && edd && de2 >= sdd && ds <= edd;
+      var isT = ds.getTime() === today.getTime();
+      var bg = inR ? clr : 'transparent';
+      h += '<div style=\"width:16px;flex-shrink:0;height:18px;background:' + bg + ';';
+      if (isT) h += 'border-left:2px solid var(--danger);';
+      h += '\"></div>';
+    }}
+    h += '</div>';
+  }});
+  h += '</div>';
+  div.innerHTML = h;
+}}
+
+
+// ======================== PERSON VIEW ========================
+function renderPersonView() {{
+  var result = getFilteredData();
+  var filtered = result.records.concat(result.adminTasks);
+  var div = document.getElementById('personViewInner');
+  var statsDiv = document.getElementById('personStats');
+
+  if (filtered.length === 0) {{
+    div.innerHTML = '<div class=\"empty-state\"><span class=\"empty-icon\">\👤</span><div>\\u6682\\u65e0\\u6570\\u636e</div></div>';
+    return;
+  }}
+
+  // Group by assignee
+  var peopleMap = {{}};
+  filtered.forEach(function(r) {{
+    var names = [];
+    if (r.assigneeName) {{
+      names.push(r.assigneeName);
+    }} else if (r.assignee) {{
+      r.assignee.forEach(function(p) {{ names.push(p.name); }});
+    }}
+    if (names.length === 0) names.push('\\u672a\\u5206\\u914d');
+    names.forEach(function(n) {{
+      if (!peopleMap[n]) peopleMap[n] = [];
+      peopleMap[n].push(r);
+    }});
+  }});
+
+  var people = Object.keys(peopleMap).sort(function(a, b) {{
+    return peopleMap[b].length - peopleMap[a].length;
+  }});
+
+  var html = '';
+  people.forEach(function(person) {{
+    var tasks = peopleMap[person];
+    var done = tasks.filter(function(t) {{ return t.progress === 'QA\\u9a8c\\u6536\\u4e2d'; }}).length;
+    var inProgress = tasks.filter(function(t) {{ return t.progress === '\\u8fdb\\u884c\\u4e2d'; }}).length;
+    var notStarted = tasks.length - done - inProgress;
+
+    var dept = '';
+    ALL_PEOPLE.forEach(function(ap) {{ if (ap.name === person) dept = ap.dept; }});
+
+    html += '<div class=\"person-card\">';
+    html += '<h4>' + person + (dept ? ' <span style=\"font-size:11px;color:var(--gray-5);font-weight:400\">' + dept + '</span>' : '') + '</h4>';
+    html += '<div class=\"person-stats\">';
+    html += '<div class=\"person-stat\">\\u603b\\u4efb\\u52a1 <strong>' + tasks.length + '</strong></div>';
+    if (done > 0) html += '<div class=\"person-stat\">\\u5df2\\u5b8c\\u6210 <strong>' + done + '</strong></div>';
+    if (inProgress > 0) html += '<div class=\"person-stat\">\\u8fdb\\u884c\\u4e2d <strong>' + inProgress + '</strong></div>';
+    if (notStarted > 0) html += '<div class=\"person-stat\">\\u672a\\u542f\\u52a8 <strong>' + notStarted + '</strong></div>';
+    html += '</div>';
+
+    tasks.sort(function(a,b) {{
+      var oa = a.progress === '\\u8fdb\\u884c\\u4e2d' ? 0 : a.progress === 'QA\\u9a8c\\u6536\\u4e2d' ? 2 : 1;
+      var ob = b.progress === '\\u8fdb\\u884c\\u4e2d' ? 0 : b.progress === 'QA\\u9a8c\\u6536\\u4e2d' ? 2 : 1;
+      return oa - ob;
+    }});
+
+    tasks.forEach(function(t) {{
+      var pc = '';
+      if (t.progress === '\\u8fdb\\u884c\\u4e2d') pc = 'var(--warning)';
+      else if (t.progress === 'QA\\u9a8c\\u6536\\u4e2d') pc = 'var(--success)';
+      else if (t.progress === '\\u672a\\u542f\\u52a8') pc = 'var(--gray-4)';
+      var ts = t.title.length > 30 ? t.title.substring(0,30) + '...' : t.title;
+      html += '<div class=\"person-task\">' + ts;
+      if (t.progress) html += '<span class=\"pt-progress\" style=\"background:' + pc + ';color:#fff\">' + t.progress + '</span>';
+      html += '</div>';
+    }});
+    html += '</div>';
+  }});
+  div.innerHTML = html;
+}}
 // ======================== START ========================
 // Load admin tasks from local storage
 loadAdminTasks();
