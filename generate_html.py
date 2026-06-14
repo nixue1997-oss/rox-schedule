@@ -758,6 +758,50 @@ table tr:last-child td {{
 }}
 
 /* ========== RESPONSIVE ========== */
+/* ===== Multi-select department ===== */
+.multi-select {{ position: relative; min-width: 140px; }}
+.multi-select-trigger {{ display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px; background: var(--gray-1); border: 1px solid var(--gray-3);
+  border-radius: 6px; cursor: pointer; font-size: 13px; min-height: 34px; gap: 4px;
+  flex-wrap: wrap; }}
+.multi-select-trigger .dept-tag {{ background: var(--primary); color: #fff; font-size: 11px;
+  padding: 1px 6px; border-radius: 3px; }}
+.multi-select-trigger .dropdown-arrow {{ margin-left: auto; font-size: 10px; opacity: 0.6; }}
+.multi-select-panel {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+  background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 6px;
+  max-height: 250px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 4px 0; }}
+.multi-select-panel label {{ display: flex; align-items: center; gap: 6px;
+  padding: 5px 10px; font-size: 12px; cursor: pointer; }}
+.multi-select-panel label:hover {{ background: var(--gray-2); }}
+.multi-select-panel input[type="checkbox"] {{ margin: 0; }}
+
+/* ===== Person search ===== */
+.person-search-wrap {{ position: relative; }}
+.person-search-wrap input {{ width: 100%; padding: 6px 10px; border: 1px solid var(--gray-3);
+  border-radius: 6px; font-size: 13px; background: var(--gray-1); min-width: 150px; }}
+.person-search-results {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+  background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 6px;
+  max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none; }}
+.person-search-results .sr-item {{ padding: 5px 10px; font-size: 12px; cursor: pointer; }}
+.person-search-results .sr-item:hover {{ background: var(--gray-2); }}
+
+/* ===== Parent Gantt ===== */
+.parent-gantt-bar {{ margin-top: 12px; padding: 12px; background: var(--gray-1);
+  border: 1px solid var(--gray-3); border-radius: 8px; }}
+.parent-gantt-bar .pg-search {{ display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }}
+.parent-gantt-bar .pg-search input {{ flex: 1; padding: 6px 10px; border: 1px solid var(--gray-3);
+  border-radius: 6px; font-size: 13px; background: #fff; }}
+.pg-suggest {{ position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+  background: #fff; border: 1px solid var(--gray-3); border-radius: 6px;
+  max-height: 200px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: none; }}
+.pg-si {{ padding: 6px 10px; font-size: 12px; cursor: pointer; }}
+.pg-si:hover {{ background: var(--gray-2); }}
+.parent-gantt-group-label {{ font-size: 15px; font-weight: 600; margin-bottom: 6px; }}
+.parent-gantt-total {{ font-size: 12px; color: var(--gray-5); margin-bottom: 10px; }}
+
 @media (max-width: 768px) {{
   .header-inner {{ flex-direction: column; align-items: flex-start; }}
   .header-actions {{ width: 100%; }}
@@ -802,10 +846,25 @@ table tr:last-child td {{
       </select>
     </div>
     <div class="filter-group">
+      <label>\u90e8\u95e8</label>
+      <div class="multi-select" id="deptSelectContainer">
+        <div class="multi-select-trigger" onclick="event.stopPropagation();toggleDeptPanel(event)">
+          <span id="deptSelectLabel">\u5168\u90e8</span>
+          <span class="dropdown-arrow">\u25bc</span>
+        </div>
+        <div class="multi-select-panel" id="deptPanel" style="display:none">
+          <label><input type="checkbox" id="deptAllCheck" checked onchange="toggleDeptAll(this)"> \u5168\u90e8</label>
+          <div id="deptCheckboxes"></div>
+        </div>
+      </div>
+    </div>
+    <div class="filter-group">
       <label>\u6267\u884c\u4eba</label>
-      <select id="filterPerson" onchange="applyFilters()">
-        <option value="">\u5168\u90e8</option>
-      </select>
+      <div class="person-search-wrap">
+        <input type="text" id="filterPersonSearch" placeholder="\u641c\u7d22\u59d3\u540d\u6216\u90e8\u95e8..." oninput="onPersonSearchInput(this.value)" onfocus="onPersonSearchFocus()" onblur="setTimeout(function(){{document.getElementById('personSearchResults').style.display='none';}},200)" autocomplete="off">
+        <div class="person-search-results" id="personSearchResults"></div>
+        <input type="hidden" id="filterPerson" value="">
+      </div>
     </div>
     <div class="filter-group">
       <label>\u641c\u7d22</label>
@@ -819,12 +878,22 @@ table tr:last-child td {{
     <button class="view-tab active" data-view="card" onclick="switchView('card')">\u5361\u7247\u89c6\u56fe</button>
     <button class="view-tab" data-view="table" onclick="switchView('table')">\u8868\u683c\u89c6\u56fe</button>
     <button class="view-tab" data-view="gantt" onclick="switchView('gantt')">\u7518\u7279\u56fe</button>
+    <button class="view-tab" data-view="parentgantt" onclick="switchView('parentgantt')">\u5b50\u4efb\u52a1\u7518\u7279</button>
   </div>
 
   <!-- Content Area -->
   <div id="cardView" class="fade-in"></div>
   <div id="tableView" class="fade-in" style="display:none"></div>
   <div id="ganttView" class="fade-in" style="display:none"></div>
+  <div id="parentGanttView" class="fade-in" style="display:none">
+    <div class="parent-gantt-bar">
+      <div class="pg-search">
+        <input type="text" id="parentGanttSearch" placeholder="\u641c\u7d22\u4efb\u52a1\u540d\u79f0\uff0c\u67e5\u770b\u540c\u7248\u672c\u6392\u671f..." oninput="onParentGanttSearch(this.value)" autocomplete="off">
+        <div id="parentGanttSuggest" class="pg-suggest"></div>
+      </div>
+      <div id="parentGanttResult"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ========== ADMIN TASK MODAL ========== -->
@@ -888,6 +957,201 @@ table tr:last-child td {{
 // ======================== DATA LOADING ========================
 var DATA = JSON.parse(document.getElementById('__DATA__').textContent);
 var ALL_PEOPLE = JSON.parse(document.getElementById('__PEOPLE__').textContent);
+// ======================== Multi-Select Department ========================
+function toggleDeptPanel(e) {{
+  if (e) e.stopPropagation();
+  var panel = document.getElementById('deptPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}}
+document.addEventListener('click', function(e) {{
+  var container = document.getElementById('deptSelectContainer');
+  if (container && !container.contains(e.target)) {{
+    document.getElementById('deptPanel').style.display = 'none';
+  }}
+}});
+function toggleDeptAll(cb) {{
+  var cbs = document.querySelectorAll('#deptCheckboxes input[type=checkbox]');
+  cbs.forEach(function(c) {{ c.checked = cb.checked; }});
+  onDeptChange();
+}}
+function onDeptChange() {{
+  var cbs = document.querySelectorAll('#deptCheckboxes input[type=checkbox]');
+  var checked = [];
+  cbs.forEach(function(c) {{ if (c.checked) checked.push(c.value); }});
+  var allCb = document.getElementById('deptAllCheck');
+  if (checked.length === 0) {{
+    allCb.checked = true;
+    document.getElementById('deptSelectLabel').textContent = '全部';
+  }} else if (checked.length <= 3) {{
+    document.getElementById('deptSelectLabel').textContent = checked.join(', ');
+  }} else {{
+    document.getElementById('deptSelectLabel').textContent = checked.length + '个部门';
+  }}
+  applyFilters();
+}}
+
+// ======================== Person Search ========================
+var _allPersonList = [];
+function initPersonSearch() {{
+  _allPersonList = ALL_PEOPLE.map(function(p) {{
+    return {{ label: p.dept + ' - ' + p.name, value: p.name, dept: p.dept }};
+  }});
+}}
+function onPersonSearchInput(val) {{
+  var resultsDiv = document.getElementById('personSearchResults');
+  if (!val) {{ resultsDiv.style.display = 'none'; document.getElementById('filterPerson').value = ''; applyFilters(); return; }}
+  var q = val.toLowerCase();
+  var matched = _allPersonList.filter(function(item) {{
+    return item.label.toLowerCase().indexOf(q) >= 0 || item.value.toLowerCase().indexOf(q) >= 0;
+  }});
+  if (matched.length === 0) {{ resultsDiv.style.display = 'none'; return; }}
+  var html = '';
+  matched.slice(0, 20).forEach(function(m) {{
+    html += '<div class="sr-item" onmousedown="selectPerson('' + m.value.replace(/'/g, "\\'") + '','' + m.label.replace(/'/g, "\\'") + '')">' + m.label + '</div>';
+  }});
+  resultsDiv.innerHTML = html;
+  resultsDiv.style.display = 'block';
+}}
+function onPersonSearchFocus() {{
+  var val = document.getElementById('filterPersonSearch').value;
+  if (val) onPersonSearchInput(val);
+}}
+function selectPerson(name, label) {{
+  document.getElementById('filterPersonSearch').value = label;
+  document.getElementById('filterPerson').value = name;
+  document.getElementById('personSearchResults').style.display = 'none';
+  applyFilters();
+}}
+
+// ======================== Parent Task Gantt ========================
+var _parentGanttTimer = null;
+function onParentGanttSearch(val) {{
+  clearTimeout(_parentGanttTimer);
+  var suggestDiv = document.getElementById('parentGanttSuggest');
+  if (!val || val.length < 1) {{ suggestDiv.style.display = 'none'; return; }}
+  _parentGanttTimer = setTimeout(function() {{
+    var q = val.toLowerCase();
+    var matches = DATA.filter(function(r) {{ return r.title.toLowerCase().indexOf(q) >= 0; }}).slice(0, 20);
+    if (matches.length === 0) {{ suggestDiv.style.display = 'none'; return; }}
+    var html = '';
+    matches.forEach(function(m) {{
+      var displayTitle = m.title.length > 40 ? m.title.substring(0, 40) + '...' : m.title;
+      html += '<div class="pg-si" onmousedown="selectParentTask('' + m.title.replace(/'/g, "\\'") + '')">' + displayTitle + '</div>';
+    }});
+    suggestDiv.innerHTML = html;
+    suggestDiv.style.display = 'block';
+  }}, 200);
+}}
+function selectParentTask(title) {{
+  document.getElementById('parentGanttSearch').value = title;
+  document.getElementById('parentGanttSuggest').style.display = 'none';
+  renderParentGanttForTask(title);
+}}
+function renderParentGanttView() {{
+  var resultDiv = document.getElementById('parentGanttResult');
+  if (!resultDiv.innerHTML) {{
+    resultDiv.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gray-5);font-size:13px">\u5728\u4e0a\u65b9\u641c\u7d22\u6846\u4e2d\u8f93\u5165\u4efb\u52a1\u540d\u79f0\uff0c\u67e5\u770b\u540c\u7248\u672c\u7684\u6240\u6709\u4efb\u52a1\u6392\u671f\u7518\u7279\u56fe</div>';
+  }}
+}}
+function renderParentGanttForTask(title) {{
+  var resultDiv = document.getElementById('parentGanttResult');
+  var task = null;
+  for (var i = 0; i < DATA.length; i++) {{
+    if (DATA[i].title === title) {{ task = DATA[i]; break; }}
+  }}
+  if (!task) {{ resultDiv.innerHTML = '<div style="color:var(--danger)">\u672a\u627e\u5230\u8be5\u4efb\u52a1</div>'; return; }}
+  
+  var m = title.match(/^(【[^【]+】【总】\d{{4}})/);
+  if (!m) {{ 
+    renderSimpleGantt([task], resultDiv);
+    return;
+  }}
+  var prefix = m[1];
+  var groups = window._prefixGroups || {{}};
+  var groupTasks = groups[prefix] || [task];
+  
+  groupTasks.sort(function(a, b) {{ 
+    var da = a.endDate ? new Date(a.endDate) : new Date('2099/12/31');
+    var db = b.endDate ? new Date(b.endDate) : new Date('2099/12/31');
+    return da - db;
+  }});
+  
+  var html = '<div class="parent-gantt-group-label">' + prefix + '</div>';
+  html += '<div class="parent-gantt-total">\u5171 ' + groupTasks.length + ' \u4e2a\u4efb\u52a1</div>';
+  resultDiv.innerHTML = html;
+  renderSimpleGantt(groupTasks, resultDiv);
+}}
+function renderSimpleGantt(tasks, container) {{
+  var minDate = null, maxDate = null;
+  tasks.forEach(function(r) {{
+    var sd = r.startDate ? normalizeDate(r.startDate) : null;
+    var ed = r.endDate ? normalizeDate(r.endDate) : null;
+    if (sd) {{ var d = new Date(sd); if (!minDate || d < minDate) minDate = d; }}
+    if (ed) {{ var d = new Date(ed); if (!maxDate || d > maxDate) maxDate = d; }}
+  }});
+  if (!minDate && !maxDate) {{ container.innerHTML += '<div style="padding:10px;color:var(--gray-5)">\u6682\u65e0\u65e5\u671f\u4fe1\u606f</div>'; return; }}
+  if (!minDate) minDate = maxDate;
+  if (!maxDate) maxDate = minDate;
+  var start = new Date(minDate); start.setDate(start.getDate() - 7);
+  var end = new Date(maxDate); end.setDate(end.getDate() + 14);
+  
+  var totalDays = Math.ceil((end - start) / (1000*60*60*24));
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  
+  var html = '<div style="overflow-x:auto;font-size:12px">';
+  html += '<div style="display:flex;position:sticky;top:0;background:var(--gray-1);z-index:2;border-bottom:1px solid var(--gray-3);min-width:' + (150 + totalDays*14) + 'px">';
+  html += '<div style="width:150px;flex-shrink:0;padding:4px 6px;font-weight:600">\u4efb\u52a1</div>';
+  for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {{
+    html += '<div style="width:14px;flex-shrink:0;text-align:center;font-size:9px;padding-top:2px;';
+    if (d.getDay() === 0 || d.getDay() === 6) html += 'color:var(--gray-4);';
+    html += '">';
+    if (d.getDate() === 1) html += d.getMonth() + 1;
+    html += '</div>';
+  }}
+  html += '</div>';
+  
+  tasks.forEach(function(r) {{
+    var sd = r.startDate ? normalizeDate(r.startDate) : null;
+    var ed = r.endDate ? normalizeDate(r.endDate) : null;
+    var sdDate = sd ? new Date(sd) : null;
+    var edDate = ed ? new Date(ed) : null;
+    if (!sdDate && edDate) sdDate = edDate;
+    if (!edDate && sdDate) edDate = sdDate;
+    
+    var progStyle = 'background:var(--gray-4);';
+    if (r.progress === '进行中') progStyle = 'background:var(--warning);';
+    else if (r.progress === 'QA验收中') progStyle = 'background:var(--success);';
+    
+    var assigneeStr = r.assignee ? r.assignee.map(function(p) {{ return p.name; }}).join(', ') : '';
+    var titleShort = r.title.length > 25 ? r.title.substring(0, 25) + '...' : r.title;
+    
+    html += '<div style="display:flex;align-items:center;min-width:' + (150 + totalDays*14) + 'px;border-bottom:1px solid var(--gray-3);">';
+    html += '<div style="width:150px;flex-shrink:0;padding:3px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px" title="' + r.title.replace(/"/g, '&quot;') + '">' + titleShort + '</div>';
+    
+    for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {{
+      var dayStart = new Date(d);
+      dayStart.setHours(0,0,0,0);
+      var dayEnd = new Date(dayStart);
+      dayEnd.setHours(23,59,59,999);
+      
+      var inRange = sdDate && edDate && dayEnd >= sdDate && dayStart <= edDate;
+      var isToday = dayStart.getTime() === today.getTime();
+      
+      var cellStyle = 'width:14px;flex-shrink:0;height:20px;';
+      if (isToday) cellStyle += 'border-left:1px solid var(--danger);';
+      if (inRange) cellStyle += progStyle;
+      else cellStyle += 'background:var(--gray-1);';
+      html += '<div style="' + cellStyle + '"></div>';
+    }}
+    html += '</div>';
+  }});
+  
+  html += '</div>';
+  container.innerHTML += html;
+}}
+
+
 
 
 // ======================== STATE ========================
@@ -975,34 +1239,51 @@ function init() {{
     selRegion.appendChild(opt);
   }});
   var selProg = document.getElementById('filterProgress');
+  var emptyOpt = document.createElement('option');
+  emptyOpt.value = '(空)'; emptyOpt.textContent = '(空)';
+  selProg.appendChild(emptyOpt);
   allProgress.forEach(function(p) {{
     var opt = document.createElement('option');
     opt.value = p; opt.textContent = p;
     selProg.appendChild(opt);
   }});
 
-  // Populate person filter from ALL_PEOPLE, grouped by department
-  var selPerson = document.getElementById('filterPerson');
-  // Group by dept
-  var deptMap = {{}};
-  ALL_PEOPLE.forEach(function(p) {{
-    if (!deptMap[p.dept]) deptMap[p.dept] = [];
-    deptMap[p.dept].push(p);
-  }});
-  var sortedDepts = Object.keys(deptMap).sort();
-  sortedDepts.forEach(function(dept) {{
-    var optgroup = document.createElement('optgroup');
-    optgroup.label = dept;
-    deptMap[dept].sort(function(a,b) {{ return a.name.localeCompare(b.name); }}).forEach(function(p) {{
-      var opt = document.createElement('option');
-      opt.value = p.name;
-      opt.textContent = dept + ' - ' + p.name;
-      optgroup.appendChild(opt);
-    }});
-    selPerson.appendChild(optgroup);
-  }});
+  // Initialize person search
+  initPersonSearch();
 
-  // Populate person select for admin form (use same grouped list)
+  // Populate department checkboxes
+  var deptSet = {{}};
+  ALL_PEOPLE.forEach(function(p) {{
+    if (p.dept) deptSet[p.dept] = true;
+  }});
+  var deptList = Object.keys(deptSet).sort();
+  var deptCbContainer = document.getElementById('deptCheckboxes');
+  if (deptCbContainer) {{
+    deptList.forEach(function(d) {{
+      var label = document.createElement('label');
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = d;
+      cb.checked = true;
+      cb.onchange = onDeptChange;
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(' ' + d));
+      deptCbContainer.appendChild(label);
+    }});
+  }}
+
+
+  // Build parent-child groups by title prefix
+  window._prefixGroups = {{}};
+  DATA.forEach(function(r) {{
+    var m = r.title.match(/^(【[^【]+】【总】\d{{4}})/);
+    if (m) {{
+      var prefix = m[1];
+      if (!window._prefixGroups[prefix]) window._prefixGroups[prefix] = [];
+      window._prefixGroups[prefix].push(r);
+    }}
+  }});
+    // Populate person select for admin form (use same grouped list)
   var selAP = document.getElementById('newTaskPerson');
   sortedDepts.forEach(function(dept) {{
     var optgroup = document.createElement('optgroup');
@@ -1034,11 +1315,27 @@ function getFilteredData() {{
   var person = document.getElementById('filterPerson').value;
   var search = document.getElementById('filterSearch').value.trim().toLowerCase();
 
+  // Get selected departments from checkboxes
+  var deptCbs = document.querySelectorAll('#deptCheckboxes input[type=checkbox]');
+  var selectedDepts = [];
+  deptCbs.forEach(function(cb) {{ if (cb.checked) selectedDepts.push(cb.value); }});
+
   var filtered = DATA.filter(function(r) {{
     if (region && (!r.region || r.region.indexOf(region) === -1)) return false;
-    if (progress && r.progress !== progress) return false;
+    if (progress === '(空)') {{ if (r.progress !== '') return false; }}
+    else if (progress && r.progress !== progress) return false;
     if (person) {{
       if (!r.assignee || !r.assignee.some(function(p) {{ return p.name === person; }})) return false;
+    }}
+    if (selectedDepts.length > 0) {{
+      var rDepts = r.assignee ? r.assignee.map(function(p) {{ 
+        for (var pi = 0; pi < ALL_PEOPLE.length; pi++) {{
+          if (ALL_PEOPLE[pi].name === p.name) return ALL_PEOPLE[pi].dept;
+        }}
+        return '';
+      }}) : [];
+      var hasDept = rDepts.some(function(d) {{ return selectedDepts.indexOf(d) >= 0; }});
+      if (!hasDept) return false;
     }} else {{
       // When "\u5168\u90e8" is selected, show all (default behavior)
     }}
@@ -1069,6 +1366,7 @@ function render() {{
   if (currentView === 'card') renderCard(filtered, adminFiltered);
   else if (currentView === 'table') renderTable(filtered, adminFiltered);
   else if (currentView === 'gantt') renderGantt(filtered, adminFiltered);
+  else if (currentView === 'parentgantt') renderParentGanttView(filtered, adminFiltered);
 }}
 
 function applyFilters() {{
@@ -1501,8 +1799,8 @@ function switchView(view) {{
   currentView = view;
   document.querySelectorAll('.view-tab').forEach(function(t) {{ t.classList.remove('active'); }});
   document.querySelector('.view-tab[data-view="' + view + '"]').classList.add('active');
-  ['cardView','tableView','ganttView'].forEach(function(id) {{
-    document.getElementById(id).style.display = id.indexOf(view) === 0 ? 'block' : 'none';
+  ['cardView','tableView','ganttView','parentGanttView'].forEach(function(id) {{
+    document.getElementById(id).style.display = id.indexOf(view) === 0 || (view === 'parentgantt' && id === 'parentGanttView') ? 'block' : 'none';
   }});
   render();
 }}
