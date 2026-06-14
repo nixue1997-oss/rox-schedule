@@ -797,6 +797,54 @@ table tr:last-child td {{
   display: none;
 }}
 
+
+/* ========== PERSON VIEW ========== */
+.person-dept-group {{ margin-bottom:16px;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden }}
+.person-dept-header {{ background:var(--gray-2);padding:10px 16px;font-size:14px;font-weight:600;color:var(--gray-6);display:flex;align-items:center;gap:8px }}
+.person-dept-header .dept-count {{ font-weight:400;font-size:12px;color:var(--gray-5) }}
+.person-item {{ display:flex;align-items:flex-start;padding:10px 16px;border-bottom:1px solid var(--gray-2);transition:var(--transition) }}
+.person-item:last-child {{ border-bottom:none }}
+.person-item:hover {{ background:var(--gray-1) }}
+.person-avatar {{ width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;margin-right:12px }}
+.person-info {{ flex:1;min-width:0 }}
+.person-name {{ font-size:14px;font-weight:600;color:var(--gray-7);margin-bottom:2px }}
+.person-task-count {{ font-size:12px;color:var(--gray-5) }}
+.person-tasks {{ padding-left:48px }}
+.person-task-card {{ padding:8px 12px;margin:4px 0;background:var(--gray-1);border-radius:var(--radius-sm);border-left:3px solid var(--gray-4);font-size:13px;display:flex;align-items:center;gap:8px }}
+.person-task-card.card-progress {{ border-left-color:var(--warning) }}
+.person-task-card.card-notstarted {{ border-left-color:var(--primary) }}
+.person-task-card.card-qa {{ border-left-color:var(--success) }}
+.person-task-title {{ flex:1;color:var(--gray-7) }}
+.person-task-meta {{ font-size:11px;color:var(--gray-5);white-space:nowrap }}
+.person-no-tasks {{ padding:6px 12px 6px 48px;font-size:12px;color:var(--gray-4);font-style:italic }}
+
+/* ========== FLOATING ADD BUTTON ========== */
+.fab-add {{ position:fixed;bottom:28px;right:28px;width:52px;height:52px;border-radius:50%;
+background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;
+font-size:28px;font-weight:300;display:flex;align-items:center;justify-content:center;
+cursor:pointer;box-shadow:0 4px 16px rgba(51,112,255,0.4);z-index:200;
+transition:var(--transition);user-select:none }}
+.fab-add:hover {{ transform:scale(1.1) rotate(90deg);box-shadow:0 6px 24px rgba(51,112,255,0.5) }}
+
+/* ========== INLINE ADD TASK PANEL ========== */
+.add-task-panel {{ position:fixed;bottom:90px;right:24px;width:380px;max-width:92vw;
+background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
+z-index:199;overflow:hidden;animation:slideUp .3s ease }}
+@keyframes slideUp {{ from{{opacity:0;transform:translateY(20px)}} to{{opacity:1;transform:translateY(0)}} }}
+.add-task-header {{ display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--gray-1);font-size:14px;font-weight:600 }}
+.add-task-close {{ background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray-5);padding:2px 6px;border-radius:4px }}
+.add-task-close:hover {{ background:var(--gray-3) }}
+.add-task-body {{ padding:12px 16px 16px }}
+.add-task-row {{ margin-bottom:6px }}
+
+/* ========== DELETE BUTTON ========== */
+.delete-btn {{ background:none;border:none;cursor:pointer;font-size:14px;color:var(--gray-4);padding:2px 6px;border-radius:4px;transition:var(--transition);opacity:.4;flex-shrink:0 }}
+.delete-btn:hover {{ color:var(--danger);opacity:1;background:rgba(255,59,48,.08) }}
+.card-delete {{ position:absolute;top:6px;right:6px }}
+.table-delete {{ padding:2px 8px }}
+.person-task-card .delete-btn {{ opacity:.2 }}
+.person-task-card:hover .delete-btn {{ opacity:.6 }}
+
 /* ========== RESPONSIVE ========== */
 .person-view {{ margin-top: 8px; }}
 .person-view h3 {{ font-size: 16px; margin-bottom: 12px; }}
@@ -993,6 +1041,39 @@ table tr:last-child td {{
   </div>
 </div>
 
+
+<!-- ========== FLOATING ADD BUTTON ========== -->
+<div class="fab-add" id="fabAddBtn" onclick="toggleAddForm()" title="添加任务">+</div>
+
+<!-- ========== INLINE ADD TASK FORM ========== -->
+<div class="add-task-panel" id="addTaskPanel" style="display:none">
+  <div class="add-task-header">
+    <span>➕ 添加新任务</span>
+    <button class="add-task-close" onclick="toggleAddForm()">✖</button>
+  </div>
+  <div class="add-task-body">
+    <div class="add-task-row">
+      <textarea id="addTaskTitle" placeholder="输入任务描述..." rows="2" style="width:100%;padding:8px 10px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;"></textarea>
+    </div>
+    <div class="add-task-row" style="display:flex;gap:8px;flex-wrap:wrap">
+      <select id="addTaskPerson" style="flex:1;min-width:120px;padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;"><option value="">选择执行人</option></select>
+      <input type="number" id="addTaskHours" value="1" min="0.5" step="0.5" style="width:70px;padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;text-align:center" title="工时（天）">
+      <select id="addTaskRegion" style="width:80px;padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;">
+        <option value="">地区</option>
+        <option value="国服">国服</option>
+        <option value="日服">日服</option>
+        <option value="美服">美服</option>
+        <option value="欧服">欧服</option>
+      </select>
+      <input type="date" id="addTaskDeadline" style="padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;">
+    </div>
+    <div class="add-task-row" style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-primary-solid" onclick="submitAddTask()" style="flex:1">➕ 添加并排期</button>
+      <button class="btn btn-outline" onclick="toggleAddForm()" style="color:var(--gray-6);border-color:var(--gray-3)">取消</button>
+    </div>
+    <div id="addTaskResult" class="schedule-result" style="margin-top:8px"></div>
+  </div>
+</div>
 <!-- ========== GANTT TOOLTIP ========== -->
 <div class="gantt-tooltip" id="ganttTooltip"></div>
 
@@ -2093,6 +2174,137 @@ function renderPersonView() {{
   }});
   div.innerHTML = html;
 }}
+
+// ======================== DELETE TASK ========================
+function getHiddenIds() {{
+  try {{ return JSON.parse(localStorage.getItem('rox_hidden_ids') || '[]'); }} catch(e) {{ return []; }}
+}}
+function saveHiddenIds(ids) {{
+  localStorage.setItem('rox_hidden_ids', JSON.stringify(ids));
+}}
+function deleteTask(id) {{
+  if (!confirm('确定要删除该任务吗？')) return;
+  var ids = getHiddenIds();
+  if (ids.indexOf(id) === -1) ids.push(id);
+  saveHiddenIds(ids);
+  render();
+  if (currentView === 'person') renderPersonView();
+}}
+function deleteTaskById(id) {{
+  deleteTask(id);
+}}
+function deleteAdminTask(idx) {{
+  if (!confirm('确定要删除该任务吗？')) return;
+  adminTasks.splice(idx, 1);
+  saveAdminTasks();
+  render();
+  if (currentView === 'person') renderPersonView();
+}}
+
+// ======================== ADD TASK ========================
+function toggleAddForm() {{
+  var panel = document.getElementById('addTaskPanel');
+  if (panel.style.display === 'none') {{
+    panel.style.display = 'block';
+    var sel = document.getElementById('addTaskPerson');
+    if (sel.options.length <= 1) {{
+      var deptMap = {{}};
+      ALL_PEOPLE.forEach(function(p) {{
+        if (!deptMap[p.dept]) deptMap[p.dept] = [];
+        deptMap[p.dept].push(p);
+      }});
+      var sortedDepts = Object.keys(deptMap).sort();
+      sortedDepts.forEach(function(dept) {{
+        var optg = document.createElement('optgroup');
+        optg.label = dept;
+        deptMap[dept].sort(function(a,b) {{ return a.name.localeCompare(b.name); }}).forEach(function(p) {{
+          var opt = document.createElement('option');
+          opt.value = p.name;
+          opt.textContent = dept + ' - ' + p.name;
+          optg.appendChild(opt);
+        }});
+        sel.appendChild(optg);
+      }});
+    }}
+    var future = new Date();
+    future.setDate(future.getDate() + 7);
+    document.getElementById('addTaskDeadline').value = formatDateISO(future);
+    setTimeout(function() {{ document.getElementById('addTaskTitle').focus(); }}, 100);
+  }} else {{
+    panel.style.display = 'none';
+  }}
+}}
+
+function submitAddTask() {{
+  var title = document.getElementById('addTaskTitle').value.trim();
+  var assigneeName = document.getElementById('addTaskPerson').value;
+  var hours = parseFloat(document.getElementById('addTaskHours').value) || 1;
+  var region = document.getElementById('addTaskRegion').value;
+  var deadline = document.getElementById('addTaskDeadline').value;
+  if (!title) {{ alert('请输入工作内容'); return; }}
+  if (!assigneeName) {{ alert('请选择执行人'); return; }}
+  var personTasks = DATA.filter(function(r) {{
+    return r.assignee && r.assignee.some(function(p) {{ return p.name === assigneeName; }});
+  }});
+  adminTasks.filter(function(t) {{ return t.assigneeName === assigneeName; }}).forEach(function(t) {{
+    personTasks.push({{ startDate: t.scheduledStart, endDate: t.scheduledEnd, title: t.title }});
+  }});
+  personTasks.sort(function(a, b) {{
+    var da = parseDate(normalizeDate(a.startDate));
+    var db = parseDate(normalizeDate(b.startDate));
+    if (!da && !db) return 0; if (!da) return 1; if (!db) return -1;
+    return da - db;
+  }});
+  var today = new Date(); today.setHours(0,0,0,0);
+  var workDaysNeeded = Math.ceil(hours);
+  var scheduledStart = null, scheduledEnd = null;
+  var deadlineDate = deadline ? parseDate(deadline) : null;
+  var candidates = [new Date(today)];
+  personTasks.forEach(function(t) {{
+    var te = parseDate(normalizeDate(t.endDate));
+    if (te) {{ var next = new Date(te); next.setDate(next.getDate() + 1); candidates.push(next); }}
+  }});
+  candidates.sort(function(a,b) {{ return a - b; }});
+  for (var ci = 0; ci < candidates.length; ci++) {{
+    var baseStart = new Date(Math.max(candidates[ci].getTime(), today.getTime()));
+    for (var d = 0; d < 120; d++) {{
+      var slotStart = new Date(baseStart); slotStart.setDate(slotStart.getDate() + d);
+      var slotEnd = new Date(slotStart); slotEnd.setDate(slotEnd.getDate() + workDaysNeeded - 1);
+      if (deadlineDate && slotEnd > deadlineDate) break;
+      var overlap = personTasks.some(function(t) {{
+        var ts = parseDate(normalizeDate(t.startDate));
+        var te = parseDate(normalizeDate(t.endDate));
+        if (!ts || !te) return false;
+        return (slotStart <= te && slotEnd >= ts);
+      }});
+      if (!overlap) {{ scheduledStart = formatDate(slotStart); scheduledEnd = formatDate(slotEnd); break; }}
+    }}
+    if (scheduledStart) break;
+  }}
+  if (!scheduledStart) {{ alert('无法找到足够的空闲排期时间，请调整工时或联系管理员'); return; }}
+  var resultDiv = document.getElementById('addTaskResult');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '✅ 排期结果: <strong>' + assigneeName + '</strong> 于 <strong>' + scheduledStart + ' ~ ' + scheduledEnd + '</strong> 执行「' + title + '」（' + hours + '人天）';
+  var newTask = {{
+    title: title, hours: hours, priority: 'P2', assigneeName: assigneeName,
+    region: region || '', progress: '未启动', scheduledStart: scheduledStart, scheduledEnd: scheduledEnd,
+    createdAt: new Date().toISOString()
+  }};
+  adminTasks.push(newTask);
+  saveAdminTasks();
+  document.getElementById('addTaskTitle').value = '';
+  var future = new Date(); future.setDate(future.getDate() + 7);
+  document.getElementById('addTaskDeadline').value = formatDateISO(future);
+  render();
+  if (currentView === 'person') renderPersonView();
+}}
+
+function formatDateISO(d) {{
+  var m = d.getMonth() + 1;
+  var day = d.getDate();
+  return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+}}
+
 // ======================== START ========================
 // Load admin tasks from local storage
 loadAdminTasks();
@@ -2107,36 +2319,6 @@ init();
         f.write(html)
     print(f'Base HTML generated: /tmp/rox-schedule/index.html ({len(html)} bytes)')
     print(f'Total records: {len(records)}')
-
-    # ======================== APPLY ENHANCEMENTS ========================
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    enhance_script = os.path.join(script_dir, 'enhance_html.py')
-    if os.path.exists(enhance_script):
-        import subprocess
-        result = subprocess.run(
-            [sys.executable, enhance_script, '/tmp/rox-schedule/index.html'],
-            capture_output=True, text=True
-        )
-        if result.returncode == 0:
-            print(result.stdout.strip())
-        else:
-            print(f'Enhance script error: {result.stderr.strip()}')
-    else:
-        print(f'Enhance script not found at: {enhance_script}')
-
-    # ======================== APPLY DEPARTMENT FILTER ========================
-    dept_script = os.path.join(script_dir, 'add_dept_filter.py')
-    if os.path.exists(dept_script):
-        result = subprocess.run(
-            [sys.executable, dept_script, '/tmp/rox-schedule/index.html'],
-            capture_output=True, text=True
-        )
-        if result.returncode == 0:
-            print(result.stdout.strip())
-        else:
-            print(f'Dept filter script error: {result.stderr.strip()}')
-    else:
-        print(f'Dept filter script not found at: {dept_script}')
 
 if __name__ == '__main__':
     main()
