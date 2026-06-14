@@ -1632,5 +1632,19 @@ init();
     else:
         print(f'Enhance script not found at: {enhance_script}')
 
+    # ======================== APPLY DEPARTMENT FILTER ========================
+    dept_script = os.path.join(script_dir, 'add_dept_filter.py')
+    if os.path.exists(dept_script):
+        result = subprocess.run(
+            [sys.executable, dept_script, '/tmp/rox-schedule/index.html'],
+            capture_output=True, text=True
+        )
+        if result.returncode == 0:
+            print(result.stdout.strip())
+        else:
+            print(f'Dept filter script error: {result.stderr.strip()}')
+    else:
+        print(f'Dept filter script not found at: {dept_script}')
+
 if __name__ == '__main__':
     main()

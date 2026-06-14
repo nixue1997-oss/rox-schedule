@@ -777,6 +777,12 @@ table tr:last-child td {
       </select>
     </div>
     <div class="filter-group">
+      <label>部门</label>
+      <select id="filterDept" onchange="applyFilters()">
+        <option value="">全部</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>搜索</label>
       <input type="text" class="filter-search" id="filterSearch" placeholder="搜索工作内容..." oninput="applyFilters()">
     </div>
@@ -1026,6 +1032,15 @@ function init() {
   future.setDate(future.getDate() + 7);
   deadlineEl.value = formatDateISO(future);
 
+  // Populate department filter
+  var selDept = document.getElementById('filterDept');
+  sortedDepts.forEach(function(dept) {
+    var opt = document.createElement('option');
+    opt.value = dept;
+    opt.textContent = dept;
+    selDept.appendChild(opt);
+  });
+
   document.getElementById('headerInfo').textContent = DATA.length + ' \u4e2a\u4efb\u52a1 | ' + allPeople.length + ' \u4eba';
 
   render();
@@ -1046,6 +1061,10 @@ function getFilteredData() {
     } else {
       // When "全部" is selected, show all (default behavior)
     }
+    var dept = document.getElementById('filterDept').value;
+    if (dept) {
+      if (!r.assignee || !r.assignee.some(function(p) { return p.dept === dept; })) return false;
+    }
     if (search && r.title.toLowerCase().indexOf(search) === -1) return false;
     return true;
   });
@@ -1055,6 +1074,11 @@ function getFilteredData() {
     if (region && t.region !== region) return false;
     if (progress && t.progress !== progress) return false;
     if (person && t.assigneeName !== person) return false;
+    if (dept) {
+      var tDept = '';
+      ALL_PEOPLE.some(function(p) { if (p.name === t.assigneeName) { tDept = p.dept; return true; } return false; });
+      if (tDept !== dept) return false;
+    }
     if (search && t.title.toLowerCase().indexOf(search) === -1) return false;
     return true;
   });
@@ -1658,7 +1682,14 @@ function renderPersonView() {
     if (!deptMap[p.dept]) deptMap[p.dept] = [];
     deptMap[p.dept].push(p);
   });
+    var filterDeptVal = document.getElementById('filterDept').value;
+  if (filterDeptVal) {
+    var filteredDeptMap = {};
+    filteredDeptMap[filterDeptVal] = deptMap[filterDeptVal] || [];
+    deptMap = filteredDeptMap;
+  }
   var sortedDepts = Object.keys(deptMap).sort();
+
   var html = '';
   sortedDepts.forEach(function(dept) {
     var people = deptMap[dept].sort(function(a,b) { return a.name.localeCompare(b.name); });
