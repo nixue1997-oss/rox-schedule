@@ -30,7 +30,11 @@ def main():
             'endDate': r.get('任务结束', ''),
             'assignee': r.get('执行人', []),
             'region': r.get('地区', []),
-            'id': r.get('_id', '')
+            'id': r.get('_id', ''),
+            'jiraUrl': r.get('JIRA单', ''),
+            'jiraKey': r.get('Jira Key', ''),
+            'extVersion': r.get('对外版本', ''),
+            'parentTask': r.get('本表--父记录', '')
         })
 
     # Serialize to JSON string for safe embedding
@@ -930,6 +934,163 @@ table tr:last-child td {{ border-bottom: none; }}
   .view-tab {{ padding: 6px 12px; font-size: 11px; }}
   .container {{ padding: 10px 8px; }}
 }}
+/* ===== VERSION BADGE ===== */
+.version-badge {{
+  display: inline-block;
+  background: rgba(139, 126, 200, 0.15);
+  color: var(--accent-2);
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 4px;
+  border: 1px solid rgba(139, 126, 200, 0.2);
+}}
+.version-filter {{
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 12px;
+  min-width: 120px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}}
+.version-filter:focus {{
+  outline: none;
+  border-color: var(--accent-1);
+  box-shadow: 0 0 0 2px rgba(139, 126, 200, 0.2);
+}}
+
+/* ===== JIRA ===== */
+.jira-link {{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-1);
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: rgba(139, 126, 200, 0.1);
+  border: 1px solid rgba(139, 126, 200, 0.15);
+  transition: all 0.2s;
+  cursor: pointer;
+}}
+.jira-link:hover {{
+  background: rgba(139, 126, 200, 0.2);
+  border-color: var(--accent-1);
+}}
+.jira-status {{
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 2px;
+}}
+.jira-status.todo {{ background: rgba(180,180,180,0.2); color: #888; }}
+.jira-status.progress {{ background: rgba(100,149,237,0.15); color: cornflowerblue; }}
+.jira-status.done {{ background: rgba(144,238,144,0.15); color: mediumseagreen; }}
+
+/* ===== SAVE VIEW ===== */
+.save-view-btn {{
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}}
+.save-view-btn:hover {{
+  background: rgba(139, 126, 200, 0.15);
+  border-color: var(--accent-1);
+  color: var(--accent-1);
+}}
+.saved-views {{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}}
+.saved-view-chip {{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(139, 126, 200, 0.12);
+  border: 1px solid rgba(139, 126, 200, 0.2);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}}
+.saved-view-chip:hover {{
+  background: rgba(139, 126, 200, 0.22);
+  color: var(--accent-1);
+}}
+.sv-delete {{
+  margin-left: 4px;
+  opacity: 0.5;
+  font-size: 10px;
+  cursor: pointer;
+}}
+.sv-delete:hover {{ opacity: 1; color: #e57373; }}
+
+/* ===== CARD EXPAND ===== */
+.task-card {{ cursor: pointer; }}
+.card-expand {{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.25s ease;
+  opacity: 0;
+  padding: 0 12px;
+  margin-top: 0;
+  border-top: 1px solid transparent;
+}}
+.card-expand.open {{
+  max-height: 600px;
+  opacity: 1;
+  padding: 10px 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--glass-border);
+}}
+.card-expand-row {{
+  display: flex;
+  padding: 3px 0;
+  font-size: 12px;
+  line-height: 1.5;
+}}
+.card-expand-label {{
+  color: var(--text-muted);
+  min-width: 70px;
+  flex-shrink: 0;
+}}
+.card-expand-value {{
+  color: var(--text-secondary);
+  word-break: break-all;
+}}
+.card-expand-value a {{
+  color: var(--accent-1);
+  text-decoration: none;
+}}
+.card-expand-value a:hover {{
+  text-decoration: underline;
+}}
+
+@media (max-width: 768px) {{
+  .save-view-btn {{ padding: 5px 8px; font-size: 11px; }}
+  .version-filter {{ min-width: 90px; font-size: 11px; }}
+  .card-expand-row {{ flex-direction: column; }}
+  .card-expand-label {{ min-width: auto; }}
+}}
 </style>
 </head>
 <body>
@@ -1017,9 +1178,19 @@ table tr:last-child td {{ border-bottom: none; }}
       <input type="hidden" id="filterPerson" value="ALL">
     </div>
     <div class="filter-group">
+      <label>\u7248\u672c</label>
+      <select id="filterVersion" onchange="applyFilters()" class="version-filter">
+        <option value="ALL">\u5168\u90e8\u7248\u672c</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>\u641c\u7d22</label>
       <input type="text" class="filter-search" id="filterSearch" placeholder="\u641c\u7d22\u5de5\u4f5c\u5185\u5bb9..." oninput="applyFilters()">
     </div>
+    <div class="filter-group">
+      <button class="save-view-btn" onclick="saveCurrentView()">\U0001F4BE \u4fdd\u5b58\u89c6\u56fe</button>
+    </div>
+    <div class="saved-views" id="savedViewsBar"></div>
     <div class="filter-stats" id="filterStats"></div>
   </div>
 
@@ -1266,6 +1437,10 @@ function init() {{
   var dl = document.getElementById('newTaskDeadline');
   var f = new Date(); f.setDate(f.getDate() + 7); dl.value = formatDateISO(f);
 
+  // Init versions
+  initVersions();
+  renderSavedViews();
+
   document.getElementById('headerInfo').textContent = DATA.length + ' \u4e2a\u4efb\u52a1 | ' + allPeople.length + ' \u4eba';
 
   // Close multi-select panels on outside click
@@ -1316,7 +1491,9 @@ function getFilteredData() {{
     if (persons.length > 0) {{
       if (!r.assignee || !r.assignee.some(function(p) {{ return persons.indexOf(p.name) >= 0; }})) return false;
     }}
-    if (search && r.title.toLowerCase().indexOf(search) === -1) return false;
+    if (search && !fuzzyMatch(r.title, search)) return false;
+    var versionVal = (document.getElementById('filterVersion') || {{}}).value || 'ALL';
+    if (versionVal !== 'ALL' && r.extVersion !== versionVal) return false;
     return true;
   }});
 
@@ -1332,7 +1509,7 @@ function getFilteredData() {{
       if (depts.indexOf(td) === -1) return false;
     }}
     if (persons.length > 0 && persons.indexOf(t.assigneeName) === -1) return false;
-    if (search && t.title.toLowerCase().indexOf(search) === -1) return false;
+    if (search && !fuzzyMatch(t.title, search)) return false;
     return true;
   }});
 
@@ -1409,11 +1586,16 @@ function renderCard(filtered, adminFiltered) {{
     if (r.freezeDate) dates.push('\\u{{1F4C4}} \\u5c01\\u677f: ' + r.freezeDate);
     if (r.versionDate) dates.push('\\u{{1F4C5}} \\u7248\\u66f4: ' + r.versionDate);
 
-    html += '<div class="task-card ' + cls + '">';
-    html += '<div class="card-title">' + escapeHtml(r.title) + '</div>';
-    html += '<div class="card-meta">' + pTag + regionTags + '</div>';
+    var jiraHtml = renderJiraHtml(r);
+    var verHtml = renderVersionHtml(r);
+    html += '<div class="task-card ' + cls + '" onclick="toggleCardExpand(\"' + r.id + '\")">';
+    html += '<div class="card-title">' + escapeHtml(r.title) + verHtml + '</div>';
+    html += '<div class="card-meta">' + pTag + regionTags + (jiraHtml ? ' ' + jiraHtml : '') + '</div>';
     html += '<div class="card-meta" style="margin-top:4px"><span>\\u{{1F465}} ' + escapeHtml(names) + '</span></div>';
     if (dates.length) html += '<div class="card-meta" style="margin-top:4px">' + dates.join(' | ') + '</div>';
+    html += '<div class="card-expand" id="card-expand-' + r.id + '">';
+    html += buildCardExpandHtml(r);
+    html += '</div>';
     html += '</div>';
   }});
 
@@ -1484,7 +1666,9 @@ function renderTable(filtered, adminFiltered) {{
     {{ key: 'startDate', label: '\\u542f\\u52a8\\u65e5\\u671f', width: '110px' }},
     {{ key: 'endDate', label: '\u4efb\u52a1\u7ed3\u675f', width: '110px' }},
     {{ key: 'freezeDate', label: '\\u5c01\\u677f\\u65f6\\u95f4', width: '110px' }},
-    {{ key: 'versionDate', label: '\\u7248\\u66f4\\u65f6\\u95f4', width: '110px' }}
+    {{ key: 'versionDate', label: '\\u7248\\u66f4\\u65f6\\u95f4', width: '110px' }},
+    {{ key: 'extVersion', label: '\\u5916\\u653e\\u7248\\u672c', width: '130px' }},
+    {{ key: 'jiraKey', label: 'Jira\\u5355\\u53f7', width: '130px' }}
   ];
 
   function sortIcon(k) {{
@@ -1516,11 +1700,13 @@ function renderTable(filtered, adminFiltered) {{
     html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
     html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
     html += '<td>' + (r.freezeDate || '') + '</td>';
-    html += '<td>' + (r.versionDate || '') + '</td></tr>';
+    html += '<td>' + (r.versionDate || '') + '</td>';
+    html += '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(r.extVersion) + '</span>' : '') + '</td>';
+    html += '<td>' + renderJiraHtml(r) + '</td></tr>';
   }});
 
   if (!all.length) {{
-    html += '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-5)">\\u6682\\u65e0\\u5339\\u914d\\u7684\\u4efb\\u52a1</td></tr>';
+    html += '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--gray-5)">\\u6682\\u65e0\\u5339\\u914d\\u7684\\u4efb\\u52a1</td></tr>';
   }}
 
   html += '</tbody></table></div>';
@@ -1764,6 +1950,8 @@ function showGanttTooltip(e, title, progress, assignee, region, startDate, endDa
   html += '<div class="tt-row"><span>' + startDate + ' ~ ' + endDate + '</span></div>';
   if (freezeDate) html += '<div class="tt-row"><span>\\u5c01\\u677f: ' + freezeDate + '</span></div>';
   if (versionDate) html += '<div class="tt-row"><span>\\u7248\\u66f4: ' + versionDate + '</span></div>';
+  if (typeof extVersion !== 'undefined' && extVersion) html += '<div class="tt-row"><span>\\u5916\\u653e\\u7248\\u672c: ' + extVersion + '</span></div>';
+  if (typeof jiraKey !== 'undefined' && jiraKey) html += '<div class="tt-row"><span>Jira: ' + jiraKey + '</span></div>';
   tip.innerHTML = html;
   tip.style.display = 'block';
   var rect = e.target.getBoundingClientRect();
@@ -2052,7 +2240,7 @@ function onPgSearch(val) {{
   if (!val || val.length < 2) {{ div.style.display = 'none'; return; }}
   _pgTimer = setTimeout(function() {{
     var q = val.toLowerCase();
-    var m = DATA.filter(function(r) {{ return r.title.toLowerCase().indexOf(q) >= 0; }}).slice(0, 15);
+    var m = DATA.filter(function(r) {{ return fuzzyMatch(r.title, q); }}).slice(0, 15);
     if (m.length === 0) {{ div.style.display = 'none'; return; }}
     var seen = {{}};
     div.innerHTML = '';
@@ -2359,6 +2547,191 @@ function formatDateISO(d) {{
   var m = d.getMonth() + 1;
   var day = d.getDate();
   return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+}}
+
+// ======================== FUZZY MATCH ========================
+function fuzzyMatch(text, query) {{
+  var t = text.toLowerCase();
+  var q = query.toLowerCase();
+  if (t.indexOf(q) >= 0) return true;
+  var qi = 0;
+  for (var ti = 0; ti < t.length && qi < q.length; ti++) {{
+    if (t[ti] === q[qi]) qi++;
+  }}
+  return qi === q.length;
+}}
+
+// ======================== VERSION DATA ========================
+var allVersions = [];
+function initVersions() {{
+  var vSet = {{}};
+  DATA.forEach(function(r) {{
+    var v = r.extVersion || '';
+    if (v) vSet[v] = true;
+  }});
+  allVersions = Object.keys(vSet).sort(function(a,b) {{ return b.localeCompare(a); }});
+  var sel = document.getElementById('filterVersion');
+  if (sel && sel.options.length <= 1) {{
+    allVersions.forEach(function(v) {{
+      var opt = document.createElement('option');
+      opt.value = v; opt.textContent = v;
+      sel.appendChild(opt);
+    }});
+  }}
+}}
+
+// ======================== SAVE / LOAD VIEWS ========================
+function getSavedViews() {{
+  try {{ return JSON.parse(localStorage.getItem('rox_saved_views') || '[]'); }}
+  catch(e) {{ return []; }}
+}}
+function saveSavedViews(views) {{
+  localStorage.setItem('rox_saved_views', JSON.stringify(views));
+}}
+function saveCurrentView() {{
+  var name = prompt('\u8bf7\u8f93\u5165\u89c6\u56fe\u540d\u79f0\uff1a');
+  if (!name || !name.trim()) return;
+  name = name.trim();
+  var view = {{
+    name: name,
+    region: document.getElementById('filterRegion').value,
+    progress: document.getElementById('filterProgress').value,
+    dept: document.getElementById('filterDept').value,
+    person: document.getElementById('filterPerson').value,
+    version: (document.getElementById('filterVersion') || {{}}).value || 'ALL',
+    search: document.getElementById('filterSearch').value,
+    currentView: currentView,
+    createdAt: new Date().toISOString()
+  }};
+  var views = getSavedViews();
+  var existing = views.findIndex(function(v) {{ return v.name === name; }});
+  if (existing >= 0) views[existing] = view;
+  else views.push(view);
+  saveSavedViews(views);
+  renderSavedViews();
+  alert('\u89c6\u56fe "' + name + '" \u5df2\u4fdd\u5b58');
+}}
+function loadSavedView(name) {{
+  var views = getSavedViews();
+  var view = views.find(function(v) {{ return v.name === name; }});
+  if (!view) return;
+  document.getElementById('filterRegion').value = view.region || 'ALL';
+  document.getElementById('filterProgress').value = view.progress || 'ALL';
+  document.getElementById('filterDept').value = view.dept || 'ALL';
+  document.getElementById('filterPerson').value = view.person || 'ALL';
+  var vSel = document.getElementById('filterVersion');
+  if (vSel) vSel.value = view.version || 'ALL';
+  document.getElementById('filterSearch').value = view.search || '';
+  ['region','progress','dept','person'].forEach(function(key) {{
+    var capitalKey = key.charAt(0).toUpperCase() + key.slice(1);
+    var val = document.getElementById('filter' + capitalKey).value;
+    var selected = val === 'ALL' ? [] : val.split(',');
+    _msSelected[key] = selected.slice();
+    var box = document.getElementById('msCheckboxes_' + key);
+    if (box) {{
+      var cbs = box.querySelectorAll('input[type=checkbox]');
+      cbs.forEach(function(cb) {{
+        cb.checked = selected.length === 0 || selected.indexOf(cb.value) >= 0;
+      }});
+    }}
+    updateMsTrigger(key);
+  }});
+  if (view.currentView && view.currentView !== currentView) switchView(view.currentView);
+  else applyFilters();
+}}
+function deleteSavedView(name) {{
+  if (!confirm('\u786e\u5b9a\u5220\u9664\u89c6\u56fe "' + name + '" \u5417\uff1f')) return;
+  var views = getSavedViews().filter(function(v) {{ return v.name !== name; }});
+  saveSavedViews(views);
+  renderSavedViews();
+}}
+function renderSavedViews() {{
+  var bar = document.getElementById('savedViewsBar');
+  if (!bar) return;
+  var views = getSavedViews();
+  if (views.length === 0) {{ bar.innerHTML = ''; return; }}
+  bar.innerHTML = '';
+  views.forEach(function(v) {{
+    var chip = document.createElement('span');
+    chip.className = 'saved-view-chip';
+    var safeName = v.name.replace(/'/g, "\\'");
+    chip.innerHTML = '\U0001F4CC ' + escapeHtml(v.name) + '<span class="sv-delete" onclick="event.stopPropagation();deleteSavedView(\"' + safeName + '\")">\u2716</span>';
+    chip.addEventListener('click', function() {{ loadSavedView(v.name); }});
+    bar.appendChild(chip);
+  }});
+}}
+
+// ======================== CARD EXPAND ========================
+var _expandedCard = null;
+function toggleCardExpand(id) {{
+  var el = document.getElementById('card-expand-' + id);
+  if (!el) return;
+  if (_expandedCard && _expandedCard !== el) {{
+    _expandedCard.classList.remove('open');
+  }}
+  el.classList.toggle('open');
+  _expandedCard = el.classList.contains('open') ? el : null;
+}}
+function buildCardExpandHtml(r) {{
+  var html = '';
+  if (r.jiraKey || r.jiraUrl) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">Jira\u5355\u53f7</span><span class="card-expand-value">' + renderJiraHtml(r) + '</span></div>';
+  }}
+  if (r.extVersion) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5916\u653e\u7248\u672c</span><span class="card-expand-value"><span class="version-badge">' + escapeHtml(r.extVersion) + '</span></span></div>';
+  }}
+  if (r.testDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u8f6c\u6d4b\u65f6\u95f4</span><span class="card-expand-value">' + r.testDate + '</span></div>';
+  }}
+  if (r.freezeDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5c01\u677f\u65f6\u95f4</span><span class="card-expand-value">' + r.freezeDate + '</span></div>';
+  }}
+  if (r.onlineDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u4e0a\u7ebf\u65f6\u95f4</span><span class="card-expand-value">' + normalizeDate(r.onlineDate) + '</span></div>';
+  }}
+  if (r.parentTask) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7236\u4efb\u52a1</span><span class="card-expand-value">' + escapeHtml(r.parentTask) + '</span></div>';
+  }}
+  var names = (r.assignee || []).map(function(p) {{ return p.name; }}).join(', ');
+  if (names) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u6267\u884c\u4eba</span><span class="card-expand-value">' + escapeHtml(names) + '</span></div>';
+  }}
+  var regions = (r.region || []).join(', ');
+  if (regions) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5730\u533a</span><span class="card-expand-value">' + escapeHtml(regions) + '</span></div>';
+  }}
+  return html;
+}}
+
+// ======================== JIRA STATUS ========================
+var _jiraStatusCache = {{}};
+function getJiraStatus(key) {{
+  if (!key) return '';
+  if (_jiraStatusCache[key]) return _jiraStatusCache[key];
+  try {{
+    var cached = JSON.parse(localStorage.getItem('rox_jira_status') || '{{}}');
+    _jiraStatusCache = cached;
+    return cached[key] || '';
+  }} catch(e) {{ return ''; }}
+}}
+function renderJiraHtml(r) {{
+  if (!r.jiraKey && !r.jiraUrl) return '';
+  var key = r.jiraKey || '';
+  var url = r.jiraUrl || '';
+  var status = getJiraStatus(key);
+  var statusHtml = '';
+  if (status) {{
+    var cls = 'todo';
+    if (status.indexOf('\u8fdb\u884c') >= 0 || status.indexOf('In Prog') >= 0) cls = 'progress';
+    else if (status.indexOf('\u5b8c\u6210') >= 0 || status.indexOf('Done') >= 0 || status.indexOf('Closed') >= 0) cls = 'done';
+    statusHtml = '<span class="jira-status ' + cls + '">' + escapeHtml(status) + '</span>';
+  }}
+  if (url) return '<a class="jira-link" href="' + escapeHtml(url) + '" target="_blank" title="\u6253\u5f00 Jira">\U0001F3AF ' + escapeHtml(key) + statusHtml + '</a>';
+  return '<span class="jira-link">\U0001F3AF ' + escapeHtml(key) + statusHtml + '</span>';
+}}
+function renderVersionHtml(r) {{
+  if (!r.extVersion) return '';
+  return ' <span class="version-badge">' + escapeHtml(r.extVersion) + '</span>';
 }}
 
 // ======================== START ========================
