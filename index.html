@@ -1536,7 +1536,7 @@ function renderCard(filtered, adminFiltered) {
 
     var jiraHtml = renderJiraHtml(r);
     var verHtml = renderVersionHtml(r);
-    html += '<div class="task-card ' + cls + '" onclick="toggleCardExpand("' + r.id + '")">';
+    html += '<div class="task-card ' + cls + '" data-id="' + r.id + '">';
     html += '<div class="card-title">' + escapeHtml(r.title) + verHtml + '</div>';
     html += '<div class="card-meta">' + pTag + regionTags + (jiraHtml ? ' ' + jiraHtml : '') + '</div>';
     html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(names) + '</span></div>';
@@ -2620,6 +2620,12 @@ function toggleCardExpand(id) {
   el.classList.toggle('open');
   _expandedCard = el.classList.contains('open') ? el : null;
 }
+document.addEventListener('click', function(e) {
+  var card = e.target.closest('.task-card[data-id]');
+  if (card && !e.target.closest('.jira-link') && !e.target.closest('a')) {
+    toggleCardExpand(card.getAttribute('data-id'));
+  }
+});
 function buildCardExpandHtml(r) {
   var html = '';
   if (r.jiraKey || r.jiraUrl) {
