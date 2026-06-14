@@ -1,0 +1,29 @@
+name: Sync Data from Feishu
+on:
+  schedule:
+    - cron: '0 8,18 * * *'   # 每天8点和18点触发
+  workflow_dispatch:          # 也支持手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Sync and Generate
+        env:
+          BASE_TOKEN: ${{ secrets.BASE_TOKEN }}
+        run: |
+          # Install lark-cli or use API to fetch data
+          # For now, just regenerate the HTML with existing data
+          # (Later: use lark-cli to pull realtime data)
+          python3 generate_html.py
+      - name: Commit and Push
+        run: |
+          git config user.name "rox-sync-bot"
+          git config user.email "bot@rox-schedule"
+          git add index.html
+          git diff --staged --quiet || (git commit -m "auto: sync data from Feishu" && git push)

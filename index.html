@@ -37,7 +37,144 @@ body {
   line-height: 1.6;
   min-height: 100vh;
 }
-/* Header */
+
+/* ========== LOGIN OVERLAY ========== */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.login-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.login-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 36px 32px;
+  width: 380px;
+  max-width: 92vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: loginFadeIn 0.6s ease;
+}
+@keyframes loginFadeIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-card .login-logo {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 28px;
+  color: #fff;
+}
+.login-card h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-7);
+  margin-bottom: 4px;
+}
+.login-card .login-subtitle {
+  font-size: 13px;
+  color: var(--gray-5);
+  margin-bottom: 24px;
+}
+.login-card .login-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--gray-3);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: var(--font);
+  outline: none;
+  text-align: center;
+  letter-spacing: 2px;
+  transition: var(--transition);
+  margin-bottom: 8px;
+}
+.login-card .login-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-bg);
+}
+.login-card .login-input::placeholder {
+  letter-spacing: 0;
+  color: var(--gray-4);
+}
+.login-card .login-error {
+  color: var(--danger);
+  font-size: 13px;
+  min-height: 20px;
+  margin-bottom: 4px;
+}
+.login-card .login-info {
+  font-size: 12px;
+  color: var(--gray-5);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.login-card .login-info code {
+  background: var(--gray-2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.login-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.login-btn {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: var(--font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.login-btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.login-btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(51,112,255,0.3);
+}
+.login-btn-outline {
+  background: transparent;
+  color: var(--gray-6);
+  border: 1.5px solid var(--gray-3);
+}
+.login-btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.login-mode-hint {
+  font-size: 11px;
+  color: var(--gray-4);
+  margin-top: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.login-mode-hint:hover {
+  color: var(--gray-5);
+}
+
+/* ========== HEADER ========== */
 .header {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff;
@@ -77,7 +214,8 @@ body {
   margin: 0 auto;
   padding: 20px 24px;
 }
-/* Buttons */
+
+/* ========== BUTTONS ========== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -134,7 +272,8 @@ body {
 .btn-success:hover {
   opacity: 0.85;
 }
-/* Stat Cards */
+
+/* ========== STAT CARDS ========== */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -172,7 +311,9 @@ body {
 .stat-card:nth-child(2) { border-left-color: var(--warning); }
 .stat-card:nth-child(3) { border-left-color: var(--success); }
 .stat-card:nth-child(4) { border-left-color: var(--gray-5); }
-/* Filter Bar */
+.stat-card:nth-child(5) { border-left-color: var(--danger); }
+
+/* ========== FILTER BAR ========== */
 .filter-bar {
   background: #fff;
   border-radius: var(--radius-md);
@@ -231,7 +372,8 @@ body {
   margin-left: auto;
   white-space: nowrap;
 }
-/* View Tabs */
+
+/* ========== VIEW TABS ========== */
 .view-tabs {
   display: flex;
   gap: 4px;
@@ -261,7 +403,8 @@ body {
 .view-tab:hover:not(.active) {
   color: var(--gray-7);
 }
-/* Table View */
+
+/* ========== TABLE VIEW ========== */
 .table-wrapper {
   background: #fff;
   border-radius: var(--radius-md);
@@ -306,6 +449,8 @@ table tr:hover td {
 table tr:last-child td {
   border-bottom: none;
 }
+
+/* ========== TAGS ========== */
 .tag {
   display: inline-block;
   padding: 2px 8px;
@@ -325,10 +470,6 @@ table tr:last-child td {
   background: #E8F5E9;
   color: #2E7D32;
 }
-.tag-done {
-  background: var(--primary-bg);
-  color: var(--primary);
-}
 .region-tag {
   display: inline-block;
   padding: 1px 6px;
@@ -341,7 +482,8 @@ table tr:last-child td {
 .assignee-name {
   font-weight: 500;
 }
-/* Card View */
+
+/* ========== CARD VIEW ========== */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -380,7 +522,8 @@ table tr:last-child td {
   align-items: center;
   gap: 3px;
 }
-/* Gantt Chart */
+
+/* ========== GANTT ========== */
 .gantt-wrapper {
   background: #fff;
   border-radius: var(--radius-md);
@@ -424,10 +567,6 @@ table tr:last-child td {
   color: var(--gray-5);
   border-right: 1px solid var(--gray-3);
   font-weight: 500;
-}
-.gantt-week-label.weekend {
-  color: var(--danger);
-  opacity: 0.6;
 }
 .gantt-week-label.today {
   background: var(--primary-bg);
@@ -542,7 +681,8 @@ table tr:last-child td {
   border-right: 1px dashed var(--gray-2);
 }
 .gantt-gridline:last-child { border-right: none; }
-/* Admin Modal */
+
+/* ========== MODALS ========== */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -610,85 +750,13 @@ table tr:last-child td {
   justify-content: flex-end;
   margin-top: 18px;
 }
-/* Admin Login */
-.login-form {
-  text-align: center;
-}
-.login-form .lock-icon {
-  font-size: 36px;
+
+/* ========== ADMIN TASK LIST ========== */
+.admin-task-list {
+  max-height: 300px;
+  overflow-y: auto;
   margin-bottom: 10px;
-  display: block;
 }
-.login-form .login-input {
-  width: 100%;
-  max-width: 280px;
-  padding: 10px 14px;
-  border: 1px solid var(--gray-3);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-family: var(--font);
-  text-align: center;
-  outline: none;
-  margin: 10px auto;
-  display: block;
-}
-.login-form .login-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary-bg);
-}
-.login-error {
-  color: var(--danger);
-  font-size: 12px;
-  margin-top: 6px;
-  min-height: 18px;
-}
-/* Empty state */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--gray-5);
-}
-.empty-state .empty-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-  display: block;
-  opacity: 0.4;
-}
-/* Responsive */
-@media (max-width: 768px) {
-  .header-inner { flex-direction: column; align-items: flex-start; }
-  .header-actions { width: 100%; }
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .filter-bar { flex-direction: column; align-items: stretch; }
-  .filter-stats { margin-left: 0; }
-  .form-row { grid-template-columns: 1fr; }
-  .card-grid { grid-template-columns: 1fr; }
-}
-/* Misc */
-.fade-in { animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.badge-primary { background: var(--primary-bg); color: var(--primary); }
-.badge-warning { background: #FFF7E8; color: #B8860B; }
-.badge-success { background: #E8F5E9; color: #2E7D32; }
-/* Week grid in gantt - show weekend differently */
-.weekend-col { background: #FFF8F8; }
-/* Priority tags */
-.priority-high { color: var(--danger); font-weight: 600; }
-.priority-medium { color: var(--warning); font-weight: 600; }
-.priority-low { color: var(--gray-5); }
-/* Admin task list */
-.admin-task-list { max-height: 300px; overflow-y: auto; margin-bottom: 10px; }
 .admin-task-item {
   display: flex;
   align-items: center;
@@ -708,20 +776,97 @@ table tr:last-child td {
   display: flex;
   gap: 4px;
 }
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-5);
+}
+.empty-state .empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: block;
+  opacity: 0.4;
+}
+
+/* ========== MISC ========== */
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-primary { background: var(--primary-bg); color: var(--primary); }
+.badge-warning { background: #FFF7E8; color: #B8860B; }
+.badge-success { background: #E8F5E9; color: #2E7D32; }
+.priority-high { color: var(--danger); font-weight: 600; }
+.priority-medium { color: var(--warning); font-weight: 600; }
+.priority-low { color: var(--gray-5); }
+.schedule-result {
+  background: var(--primary-bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: none;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .header-inner { flex-direction: column; align-items: flex-start; }
+  .header-actions { width: 100%; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-stats { margin-left: 0; }
+  .form-row { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
+<!-- ========== LOGIN OVERLAY ========== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo" id="loginLogo">ROX</div>
+    <h1 id="loginTitle">ROX 项目排期看板</h1>
+    <div class="login-subtitle" id="loginSubtitle">请输入查看密码以继续</div>
+    <input type="password" class="login-input" id="loginInput" placeholder="请输入密码" autocomplete="off">
+    <div class="login-error" id="loginError"></div>
+    <div class="login-info" id="loginInfo">
+      <div>查看密码：<code>ROX_VIEW_2026</code></div>
+      <div>管理员密码：<code>ROX_ADMIN_2026</code></div>
+    </div>
+    <div class="login-actions">
+      <button class="login-btn login-btn-primary" id="loginBtn" onclick="handleLogin()">登录</button>
+    </div>
+    <div class="login-mode-hint" id="loginModeHint" onclick="toggleLoginMode()">
+      → 切换到管理员登录
+    </div>
+  </div>
+</div>
+
+<!-- ========== HEADER ========== -->
 <div class="header">
   <div class="header-inner">
     <h1>ROX 项目排期看板 <small>开发阶段</small></h1>
     <div class="header-actions">
-      <button class="btn btn-outline btn-sm" onclick="openAdminLogin()">管理员</button>
+      <button class="btn btn-outline btn-sm" id="adminBtn" onclick="openAdminLogin()">ⁿⁿ 管理员</button>
+      <button class="btn btn-outline btn-sm" onclick="logoutUser()">ⁿⁿ 退出</button>
       <span style="font-size:12px;opacity:0.7" id="headerInfo"></span>
     </div>
   </div>
 </div>
 
+<!-- ========== CONTAINER ========== -->
 <div class="container">
   <!-- Stats Cards -->
   <div class="stats-row" id="statsRow"></div>
@@ -755,7 +900,7 @@ table tr:last-child td {
 
   <!-- View Tabs -->
   <div class="view-tabs">
-    <button class="view-tab active" data-view="card" onclick="switchView('card')">卡片视图</button>
+    <button class="view-tab active" data-view="card" onclick="switchView('card')">片卡视图</button>
     <button class="view-tab" data-view="table" onclick="switchView('table')">表格视图</button>
     <button class="view-tab" data-view="gantt" onclick="switchView('gantt')">甘特图</button>
   </div>
@@ -766,15 +911,15 @@ table tr:last-child td {
   <div id="ganttView" class="fade-in" style="display:none"></div>
 </div>
 
-<!-- Admin Login Modal -->
+<!-- ========== ADMIN LOGIN MODAL ========== -->
 <div class="modal-overlay" id="adminLoginOverlay">
   <div class="modal" style="max-width:380px">
-    <div class="login-form">
-      <span class="lock-icon">&#128274;</span>
+    <div class="login-form" style="text-align:center">
+      <div style="font-size:36px;margin-bottom:10px">🔒</div>
       <h2 style="font-size:16px;margin-bottom:4px">管理员身份验证</h2>
       <p style="font-size:12px;color:var(--gray-5);margin-bottom:14px">请输入管理员口令以访问任务管理功能</p>
-      <input type="password" class="login-input" id="adminPwdInput" placeholder="请输入口令" onkeydown="if(event.key==='Enter')verifyAdmin()">
-      <div class="login-error" id="loginError"></div>
+      <input type="password" class="login-input" id="adminPwdInput" placeholder="请输入口令" onkeydown="if(event.key==='Enter')verifyAdmin()" style="max-width:280px;margin:10px auto;display:block">
+      <div class="login-error" id="loginError2" style="min-height:18px"></div>
       <div class="form-actions" style="justify-content:center">
         <button class="btn btn-primary-solid" onclick="verifyAdmin()">验证</button>
         <button class="btn btn-outline" style="color:var(--gray-6);border-color:var(--gray-3)" onclick="closeAdminLogin()">取消</button>
@@ -783,10 +928,10 @@ table tr:last-child td {
   </div>
 </div>
 
-<!-- Admin Task Modal -->
+<!-- ========== ADMIN TASK MODAL ========== -->
 <div class="modal-overlay" id="adminModalOverlay">
   <div class="modal" id="adminModal">
-    <h2>&#128221; 任务管理</h2>
+    <h2>📝 任务管理</h2>
     <div id="adminTasksList" class="admin-task-list"></div>
     <hr style="border:none;border-top:1px solid var(--gray-3);margin:10px 0">
     <h3 style="font-size:14px;font-weight:600;margin-bottom:12px">添加新任务</h3>
@@ -796,21 +941,24 @@ table tr:last-child td {
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>工时（人天）</label>
+        <label>工时（天）</label>
         <input type="number" id="newTaskHours" min="0.5" step="0.5" value="1">
       </div>
       <div class="form-group">
         <label>优先级</label>
         <select id="newTaskPriority">
-          <option value="high">高</option>
-          <option value="medium" selected>中</option>
-          <option value="low">低</option>
+          <option value="P0">P0</option>
+          <option value="P2" selected>P2</option>
         </select>
       </div>
     </div>
     <div class="form-group">
       <label>执行人</label>
       <select id="newTaskPerson"></select>
+    </div>
+    <div class="form-group">
+      <label>截止日期</label>
+      <input type="date" id="newTaskDeadline">
     </div>
     <div class="form-group">
       <label>地区</label>
@@ -821,7 +969,7 @@ table tr:last-child td {
         <option value="欧服">欧服</option>
       </select>
     </div>
-    <div id="scheduleResult" style="background:var(--primary-bg);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;margin-bottom:10px;display:none"></div>
+    <div id="scheduleResult" class="schedule-result"></div>
     <div class="form-actions">
       <button class="btn btn-success" onclick="addAdminTask()">添加并排期</button>
       <button class="btn btn-outline" style="color:var(--gray-6);border-color:var(--gray-3)" onclick="closeAdminModal()">关闭</button>
@@ -829,22 +977,147 @@ table tr:last-child td {
   </div>
 </div>
 
-<!-- Gantt Tooltip -->
+<!-- ========== GANTT TOOLTIP ========== -->
 <div class="gantt-tooltip" id="ganttTooltip"></div>
 
+<!-- ========== DATA EMBEDDED AS JSON ========== -->
+<script id="__DATA__" type="application/json">[{"title": "【日服】0727 GVG联赛经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-24 00:00:00", "endDate": "2026-06-24 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recuxK7EgRj4aR"}, {"title": "【日服】0727 王城巡游战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-18 00:00:00", "endDate": "2026-06-23 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigk4Mf2ck9"}, {"title": "【日服】0727 王城巡游经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-24 00:00:00", "endDate": "2026-06-24 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigkavKv08n"}, {"title": "【日服】0901 冒险家日记开箱子经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/07/31", "freezeDate": "2026/08/11", "versionDate": "2026/08/25", "onlineDate": "2026-09-02 00:00:00", "startDate": "2026-07-29 00:00:00", "endDate": "2026-07-31 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recviZJLVzIk02"}, {"title": "【日服】0922祈愿活动战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/26", "freezeDate": "2026/09/07", "versionDate": "2026/09/15", "onlineDate": null, "startDate": "2026-08-10 00:00:00", "endDate": "2026-08-12 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigmfJuOHi0"}, {"title": "【日服】0922祈愿活动战斗数值经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/08/26", "freezeDate": "2026/09/07", "versionDate": "2026/09/15", "onlineDate": null, "startDate": "2026-08-13 00:00:00", "endDate": "2026-08-25 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigmsKSAT9d"}, {"title": "【日服】1020万圣节经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-16 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigo9sG0r7Q"}, {"title": "【日服】1020万圣节战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigoh45BxPs"}, {"title": "【日服】1020钓鱼活动经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-16 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigqvNFn21s"}, {"title": "【日服】1020钓鱼活动战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigqApPz2Hb"}, {"title": "【ME】0601 波利巡游战斗数值【设计&配置】", "progress": "QA验收中", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": null, "startDate": "2026-04-20 00:00:00", "endDate": "2026-04-22 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recuD1JCVIp64l"}, {"title": "【ME】0601 波利巡游经济数值【设计&配置】", "progress": "QA验收中", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": null, "startDate": "2026-04-23 00:00:00", "endDate": "2026-04-30 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recuD1JF7Z4qgz"}, {"title": "【ME】0812 王城巡游（中型）-经济数值", "progress": "未启动", "testDate": "2026/07/24", "freezeDate": "2026/07/28", "versionDate": "2026/08/12", "onlineDate": null, "startDate": "2026-06-25 00:00:00", "endDate": "2026-07-01 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj1Hp0ILWQx"}, {"title": "【ME】0812 王城巡游（中型）-战斗数值", "progress": "未启动", "testDate": "2026/07/24", "freezeDate": "2026/07/28", "versionDate": "2026/08/12", "onlineDate": null, "startDate": "2026-06-25 00:00:00", "endDate": "2026-07-01 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj1I9Mm3uIJ"}, {"title": "【ME】0831 联动礼包经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": "2026-08-31 00:00:00", "startDate": "2026-08-10 00:00:00", "endDate": "2026-08-10 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj6vbOskIGN"}, {"title": "【ME】0831 巅峰GVG S1经济数值设计＆配置", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-08-11 00:00:00", "endDate": "2026-08-13 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj70qS4iNeZ"}, {"title": "【ME】0831 史莱姆 战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj7eJu0yOEg"}, {"title": "【ME】0831 史莱姆 经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj7eJIKhUVv"}, {"title": "【NA】0707元旦祈愿活动战斗数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": "2026-07-07 00:00:00", "startDate": "2026-06-11 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvieXH5nAomy"}, {"title": "【NA】0707元旦祈愿活动经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": "2026-07-07 00:00:00", "startDate": "2026-06-11 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvieY1QhdvWu"}, {"title": "【NA】0907 无限对决战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-13 00:00:00", "endDate": "2026-08-13 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvif6W0u9Kqc"}, {"title": "【NA】0907 无限对决经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-14 00:00:00", "endDate": "2026-08-17 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvif725u9SU1"}, {"title": "【NA】1223 双旦经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-20 00:00:00", "endDate": "2026-12-03 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recuQCNAPBEuW8"}, {"title": "【NA】1223 双旦战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-17 00:00:00", "endDate": "2026-11-20 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recuQCOQOhqBZU"}, {"title": "【国服】0715一拳联动经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-05-25 00:00:00", "endDate": "2026-06-10 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuAp8RcQaHPj"}, {"title": "【国服】0715一拳联动战斗数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-05-20 00:00:00", "endDate": "2026-05-24 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuDGNahTdHLf"}, {"title": "【国服】0819 一飞冲天经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": null, "startDate": "2026-07-15 00:00:00", "endDate": "2026-07-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recvi3fsv1W7x8"}, {"title": "【国服】0819 无限对决经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": null, "startDate": "2026-07-22 00:00:00", "endDate": "2026-07-27 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recvi9fRKY7yHI"}, {"title": "【国服】0819 无限对决战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": null, "startDate": "2026-07-28 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recvi9fXiL2MU3"}, {"title": "【国服】0909二周年庆战斗数值设计&配置", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": "2026-09-09 00:00:00", "startDate": "2026-07-02 00:00:00", "endDate": "2026-07-06 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxK2NozJRuU"}, {"title": "【国服】0909二周年庆经济数值设计&配置", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": "2026-09-09 00:00:00", "startDate": "2026-07-07 00:00:00", "endDate": "2026-07-14 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxKZJznh7Mj"}, {"title": "【国服】1019万圣节经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/21", "freezeDate": "2026/10/05", "versionDate": "2026/10/19", "onlineDate": null, "startDate": "2026-09-11 00:00:00", "endDate": "2026-09-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxKedujXzHf"}, {"title": "【国服】1019万圣节战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/21", "freezeDate": "2026/10/05", "versionDate": "2026/10/19", "onlineDate": null, "startDate": "2026-09-08 00:00:00", "endDate": "2026-09-10 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxKeeT2RXsR"}, {"title": "【国服】1125  联动--RE0经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-21 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuNd8dIRVSMq"}, {"title": "【国服】1224圣诞节战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/11/11", "freezeDate": "2026/12/09", "versionDate": "2026/12/24", "onlineDate": null, "startDate": "2026-11-04 00:00:00", "endDate": "2026-11-11 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuQCXavp7Oit"}, {"title": "【ME】0629 冒险家日记-经济数值设计&配置 纯活跃", "progress": "QA验收中", "testDate": "2026/06/09", "freezeDate": "2026/06/12", "versionDate": "2026/06/29", "onlineDate": null, "startDate": "2026-06-11 00:00:00", "endDate": "2026-06-15 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["欧服"], "id": "recvjWa3oWVGEO"}, {"title": "【NA】0727神选S4商店兑换经济数值【设计&配置】（8/3开）", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-29 00:00:00", "endDate": "2026-07-03 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recvif5W4aY8zf"}, {"title": "【NA】1108 阿童木战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-08 00:00:00", "endDate": "2026-10-16 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recuNd4QJ001dt"}, {"title": "【NA】1108 神选S5 商店兑换经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-12 00:00:00", "endDate": "2026-10-12 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recvig07i6AI2t"}, {"title": "【NA】1223精灵系统战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-16 00:00:00", "endDate": "2026-12-03 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recvig14xbLp9O"}, {"title": "【国服】0909新职业——忍者影装技能战斗数值【设计】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-07-01 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recuxK1pMfnzcJ"}, {"title": "【国服】0909 120级战斗数值【设计&配置】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvi3hChNBQ0b"}, {"title": "【国服】0909新职业——忍者除影装技能战斗数值【设计】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvi3jfid7tIP"}, {"title": "【忍者子任务】忍者base、job加点", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVKufUUxSM"}, {"title": "【忍者子任务】影装属性数值", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVLV8Lz27X"}, {"title": "【忍者子任务】转职怪物", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVMkbKvvHX"}, {"title": "【忍者子任务】 忍者装备相关", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVMOQG2ZBO"}, {"title": "【国服】1125  联动--RE0战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-10-08 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recuNd8oMKGVih"}, {"title": "【国服】1125 神选S6经济数值兑换商店【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-24 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvi9ZrHkZcex"}, {"title": "【国服】1224圣诞节经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/11/11", "freezeDate": "2026/12/09", "versionDate": "2026/12/24", "onlineDate": null, "startDate": "2026-10-30 00:00:00", "endDate": "2026-11-11 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recuQCPpdWNLwE"}, {"title": "【国服】1224版本礼包经济数值【设计】", "progress": "未启动", "testDate": "2026/11/11", "freezeDate": "2026/12/09", "versionDate": "2026/12/24", "onlineDate": "2026-12-24 00:00:00", "startDate": "2026-12-04 00:00:00", "endDate": "2026-12-07 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvieWxlOmdun"}, {"title": "【日服】1020卡片觉醒战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-19 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["日服"], "id": "recvigncSCpOpW"}, {"title": "【日服】1020卡片觉醒经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-18 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["日服"], "id": "recvigne3qlADr"}, {"title": "【ME】0601神选S1- 兑换商店-经济数值", "progress": "未启动", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": "2026-06-01 00:00:00", "startDate": "2026-05-18 00:00:00", "endDate": "2026-05-20 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["欧服"], "id": "recvjWmyqjsTxS"}, {"title": "【ME】0601神选S1- 64强奖励-经济数值", "progress": "未启动", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": "2026-06-01 00:00:00", "startDate": "2026-05-18 00:00:00", "endDate": "2026-05-20 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["欧服"], "id": "recvjWmJYXqTjZ"}, {"title": "【ME】0629 半周年庆经济数值设计&配置", "progress": "未启动", "testDate": "2026/06/09", "freezeDate": "2026/06/12", "versionDate": "2026/06/29", "onlineDate": null, "startDate": "2026-05-18 00:00:00", "endDate": "2026-05-27 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["欧服"], "id": "recuAp89YBS3sX"}, {"title": "【NA】0707 钻石交易行数值设计&配置", "progress": "未启动", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-11 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvhl5PW3YSvL"}, {"title": "【NA】0727 众神殿经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-06-15 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recuCmF17cmA2N"}, {"title": "【NA】0727 众神殿战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-06-15 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvif5vJjDChH"}, {"title": "【NA】0907 史莱姆 战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-07-28 00:00:00", "endDate": "2026-07-30 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvif7fdDSkqS"}, {"title": "【NA】0907 史莱姆 经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-07-31 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvif7iIQ2DNQ"}, {"title": "【NA】1014 万圣节经济数值设计&配置", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-04 00:00:00", "endDate": "2026-09-14 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recuxKexjYgpXe"}, {"title": "【NA】1014 万圣节战斗数值设计&配置", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-14 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recuxKeJCb5DLE"}, {"title": "【NA】1108 众神殿战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-05 00:00:00", "endDate": "2026-10-09 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvifXE8S8aDS"}, {"title": "【NA】1108 众神殿经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-09 00:00:00", "endDate": "2026-10-16 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvifXIhNGiNx"}, {"title": "【国服】0715感恩季应援战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-09 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recuFFjHN8Hr27"}, {"title": "【国服】0715感恩季应援经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-09 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recuFGbebkSE1x"}, {"title": "【国服】0715 众神殿经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-10 00:00:00", "endDate": "2026-06-12 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recvi3eAP35oLM"}, {"title": "【国服】0715 众神殿战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-10 00:00:00", "endDate": "2026-06-12 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recvif5g97AsbW"}, {"title": "【日服】0727 版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-07-06 00:00:00", "endDate": "2026-07-08 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigkDjjOPCQ"}, {"title": "【日服】0727 生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-30 00:00:00", "endDate": "2026-07-01 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigkPEPkYxT"}, {"title": "【日服】0901 版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/07/31", "freezeDate": "2026/08/11", "versionDate": "2026/08/25", "onlineDate": "2026-08-25 00:00:00", "startDate": "2026-08-04 00:00:00", "endDate": "2026-08-06 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recviglRDIj4lx"}, {"title": "【日服】0922版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/08/26", "freezeDate": "2026/09/07", "versionDate": "2026/09/15", "onlineDate": "2026-09-22 00:00:00", "startDate": "2026-08-31 00:00:00", "endDate": "2026-09-02 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigmTfMHZLf"}, {"title": "【日服】1020MVP之王经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-23 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvignADrWjiA"}, {"title": "【日服】1020生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-23 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvignJkuFP5n"}, {"title": "【日服】1020版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": "2026-10-20 00:00:00", "startDate": "2026-09-23 00:00:00", "endDate": "2026-09-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigpuRP25vl"}, {"title": "【ME】0812 版本礼包经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/24", "freezeDate": "2026/07/28", "versionDate": "2026/08/12", "onlineDate": "2026-08-12 00:00:00", "startDate": "2026-07-21 00:00:00", "endDate": "2026-07-23 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["欧服"], "id": "recvj6v7zJMcBp"}, {"title": "【NA】0707生活大爆炸（7/13开）", "progress": "未启动", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": null, "startDate": "2026-06-16 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvieYSIAn8Xl"}, {"title": "【NA】0707神格礼包经济数值【设计】", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": "2026-07-07 00:00:00", "startDate": "2026-06-12 00:00:00", "endDate": "2026-06-16 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvieZbuIdv0i"}, {"title": "【NA】0707神格经济数值配置", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvj6RwpXO7n5"}, {"title": "【NA】0727神选礼包", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-07-03 00:00:00", "endDate": "2026-07-07 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvif6664voQr"}, {"title": "【NA】0907联动礼包数值【设计】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": "2026-09-07 00:00:00", "startDate": "2026-08-14 00:00:00", "endDate": "2026-08-18 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvif7Av1xBNd"}, {"title": "【NA】1014 110级冒险家日记经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-11 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifMtuHULG8"}, {"title": "【NA】1014生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifMVEZ2eNW"}, {"title": "【NA】1014MVP之王经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifO7Ra1jui"}, {"title": "【NA】1014110级礼包", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": "2026-10-14 00:00:00", "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-18 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifOHrFBvID"}, {"title": "【NA】1014万圣节礼包（10/21开启）经济数值【设计】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": "2026-10-21 00:00:00", "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-18 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifPe8ksLwj"}, {"title": "【NA】1014 神格新槽位经济数值配置", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-08 00:00:00", "endDate": "2026-09-09 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvj6S5mhJF0R"}, {"title": "【NA】1108 阿童木经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-09-28 00:00:00", "endDate": "2026-10-16 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recuNd4c5tUcf2"}, {"title": "【NA】1108联动礼包经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": "2026-11-08 00:00:00", "startDate": "2026-10-16 00:00:00", "endDate": "2026-10-20 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifVzZs2FJw"}, {"title": "【NA】1223精灵系统经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-16 00:00:00", "endDate": "2026-12-03 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvig0VSFlcDE"}, {"title": "【NA】周年庆数据复盘【数值】", "progress": "未启动", "testDate": "", "freezeDate": "", "versionDate": "", "onlineDate": null, "startDate": "2026-06-22 00:00:00", "endDate": "2026-06-23 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvm2dKwwQXQf"}, {"title": "【国服】0715版本礼包【设计】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-24 00:00:00", "endDate": "2026-06-26 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3bAZ5mv4F"}, {"title": "【国服】0819 版本礼包经济数值【设计】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": "2026-08-19 00:00:00", "startDate": "2026-07-31 00:00:00", "endDate": "2026-08-04 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi4UoIV0bHB"}, {"title": "【国服】0909版本礼包经济数值【设计】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": "2026-09-09 00:00:00", "startDate": "2026-08-19 00:00:00", "endDate": "2026-08-21 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3hidFCw2R"}, {"title": "【国服】0909 120级经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3hHPBhNuV"}, {"title": "【国服】0909新职业——忍者经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3joUdjCvp"}, {"title": "【国服】0909MVP之王经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-07-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi9jz3Tv7vu"}, {"title": "【国服】0909生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-07-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi9kJE3mZse"}, {"title": "【国服】0909神格新槽位经济数值配置", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvj6KFVwuJ5T"}, {"title": "【国服】1125 精灵系统战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-14 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvieT2Vpe2kP"}, {"title": "【日服】0727 GVG联赛战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-22 00:00:00", "endDate": "2026-06-26 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["日服"], "id": "recuF1r5WDG4M4"}, {"title": "【ME】0831 巅峰GVG S1战斗数值设计＆配置", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-07-30 00:00:00", "endDate": "2026-08-04 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["欧服"], "id": "recvj70lLI2lZt"}, {"title": "【NA】0727神选S4战斗数值【设计&配置】（8/3开）", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-29 00:00:00", "endDate": "2026-07-03 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvif5AoneIKz"}, {"title": "【NA】0907 GVG联赛战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvif98UGpTLM"}, {"title": "【NA】0907 GVG联赛兑换商店经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvifLnBtsr9d"}, {"title": "【NA】0907 赛季S3——称号数值设计", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-04 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvj0zN4kbCU4"}, {"title": "【NA】1014卡片收集册（卡片觉醒）经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvifQAf9t3bm"}, {"title": "【NA】1014卡片收集册（卡片觉醒）战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-04 00:00:00", "endDate": "2026-09-10 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvifRGHSMjEh"}, {"title": "【NA】1108 神选S5 战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-05 00:00:00", "endDate": "2026-10-09 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvig041Ctk2y"}, {"title": "【国服】1018GVG联赛战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/21", "freezeDate": "2026/10/05", "versionDate": "2026/10/19", "onlineDate": null, "startDate": "2026-09-01 00:00:00", "endDate": "2026-09-04 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["国服"], "id": "recvi9SywVeCdz"}, {"title": "【国服】1125 神选S6战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-24 00:00:00", "endDate": "2026-09-30 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["国服"], "id": "recvi9ZcWFp0OM"}, {"title": "【国服】1125 精灵系统经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-14 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["国服"], "id": "recvieTq6vAQfn"}]</script>
+
+<!-- ========== APPLICATION SCRIPT ========== -->
 <script>
-// ======================== EMBEDDED DATA ========================
-var DATA = {"records": [{"title": "【日服】0727 GVG联赛经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-24 00:00:00", "endDate": "2026-06-24 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recuxK7EgRj4aR"}, {"title": "【日服】0727 王城巡游战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-18 00:00:00", "endDate": "2026-06-23 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigk4Mf2ck9"}, {"title": "【日服】0727 王城巡游经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-24 00:00:00", "endDate": "2026-06-24 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigkavKv08n"}, {"title": "【日服】0901 冒险家日记开箱子经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/07/31", "freezeDate": "2026/08/11", "versionDate": "2026/08/25", "onlineDate": "2026-09-02 00:00:00", "startDate": "2026-07-29 00:00:00", "endDate": "2026-07-31 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recviZJLVzIk02"}, {"title": "【日服】0922祈愿活动战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/26", "freezeDate": "2026/09/07", "versionDate": "2026/09/15", "onlineDate": null, "startDate": "2026-08-10 00:00:00", "endDate": "2026-08-12 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigmfJuOHi0"}, {"title": "【日服】0922祈愿活动战斗数值经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/08/26", "freezeDate": "2026/09/07", "versionDate": "2026/09/15", "onlineDate": null, "startDate": "2026-08-13 00:00:00", "endDate": "2026-08-25 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigmsKSAT9d"}, {"title": "【日服】1020万圣节经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-16 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigo9sG0r7Q"}, {"title": "【日服】1020万圣节战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigoh45BxPs"}, {"title": "【日服】1020钓鱼活动经济数值【审核、配置给到系统】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-16 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigqvNFn21s"}, {"title": "【日服】1020钓鱼活动战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["日服"], "id": "recvigqApPz2Hb"}, {"title": "【ME】0601 波利巡游战斗数值【设计&配置】", "progress": "QA验收中", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": null, "startDate": "2026-04-20 00:00:00", "endDate": "2026-04-22 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recuD1JCVIp64l"}, {"title": "【ME】0601 波利巡游经济数值【设计&配置】", "progress": "QA验收中", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": null, "startDate": "2026-04-23 00:00:00", "endDate": "2026-04-30 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recuD1JF7Z4qgz"}, {"title": "【ME】0812 王城巡游（中型）-经济数值", "progress": "未启动", "testDate": "2026/07/24", "freezeDate": "2026/07/28", "versionDate": "2026/08/12", "onlineDate": null, "startDate": "2026-06-25 00:00:00", "endDate": "2026-07-01 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj1Hp0ILWQx"}, {"title": "【ME】0812 王城巡游（中型）-战斗数值", "progress": "未启动", "testDate": "2026/07/24", "freezeDate": "2026/07/28", "versionDate": "2026/08/12", "onlineDate": null, "startDate": "2026-06-25 00:00:00", "endDate": "2026-07-01 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj1I9Mm3uIJ"}, {"title": "【ME】0831 联动礼包经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": "2026-08-31 00:00:00", "startDate": "2026-08-10 00:00:00", "endDate": "2026-08-10 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj6vbOskIGN"}, {"title": "【ME】0831 巅峰GVG S1经济数值设计＆配置", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-08-11 00:00:00", "endDate": "2026-08-13 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj70qS4iNeZ"}, {"title": "【ME】0831 史莱姆 战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj7eJu0yOEg"}, {"title": "【ME】0831 史莱姆 经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["欧服"], "id": "recvj7eJIKhUVv"}, {"title": "【NA】0707元旦祈愿活动战斗数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": "2026-07-07 00:00:00", "startDate": "2026-06-11 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvieXH5nAomy"}, {"title": "【NA】0707元旦祈愿活动经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": "2026-07-07 00:00:00", "startDate": "2026-06-11 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvieY1QhdvWu"}, {"title": "【NA】0907 无限对决战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-13 00:00:00", "endDate": "2026-08-13 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvif6W0u9Kqc"}, {"title": "【NA】0907 无限对决经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-14 00:00:00", "endDate": "2026-08-17 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recvif725u9SU1"}, {"title": "【NA】1223 双旦经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-20 00:00:00", "endDate": "2026-12-03 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recuQCNAPBEuW8"}, {"title": "【NA】1223 双旦战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-17 00:00:00", "endDate": "2026-11-20 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["美服"], "id": "recuQCOQOhqBZU"}, {"title": "【国服】0715一拳联动经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-05-25 00:00:00", "endDate": "2026-06-10 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuAp8RcQaHPj"}, {"title": "【国服】0715一拳联动战斗数值【设计&配置】", "progress": "进行中", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-05-20 00:00:00", "endDate": "2026-05-24 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuDGNahTdHLf"}, {"title": "【国服】0819 一飞冲天经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": null, "startDate": "2026-07-15 00:00:00", "endDate": "2026-07-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recvi3fsv1W7x8"}, {"title": "【国服】0819 无限对决经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": null, "startDate": "2026-07-22 00:00:00", "endDate": "2026-07-27 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recvi9fRKY7yHI"}, {"title": "【国服】0819 无限对决战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": null, "startDate": "2026-07-28 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recvi9fXiL2MU3"}, {"title": "【国服】0909二周年庆战斗数值设计&配置", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": "2026-09-09 00:00:00", "startDate": "2026-07-02 00:00:00", "endDate": "2026-07-06 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxK2NozJRuU"}, {"title": "【国服】0909二周年庆经济数值设计&配置", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": "2026-09-09 00:00:00", "startDate": "2026-07-07 00:00:00", "endDate": "2026-07-14 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxKZJznh7Mj"}, {"title": "【国服】1019万圣节经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/21", "freezeDate": "2026/10/05", "versionDate": "2026/10/19", "onlineDate": null, "startDate": "2026-09-11 00:00:00", "endDate": "2026-09-21 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxKedujXzHf"}, {"title": "【国服】1019万圣节战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/21", "freezeDate": "2026/10/05", "versionDate": "2026/10/19", "onlineDate": null, "startDate": "2026-09-08 00:00:00", "endDate": "2026-09-10 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuxKeeT2RXsR"}, {"title": "【国服】1125  联动--RE0经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-21 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuNd8dIRVSMq"}, {"title": "【国服】1224圣诞节战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/11/11", "freezeDate": "2026/12/09", "versionDate": "2026/12/24", "onlineDate": null, "startDate": "2026-11-04 00:00:00", "endDate": "2026-11-11 00:00:00", "assignee": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}], "region": ["国服"], "id": "recuQCXavp7Oit"}, {"title": "【ME】0629 冒险家日记-经济数值设计&配置 纯活跃", "progress": "QA验收中", "testDate": "2026/06/09", "freezeDate": "2026/06/12", "versionDate": "2026/06/29", "onlineDate": null, "startDate": "2026-06-11 00:00:00", "endDate": "2026-06-15 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["欧服"], "id": "recvjWa3oWVGEO"}, {"title": "【NA】0727神选S4商店兑换经济数值【设计&配置】（8/3开）", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-29 00:00:00", "endDate": "2026-07-03 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recvif5W4aY8zf"}, {"title": "【NA】1108 阿童木战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-08 00:00:00", "endDate": "2026-10-16 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recuNd4QJ001dt"}, {"title": "【NA】1108 神选S5 商店兑换经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-12 00:00:00", "endDate": "2026-10-12 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recvig07i6AI2t"}, {"title": "【NA】1223精灵系统战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-16 00:00:00", "endDate": "2026-12-03 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["美服"], "id": "recvig14xbLp9O"}, {"title": "【国服】0909新职业——忍者影装技能战斗数值【设计】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-07-01 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recuxK1pMfnzcJ"}, {"title": "【国服】0909 120级战斗数值【设计&配置】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvi3hChNBQ0b"}, {"title": "【国服】0909新职业——忍者除影装技能战斗数值【设计】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvi3jfid7tIP"}, {"title": "【忍者子任务】忍者base、job加点", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVKufUUxSM"}, {"title": "【忍者子任务】影装属性数值", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVLV8Lz27X"}, {"title": "【忍者子任务】转职怪物", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVMkbKvvHX"}, {"title": "【忍者子任务】 忍者装备相关", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvlVMOQG2ZBO"}, {"title": "【国服】1125  联动--RE0战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-10-08 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recuNd8oMKGVih"}, {"title": "【国服】1125 神选S6经济数值兑换商店【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-24 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvi9ZrHkZcex"}, {"title": "【国服】1224圣诞节经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/11/11", "freezeDate": "2026/12/09", "versionDate": "2026/12/24", "onlineDate": null, "startDate": "2026-10-30 00:00:00", "endDate": "2026-11-11 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recuQCPpdWNLwE"}, {"title": "【国服】1224版本礼包经济数值【设计】", "progress": "未启动", "testDate": "2026/11/11", "freezeDate": "2026/12/09", "versionDate": "2026/12/24", "onlineDate": "2026-12-24 00:00:00", "startDate": "2026-12-04 00:00:00", "endDate": "2026-12-07 00:00:00", "assignee": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}], "region": ["国服"], "id": "recvieWxlOmdun"}, {"title": "【日服】1020卡片觉醒战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-19 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["日服"], "id": "recvigncSCpOpW"}, {"title": "【日服】1020卡片觉醒经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-18 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["日服"], "id": "recvigne3qlADr"}, {"title": "【ME】0601神选S1- 兑换商店-经济数值", "progress": "未启动", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": "2026-06-01 00:00:00", "startDate": "2026-05-18 00:00:00", "endDate": "2026-05-20 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["欧服"], "id": "recvjWmyqjsTxS"}, {"title": "【ME】0601神选S1- 64强奖励-经济数值", "progress": "未启动", "testDate": "2026/05/12", "freezeDate": "2026/05/15", "versionDate": "2026/06/01", "onlineDate": "2026-06-01 00:00:00", "startDate": "2026-05-18 00:00:00", "endDate": "2026-05-20 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["欧服"], "id": "recvjWmJYXqTjZ"}, {"title": "【ME】0629 半周年庆经济数值设计&配置", "progress": "未启动", "testDate": "2026/06/09", "freezeDate": "2026/06/12", "versionDate": "2026/06/29", "onlineDate": null, "startDate": "2026-05-18 00:00:00", "endDate": "2026-05-27 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["欧服"], "id": "recuAp89YBS3sX"}, {"title": "【NA】0707 钻石交易行数值设计&配置", "progress": "未启动", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-11 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvhl5PW3YSvL"}, {"title": "【NA】0727 众神殿经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-06-15 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recuCmF17cmA2N"}, {"title": "【NA】0727 众神殿战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-06-15 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvif5vJjDChH"}, {"title": "【NA】0907 史莱姆 战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-07-28 00:00:00", "endDate": "2026-07-30 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvif7fdDSkqS"}, {"title": "【NA】0907 史莱姆 经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-07-31 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvif7iIQ2DNQ"}, {"title": "【NA】1014 万圣节经济数值设计&配置", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-04 00:00:00", "endDate": "2026-09-14 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recuxKexjYgpXe"}, {"title": "【NA】1014 万圣节战斗数值设计&配置", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-14 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recuxKeJCb5DLE"}, {"title": "【NA】1108 众神殿战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-05 00:00:00", "endDate": "2026-10-09 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvifXE8S8aDS"}, {"title": "【NA】1108 众神殿经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-09 00:00:00", "endDate": "2026-10-16 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["美服"], "id": "recvifXIhNGiNx"}, {"title": "【国服】0715感恩季应援战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-09 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recuFFjHN8Hr27"}, {"title": "【国服】0715感恩季应援经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-09 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recuFGbebkSE1x"}, {"title": "【国服】0715 众神殿经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-10 00:00:00", "endDate": "2026-06-12 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recvi3eAP35oLM"}, {"title": "【国服】0715 众神殿战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-10 00:00:00", "endDate": "2026-06-12 00:00:00", "assignee": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}], "region": ["国服"], "id": "recvif5g97AsbW"}, {"title": "【日服】0727 版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-07-06 00:00:00", "endDate": "2026-07-08 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigkDjjOPCQ"}, {"title": "【日服】0727 生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-30 00:00:00", "endDate": "2026-07-01 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigkPEPkYxT"}, {"title": "【日服】0901 版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/07/31", "freezeDate": "2026/08/11", "versionDate": "2026/08/25", "onlineDate": "2026-08-25 00:00:00", "startDate": "2026-08-04 00:00:00", "endDate": "2026-08-06 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recviglRDIj4lx"}, {"title": "【日服】0922版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/08/26", "freezeDate": "2026/09/07", "versionDate": "2026/09/15", "onlineDate": "2026-09-22 00:00:00", "startDate": "2026-08-31 00:00:00", "endDate": "2026-09-02 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigmTfMHZLf"}, {"title": "【日服】1020MVP之王经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-23 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvignADrWjiA"}, {"title": "【日服】1020生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": null, "startDate": "2026-09-23 00:00:00", "endDate": "2026-09-24 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvignJkuFP5n"}, {"title": "【日服】1020版本礼包经济数值【审核】", "progress": "未启动", "testDate": "2026/09/24", "freezeDate": "2026/10/05", "versionDate": "2026/10/20", "onlineDate": "2026-10-20 00:00:00", "startDate": "2026-09-23 00:00:00", "endDate": "2026-09-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["日服"], "id": "recvigpuRP25vl"}, {"title": "【ME】0812 版本礼包经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/24", "freezeDate": "2026/07/28", "versionDate": "2026/08/12", "onlineDate": "2026-08-12 00:00:00", "startDate": "2026-07-21 00:00:00", "endDate": "2026-07-23 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["欧服"], "id": "recvj6v7zJMcBp"}, {"title": "【NA】0707生活大爆炸（7/13开）", "progress": "未启动", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": null, "startDate": "2026-06-16 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvieYSIAn8Xl"}, {"title": "【NA】0707神格礼包经济数值【设计】", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": "2026-07-07 00:00:00", "startDate": "2026-06-12 00:00:00", "endDate": "2026-06-16 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvieZbuIdv0i"}, {"title": "【NA】0707神格经济数值配置", "progress": "进行中", "testDate": "2026/06/17", "freezeDate": "2026/06/22", "versionDate": "2026/07/07", "onlineDate": null, "startDate": "2026-06-08 00:00:00", "endDate": "2026-06-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvj6RwpXO7n5"}, {"title": "【NA】0727神选礼包", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": "2026-07-27 00:00:00", "startDate": "2026-07-03 00:00:00", "endDate": "2026-07-07 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvif6664voQr"}, {"title": "【NA】0907联动礼包数值【设计】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": "2026-09-07 00:00:00", "startDate": "2026-08-14 00:00:00", "endDate": "2026-08-18 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvif7Av1xBNd"}, {"title": "【NA】1014 110级冒险家日记经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-11 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifMtuHULG8"}, {"title": "【NA】1014生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifMVEZ2eNW"}, {"title": "【NA】1014MVP之王经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifO7Ra1jui"}, {"title": "【NA】1014110级礼包", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": "2026-10-14 00:00:00", "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-18 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifOHrFBvID"}, {"title": "【NA】1014万圣节礼包（10/21开启）经济数值【设计】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": "2026-10-21 00:00:00", "startDate": "2026-09-16 00:00:00", "endDate": "2026-09-18 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifPe8ksLwj"}, {"title": "【NA】1014 神格新槽位经济数值配置", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-08 00:00:00", "endDate": "2026-09-09 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvj6S5mhJF0R"}, {"title": "【NA】1108 阿童木经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-09-28 00:00:00", "endDate": "2026-10-16 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recuNd4c5tUcf2"}, {"title": "【NA】1108联动礼包经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": "2026-11-08 00:00:00", "startDate": "2026-10-16 00:00:00", "endDate": "2026-10-20 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvifVzZs2FJw"}, {"title": "【NA】1223精灵系统经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/12/03", "freezeDate": "2026/12/09", "versionDate": "2026/12/23", "onlineDate": null, "startDate": "2026-11-16 00:00:00", "endDate": "2026-12-03 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvig0VSFlcDE"}, {"title": "【NA】周年庆数据复盘【数值】", "progress": "未启动", "testDate": "", "freezeDate": "", "versionDate": "", "onlineDate": null, "startDate": "2026-06-22 00:00:00", "endDate": "2026-06-23 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["美服"], "id": "recvm2dKwwQXQf"}, {"title": "【国服】0715版本礼包【设计】", "progress": "未启动", "testDate": "2026/06/24", "freezeDate": "2026/07/01", "versionDate": "2026/07/15", "onlineDate": "2026-07-15 00:00:00", "startDate": "2026-06-24 00:00:00", "endDate": "2026-06-26 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3bAZ5mv4F"}, {"title": "【国服】0819 版本礼包经济数值【设计】", "progress": "未启动", "testDate": "2026/07/29", "freezeDate": "2026/08/07", "versionDate": "2026/08/19", "onlineDate": "2026-08-19 00:00:00", "startDate": "2026-07-31 00:00:00", "endDate": "2026-08-04 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi4UoIV0bHB"}, {"title": "【国服】0909版本礼包经济数值【设计】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": "2026-09-09 00:00:00", "startDate": "2026-08-19 00:00:00", "endDate": "2026-08-21 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3hidFCw2R"}, {"title": "【国服】0909 120级经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3hHPBhNuV"}, {"title": "【国服】0909新职业——忍者经济数值【设计&配置】", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi3joUdjCvp"}, {"title": "【国服】0909MVP之王经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-07-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi9jz3Tv7vu"}, {"title": "【国服】0909生活大爆炸经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-07-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvi9kJE3mZse"}, {"title": "【国服】0909神格新槽位经济数值配置", "progress": "进行中", "testDate": "2026/08/06", "freezeDate": "2026/08/26", "versionDate": "2026/09/09", "onlineDate": null, "startDate": "2026-04-27 00:00:00", "endDate": "2026-07-28 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvj6KFVwuJ5T"}, {"title": "【国服】1125 精灵系统战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-14 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}], "region": ["国服"], "id": "recvieT2Vpe2kP"}, {"title": "【日服】0727 GVG联赛战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/07/01", "freezeDate": "2026/07/13", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-22 00:00:00", "endDate": "2026-06-26 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["日服"], "id": "recuF1r5WDG4M4"}, {"title": "【ME】0831 巅峰GVG S1战斗数值设计＆配置", "progress": "未启动", "testDate": "2026/08/10", "freezeDate": "2026/08/14", "versionDate": "2026/08/31", "onlineDate": null, "startDate": "2026-07-30 00:00:00", "endDate": "2026-08-04 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["欧服"], "id": "recvj70lLI2lZt"}, {"title": "【NA】0727神选S4战斗数值【设计&配置】（8/3开）", "progress": "未启动", "testDate": "2026/07/07", "freezeDate": "2026/07/10", "versionDate": "2026/07/27", "onlineDate": null, "startDate": "2026-06-29 00:00:00", "endDate": "2026-07-03 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvif5AoneIKz"}, {"title": "【NA】0907 GVG联赛战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvif98UGpTLM"}, {"title": "【NA】0907 GVG联赛兑换商店经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-07 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvifLnBtsr9d"}, {"title": "【NA】0907 赛季S3——称号数值设计", "progress": "未启动", "testDate": "2026/08/18", "freezeDate": "2026/08/21", "versionDate": "2026/09/07", "onlineDate": null, "startDate": "2026-08-03 00:00:00", "endDate": "2026-08-04 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvj0zN4kbCU4"}, {"title": "【NA】1014卡片收集册（卡片觉醒）经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-10 00:00:00", "endDate": "2026-09-17 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvifQAf9t3bm"}, {"title": "【NA】1014卡片收集册（卡片觉醒）战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/17", "freezeDate": "2026/09/22", "versionDate": "2026/10/14", "onlineDate": null, "startDate": "2026-09-04 00:00:00", "endDate": "2026-09-10 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvifRGHSMjEh"}, {"title": "【NA】1108 神选S5 战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/16", "freezeDate": "2026/10/23", "versionDate": "2026/11/08", "onlineDate": null, "startDate": "2026-10-05 00:00:00", "endDate": "2026-10-09 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["美服"], "id": "recvig041Ctk2y"}, {"title": "【国服】1018GVG联赛战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/09/21", "freezeDate": "2026/10/05", "versionDate": "2026/10/19", "onlineDate": null, "startDate": "2026-09-01 00:00:00", "endDate": "2026-09-04 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["国服"], "id": "recvi9SywVeCdz"}, {"title": "【国服】1125 神选S6战斗数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-24 00:00:00", "endDate": "2026-09-30 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["国服"], "id": "recvi9ZcWFp0OM"}, {"title": "【国服】1125 精灵系统经济数值【设计&配置】", "progress": "未启动", "testDate": "2026/10/14", "freezeDate": "2026/11/10", "versionDate": "2026/11/25", "onlineDate": null, "startDate": "2026-09-14 00:00:00", "endDate": "2026-10-14 00:00:00", "assignee": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}], "region": ["国服"], "id": "recvieTq6vAQfn"}], "people": [{"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_9c4b2254166c013cddc3dd2388d6f703", "name": "余聪"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_a8bc63343fde13c29944d9f0c291c266", "name": "左棪"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_ba1ece72ceb618587ee602ae395b096e", "name": "张峰硕"}]}, {"文本": null, "人员.部门": ["关卡策划"], "人员": [{"id": "ou_afc395ee7b1bc3d526507d473ad93fab", "name": "杨梓俊"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_254275a7f6206c6a46a6ecaff4e2755e", "name": "姚子奇"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_55a3f4e8f6e864f8f3baaeb33e454519", "name": "陈勇"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_c7db868b918750cff9168bbdcb2406b7", "name": "陈柯宏"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_0ce2a512e7bb5235390adb05649e0536", "name": "李辰辉"}]}, {"文本": null, "人员.部门": ["PM"], "人员": [{"id": "ou_aeef5dbacd9f79587f3e2c4773509050", "name": "倪雪"}]}, {"文本": null, "人员.部门": ["本地化策划"], "人员": [{"id": "ou_5b4034df95ffdbd5a31b07e042e9c5a4", "name": "孙甜甜"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_7d3a36a196023dbaa71f73f06defaa93", "name": "张昊杰"}]}, {"文本": null, "人员.部门": ["剧情策划"], "人员": [{"id": "ou_bd82f88cc98c9b68364d140b4ec14b5c", "name": "孙沁"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_f757f445b4d67d08fea8d18f2d6aecfa", "name": "吴飞"}]}, {"文本": null, "人员.部门": ["PM"], "人员": [{"id": "ou_7d62175dea3398ea8f7b1f0308ca02c2", "name": "王慧添"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_0003587d50ec0c96e14a4ce4afa30845", "name": "杨旻皓"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_30f7d4b7070aad51b19f17c59311e5da", "name": "阴启蔚"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_2ce650c67d128f49ff2ec81a8784fc80", "name": "王晨"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_772c2025947a45b4509d8ecfd76e8a06", "name": "黄紫萱"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_dd59f76524e873cd6c682b0ec914ee79", "name": "杨昊哲"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_bdf116cec9c10f3bca578d3655971194", "name": "王建宇"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_8fb1d4c7786e0d3ed3d205956ae8ff2b", "name": "潘守成"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_8f8998ed03b9a7317bd9695d384615be", "name": "朱力"}]}, {"文本": null, "人员.部门": ["本地化策划"], "人员": [{"id": "ou_c3a3fc45b074db0627e9632f4fa6142f", "name": "李靓婷"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_325410745570d2b6165175eb24ad1543", "name": "瞿才应"}]}, {"文本": null, "人员.部门": ["ROX项目部"], "人员": [{"id": "ou_fb3c68b92d6422d62bce2bdd0e605022", "name": "施奕如"}]}, {"文本": null, "人员.部门": ["关卡策划"], "人员": [{"id": "ou_7972cd220eb3f82cb18c106a326d6a17", "name": "余晓龙"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_30cbd4666d65b160ec5792effe499adb", "name": "张佳华"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_c47260fc3923aa0e69ddf157e49aa5c1", "name": "徐元俊"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_c0e20580ec33aa9fd861a992408f9e49", "name": "何广皓"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_35776c16f538dae3a9bffc838652f956", "name": "王启智"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_df21ac393503a45dea9541a7c07b054b", "name": "谢云峰"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_c2716817b24a2bde1e2eab03d553e67f", "name": "朱镕"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_a1170c96d834bbb8cc1bb4f441f39a4f", "name": "何家乐"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_ca773e031b7f2b964a072c16ccae9835", "name": "焦俊生"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_1ac989fd52cb45d6b3586e377416c053", "name": "刘新阳"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_9099b292e5acafa569bded5e93a41d34", "name": "宫格格"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_6fbf699155a5b6592dd96f8b817ff698", "name": "沈亮亮"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_3c32330dbd8ff8ea6186e469df189d5d", "name": "汪勤鑫"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_f94eea0d872323d1384373734373ab31", "name": "王磊"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_c08f8ace358e3e3c03a0bd3689bb684e", "name": "栾诚"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_8cb3d95a2638607cc840044c1c3eeda8", "name": "姜枫"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_f2ed513b76096d313650092868957a59", "name": "陈志兵"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_8254ca20ec79de2810d3c1e4a39d11f7", "name": "虎少治"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_9dbda9eb5fbd4153bd5d202ea9985282", "name": "薛岑明"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_d07ee431117406894db9bc72eb48165f", "name": "徐子旺"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_ff3d0f23b626a97a6116d938c7ff7a10", "name": "赵野"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_d76b4990f72c7a9816cc6ebaf580cc11", "name": "陈斌斌"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_3694e811f0413401e6ac12b20b351717", "name": "王寒冰"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_8e1ab89efc9002fb6fde029c96b3f1f3", "name": "靳敏"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_bf430ec1b37f100ae930e03da5a5f617", "name": "潘梓森"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_fc0431503851d4a72ae190912065818e", "name": "赵荣欣"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_72d289c4b8212a2bd297457a62598b4c", "name": "赵心瑜"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_051e68237cee1a0433f9c82bd0d957ae", "name": "赵益定"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_e08a573a2c1bb32ee96a05441779800d", "name": "邹阳"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_bf6653c3d9adcb2d45d7912f8bab0127", "name": "钱帅"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_6703455ff209fff7d5b15f4a91d00d40", "name": "王康"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_1e0ab0eefe86f4794bc858e959530118", "name": "王毅鹏"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_162abb7bb3933fda35e00a4e2ff06eff", "name": "程丽璇"}]}, {"文本": null, "人员.部门": ["QA组"], "人员": [{"id": "ou_0863b2bf11c855224660571d377620a8", "name": "顾昌秦"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_f28ca50be6431ccc58f57596e83c6df3", "name": "潘晖"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_76e6e8d5452df078e1abf72b46875a50", "name": "黄天鹤"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_4fe48889ffb239bfb8069eefb0a7e126", "name": "郭雨"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_8fa5d8d305d2adf52e33dbd7170bdef6", "name": "俞艺佳"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_5fa4e56ac0894fd23fdad3e62ec51c58", "name": "邓粤"}]}, {"文本": null, "人员.部门": ["美术组"], "人员": [{"id": "ou_0618af4721b2941972298bb6291de98c", "name": "孙习旻"}]}, {"文本": null, "人员.部门": ["3D动作"], "人员": [{"id": "ou_e5ca55a724cd39fe42e48dd06a3d1184", "name": "张丽"}]}, {"文本": null, "人员.部门": ["3D特效"], "人员": [{"id": "ou_b91e3bcab3442fe6ef6352e05abb080b", "name": "魏永乐"}]}, {"文本": null, "人员.部门": ["3D角色"], "人员": [{"id": "ou_48ba94c8735d6f9ca7a552d226637c84", "name": "周偲佳"}]}, {"文本": null, "人员.部门": ["3D特效"], "人员": [{"id": "ou_b749fdc25b92dd26dd1811fb46503a81", "name": "姜铁欣"}]}, {"文本": null, "人员.部门": ["3D场景"], "人员": [{"id": "ou_a9fa4200a329efcbf037d514c4c70fd0", "name": "夏磊"}]}, {"文本": null, "人员.部门": ["3D动作"], "人员": [{"id": "ou_4834cb981b0e48decb411b7afbfb2339", "name": "张学超"}]}, {"文本": null, "人员.部门": ["3D场景"], "人员": [{"id": "ou_dc206750ca53211362cc54e83d2f93f2", "name": "周炫彦"}]}, {"文本": null, "人员.部门": ["3D角色"], "人员": [{"id": "ou_ee215086bccc195ef3b5fa84fe5f793f", "name": "花智阳"}]}, {"文本": null, "人员.部门": ["3D场景"], "人员": [{"id": "ou_3777e5c81a98a0354b3094815b8f2760", "name": "倪培钧"}]}, {"文本": null, "人员.部门": ["3D角色"], "人员": [{"id": "ou_a775b3480ca3a7bed386ffe8b7110d42", "name": "许士杰"}]}, {"文本": null, "人员.部门": ["TA"], "人员": [{"id": "ou_83a6620a27162351813bbef7f989f890", "name": "周晨轩"}]}, {"文本": null, "人员.部门": ["2D场景"], "人员": [{"id": "ou_986c03b6904225a39ff0f635c2f422d2", "name": "叶维"}]}, {"文本": null, "人员.部门": ["2D场景"], "人员": [{"id": "ou_5c1c680c77bd47cc199b97f547db46b2", "name": "黄琳"}]}, {"文本": null, "人员.部门": ["2D角色"], "人员": [{"id": "ou_7220afe928ab676ead7b9f029408501e", "name": "张雅君"}]}, {"文本": null, "人员.部门": ["2D角色"], "人员": [{"id": "ou_911ce52f62bc5463ea7a97ee94f9c48a", "name": "高丛"}]}, {"文本": null, "人员.部门": ["2D角色"], "人员": [{"id": "ou_d9c87acf6a127ad2306353ab2a81eb4f", "name": "庄怡"}]}, {"文本": null, "人员.部门": ["2D场景"], "人员": [{"id": "ou_dce860b4adcaed8e027e14f813517c71", "name": "罗泽霖"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_4027cab90ce56bfe44a48f180ab16be7", "name": "史云坤"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_e77be9d5f7cc9ac3d9f435abc86f9620", "name": "夏茜茜"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_6fe86e6ebe303b8125d1a7be154c6bd4", "name": "张徐"}]}, {"文本": null, "人员.部门": ["2D角色"], "人员": [{"id": "ou_58cb3815bfc326a0b29babd0033f7b9b", "name": "范博文"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_6ee2b5dd3596521a8f624f90e99521cb", "name": "陈浩"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_575dae7302ed781379101eb0b8e421a2", "name": "宋雨洋"}]}, {"文本": null, "人员.部门": ["剧情策划"], "人员": [{"id": "ou_db217487aad59ddf008b9c2307d2592f", "name": "俞虹伊"}]}, {"文本": null, "人员.部门": ["关卡策划"], "人员": [{"id": "ou_3c1e20477980d4c2c7ef886e1e42c3b9", "name": "张星桐"}]}, {"文本": null, "人员.部门": ["剧情策划"], "人员": [{"id": "ou_d0b59ad4426bc9c13f58e0f37fe0160c", "name": "薄乐乐"}]}, {"文本": null, "人员.部门": ["数值策划"], "人员": [{"id": "ou_00efb3b6dcbabf3a4b2abf81363b6559", "name": "李小刚"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_dc1e5c49cc1e238e9266323fe9d03a31", "name": "吕麟杰"}]}, {"文本": null, "人员.部门": ["3D特效"], "人员": [{"id": "ou_29378cdc1fe632f57a4e628bf9fc1e21", "name": "袁懿"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_f0cb3dca406b44fd825bd3fe193f84bb", "name": "陈鸿宇"}]}, {"文本": null, "人员.部门": ["3D动作"], "人员": [{"id": "ou_881312493c9570ea23917e4c95989c9a", "name": "张凯"}]}, {"文本": null, "人员.部门": ["剧情策划"], "人员": [{"id": "ou_46ec0711d7b86a9d0caaf2224da4065e", "name": "吴琼"}]}, {"文本": null, "人员.部门": ["2D角色"], "人员": [{"id": "ou_90aa5063925a08a04643c9ce2ac9a3cd", "name": "张慧欣"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_51f19e5f8b0b1fe30b409a2f2ce902d4", "name": "付家辉"}]}, {"文本": null, "人员.部门": ["3D特效"], "人员": [{"id": "ou_2c6c36245fbd6355ca3088f101f3e7ad", "name": "范嘉义"}]}, {"文本": null, "人员.部门": ["剧情策划"], "人员": [{"id": "ou_c8df81bf7f14375bf32a09710f830d91", "name": "颜思彤"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_a9d0d84bebf5b729c817fa42bbeb7af8", "name": "周志锴"}]}, {"文本": null, "人员.部门": ["系统策划"], "人员": [{"id": "ou_f92c69d5659d0949cb71ded29b2d5c8b", "name": "杜云龙"}]}, {"文本": null, "人员.部门": ["战斗策划"], "人员": [{"id": "ou_124881df965f22a99c7f9b2e6f323416", "name": "饶裕龙"}]}, {"文本": null, "人员.部门": ["UI"], "人员": [{"id": "ou_f3e5e01ddc75a6385e5230d9b7e34774", "name": "李姿静"}]}, {"文本": null, "人员.部门": ["客户端组"], "人员": [{"id": "ou_e8f30ed06092f36980aa03db5be95ce9", "name": "钟悦芸"}]}, {"文本": null, "人员.部门": ["服务端组"], "人员": [{"id": "ou_77b5b12cf8d03c760e4a28fe1d35406c", "name": "梁子恢"}]}]};
+// ======================== DATA LOADING ========================
+var DATA = JSON.parse(document.getElementById('__DATA__').textContent);
+
+// SHA256 precomputed hashes
+var HASHES = {
+  view: "8b7c9d13f22d41aa393ee923edbb3282c872a0ecabc4b0045e44a64f514155f3",
+  admin: "5354f56ecc7e1cb5c0fc88534632c6a78bf3b8d48a7723cd6ad06b49adb29a5f"
+};
 
 // ======================== STATE ========================
 var currentView = 'card';
 var sortField = null;
 var sortDir = 'asc';
-var adminAuthenticated = false;
-var adminTasks = JSON.parse(localStorage.getItem('rox_admin_tasks') || '[]');
+var adminMode = false; // true if logged in as admin
+var adminTasks = [];
 var allRegions = [];
 var allProgress = [];
 var allPeople = [];
+
+// ======================== LOGIN ========================
+var loginMode = 'view'; // 'view' or 'admin'
+
+function toggleLoginMode() {
+  var hint = document.getElementById('loginModeHint');
+  var subtitle = document.getElementById('loginSubtitle');
+  var title = document.getElementById('loginTitle');
+  var logo = document.getElementById('loginLogo');
+  var btn = document.getElementById('loginBtn');
+  if (loginMode === 'view') {
+    loginMode = 'admin';
+    hint.textContent = '\u2192 \u5207\u6362\u5230\u67e5\u770b\u767b\u5f55';
+    subtitle.textContent = '\u8bf7\u8f93\u5165\u7ba1\u7406\u5458\u5bc6\u7801';
+    title.textContent = 'ROX \u7ba1\u7406\u5458\u767b\u5f55';
+    logo.style.background = 'linear-gradient(135deg, #FF9500, #FF3B30)';
+    btn.textContent = '\u7ba1\u7406\u5458\u767b\u5f55';
+  } else {
+    loginMode = 'view';
+    hint.textContent = '\u2192 \u5207\u6362\u5230\u7ba1\u7406\u5458\u767b\u5f55';
+    subtitle.textContent = '\u8bf7\u8f93\u5165\u67e5\u770b\u5bc6\u7801\u4ee5\u7ee7\u7eed';
+    title.textContent = 'ROX \u9879\u76ee\u6392\u671f\u770b\u677f';
+    logo.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
+    btn.textContent = '\u767b\u5f55';
+  }
+  document.getElementById('loginInput').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+async function sha256(str) {
+  var encoder = new TextEncoder();
+  var data = encoder.encode(str);
+  var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  var hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+}
+
+async function handleLogin() {
+  var pwd = document.getElementById('loginInput').value;
+  if (!pwd) {
+    document.getElementById('loginError').textContent = '\u8bf7\u8f93\u5165\u5bc6\u7801';
+    return;
+  }
+  try {
+    var hash = await sha256(pwd);
+    if (loginMode === 'view' && hash === HASHES.view) {
+      doLogin('view');
+    } else if (loginMode === 'admin' && hash === HASHES.admin) {
+      doLogin('admin');
+    } else if (loginMode === 'view') {
+      // Maybe user meant admin?
+      if (hash === HASHES.admin) {
+        doLogin('admin');
+      } else {
+        document.getElementById('loginError').textContent = '\u5bc6\u7801\u9519\u8bef\uff0c\u8bf7\u91cd\u8bd5';
+      }
+    } else {
+      document.getElementById('loginError').textContent = '\u5bc6\u7801\u9519\u8bef\uff0c\u8bf7\u91cd\u8bd5';
+    }
+  } catch(e) {
+    document.getElementById('loginError').textContent = '\u9a8c\u8bc1\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5';
+  }
+}
+
+function doLogin(mode) {
+  var exp = Date.now() + 7 * 24 * 60 * 60 * 1000;
+  var session = { mode: mode, expires: exp };
+  localStorage.setItem('rox_session', JSON.stringify(session));
+  adminMode = (mode === 'admin');
+  document.getElementById('loginOverlay').classList.add('hidden');
+  if (adminMode) {
+    document.getElementById('adminBtn').textContent = '\u{1F512} \u7ba1\u7406\u5458';
+  }
+  loadAdminTasks();
+  init();
+}
+
+function checkSession() {
+  var raw = localStorage.getItem('rox_session');
+  if (raw) {
+    try {
+      var session = JSON.parse(raw);
+      if (session.expires && session.expires > Date.now()) {
+        adminMode = (session.mode === 'admin');
+        document.getElementById('loginOverlay').classList.add('hidden');
+        if (adminMode) {
+          document.getElementById('adminBtn').textContent = '\u{1F512} \u7ba1\u7406\u5458';
+        }
+        loadAdminTasks();
+        init();
+        return true;
+      }
+    } catch(e) {}
+  }
+  return false;
+}
+
+function logoutUser() {
+  localStorage.removeItem('rox_session');
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginInput').value = '';
+  document.getElementById('loginError').textContent = '';
+  adminMode = false;
+}
+
+// ======================== ADMIN TASKS ========================
+function loadAdminTasks() {
+  try {
+    adminTasks = JSON.parse(localStorage.getItem('rox_admin_tasks') || '[]');
+  } catch(e) { adminTasks = []; }
+}
+
+function saveAdminTasks() {
+  localStorage.setItem('rox_admin_tasks', JSON.stringify(adminTasks));
+}
 
 // ======================== DATA PROCESSING ========================
 function normalizeDate(d) {
@@ -881,17 +1154,24 @@ function formatDate(d) {
   return d.getFullYear() + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getDate()).padStart(2,'0');
 }
 
+function formatDateISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
 // ======================== INIT ========================
 function init() {
   // Extract filter options
   var regionSet = {}, progSet = {}, personSet = {};
-  DATA.records.forEach(function(r) {
+  DATA.forEach(function(r) {
     if (r.region) r.region.forEach(function(x) { regionSet[x] = true; });
     if (r.progress) progSet[r.progress] = true;
     if (r.assignee) r.assignee.forEach(function(p) { personSet[p.name] = true; });
   });
   allRegions = Object.keys(regionSet).sort();
-  allProgress = Object.keys(progSet);
+  // Order progress in a meaningful way
+  var progOrder = ['\u672a\u542f\u52a8', '\u8fdb\u884c\u4e2d', 'QA\u9a8c\u6536\u4e2d'];
+  allProgress = progOrder.filter(function(p) { return progSet[p]; });
+  if (allProgress.length === 0) allProgress = Object.keys(progSet);
   allPeople = Object.keys(personSet).sort();
 
   // Populate filter selects
@@ -922,7 +1202,13 @@ function init() {
     selAP.appendChild(opt);
   });
 
-  document.getElementById('headerInfo').textContent = DATA.records.length + ' 个任务 | ' + DATA.people.length + ' 人';
+  // Set default deadline to 7 days from now
+  var deadlineEl = document.getElementById('newTaskDeadline');
+  var future = new Date();
+  future.setDate(future.getDate() + 7);
+  deadlineEl.value = formatDateISO(future);
+
+  document.getElementById('headerInfo').textContent = DATA.length + ' \u4e2a\u4efb\u52a1 | ' + allPeople.length + ' \u4eba';
 
   render();
 }
@@ -934,7 +1220,7 @@ function getFilteredData() {
   var person = document.getElementById('filterPerson').value;
   var search = document.getElementById('filterSearch').value.trim().toLowerCase();
 
-  var filtered = DATA.records.filter(function(r) {
+  var filtered = DATA.filter(function(r) {
     if (region && (!r.region || r.region.indexOf(region) === -1)) return false;
     if (progress && r.progress !== progress) return false;
     if (person) {
@@ -956,14 +1242,13 @@ function getFilteredData() {
   return { records: filtered, adminTasks: adminFiltered };
 }
 
-// ======================== RENDER ========================
 function render() {
   var result = getFilteredData();
   var filtered = result.records;
   var adminFiltered = result.adminTasks;
 
   renderStats(filtered, adminFiltered);
-  document.getElementById('filterStats').textContent = '已筛选 ' + filtered.length + ' / ' + DATA.records.length + ' 个任务';
+  document.getElementById('filterStats').textContent = '\u5df2\u7b5b\u9009 ' + (filtered.length + adminFiltered.length) + ' / ' + (DATA.length + adminTasks.length) + ' \u4e2a\u4efb\u52a1';
 
   if (currentView === 'card') renderCard(filtered, adminFiltered);
   else if (currentView === 'table') renderTable(filtered, adminFiltered);
@@ -977,10 +1262,12 @@ function applyFilters() {
 // ======================== STATS ========================
 function renderStats(filtered, adminFiltered) {
   var total = filtered.length + adminFiltered.length;
-  var inProgress = filtered.filter(function(r) { return r.progress === '进行中'; }).length +
-    adminFiltered.filter(function(t) { return t.progress === '进行中'; }).length;
-  var notStarted = filtered.filter(function(r) { return r.progress === '未启动'; }).length +
-    adminFiltered.filter(function(t) { return t.progress === '未启动'; }).length;
+  var inProgress = filtered.filter(function(r) { return r.progress === '\u8fdb\u884c\u4e2d'; }).length +
+    adminFiltered.filter(function(t) { return t.progress === '\u8fdb\u884c\u4e2d'; }).length;
+  var notStarted = filtered.filter(function(r) { return r.progress === '\u672a\u542f\u52a8'; }).length +
+    adminFiltered.filter(function(t) { return t.progress === '\u672a\u542f\u52a8'; }).length;
+  var qaCount = filtered.filter(function(r) { return r.progress === 'QA\u9a8c\u6536\u4e2d'; }).length +
+    adminFiltered.filter(function(t) { return t.progress === 'QA\u9a8c\u6536\u4e2d'; }).length;
 
   // Unique people
   var personSet = {};
@@ -991,10 +1278,11 @@ function renderStats(filtered, adminFiltered) {
   var peopleCount = Object.keys(personSet).length;
 
   var cards = [
-    { label: '总任务数', value: total, sub: '当前排期' },
-    { label: '进行中', value: inProgress, sub: '执行中任务' },
-    { label: '未启动', value: notStarted, sub: '待启动任务' },
-    { label: '涉及人员', value: peopleCount, sub: '当前筛选' }
+    { label: '\u603b\u4efb\u52a1\u6570', value: total, sub: '\u5f53\u524d\u6392\u671f' },
+    { label: '\u8fdb\u884c\u4e2d', value: inProgress, sub: '\u6267\u884c\u4e2d\u4efb\u52a1' },
+    { label: '\u672a\u542f\u52a8', value: notStarted, sub: '\u5f85\u542f\u52a8\u4efb\u52a1' },
+    { label: 'QA\u9a8c\u6536\u4e2d', value: qaCount, sub: '\u7b49\u5f85\u9a8c\u6536' },
+    { label: '\u6d89\u53ca\u4eba\u5458', value: peopleCount, sub: '\u5f53\u524d\u7b5b\u9009' }
   ];
 
   document.getElementById('statsRow').innerHTML = cards.map(function(c) {
@@ -1007,42 +1295,41 @@ function renderCard(filtered, adminFiltered) {
   var html = '<div class="card-grid">';
   filtered.forEach(function(r) {
     var cls = 'card-notstarted';
-    if (r.progress === '进行中') cls = 'card-progress';
-    else if (r.progress === 'QA验收中') cls = 'card-qa';
-    var pTag = r.progress === '未启动' ? '<span class="tag tag-notstarted">未启动</span>' :
-      r.progress === '进行中' ? '<span class="tag tag-progress">进行中</span>' :
+    if (r.progress === '\u8fdb\u884c\u4e2d') cls = 'card-progress';
+    else if (r.progress === 'QA\u9a8c\u6536\u4e2d') cls = 'card-qa';
+    var pTag = r.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
+      r.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' :
       '<span class="tag tag-qa">' + r.progress + '</span>';
     var regionTags = (r.region || []).map(function(x) { return '<span class="region-tag">' + x + '</span>'; }).join('');
     var names = (r.assignee || []).map(function(p) { return p.name; }).join(', ');
     var dates = [];
-    if (r.startDate) dates.push('&#128197; ' + normalizeDate(r.startDate));
-    if (r.freezeDate) dates.push('&#128196; 封板: ' + r.freezeDate);
-    if (r.versionDate) dates.push('&#128197; 版更: ' + r.versionDate);
+    if (r.startDate) dates.push('\u{1F4C5} ' + normalizeDate(r.startDate));
+    if (r.freezeDate) dates.push('\u{1F4C4} \u5c01\u677f: ' + r.freezeDate);
+    if (r.versionDate) dates.push('\u{1F4C5} \u7248\u66f4: ' + r.versionDate);
 
     html += '<div class="task-card ' + cls + '">';
-    html += '<div class="card-title">' + r.title + '</div>';
+    html += '<div class="card-title">' + escapeHtml(r.title) + '</div>';
     html += '<div class="card-meta">' + pTag + regionTags + '</div>';
-    html += '<div class="card-meta" style="margin-top:4px"><span>&#128101; ' + names + '</span></div>';
+    html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(names) + '</span></div>';
     if (dates.length) html += '<div class="card-meta" style="margin-top:4px">' + dates.join(' | ') + '</div>';
     html += '</div>';
   });
 
   // Admin tasks
   adminFiltered.forEach(function(t) {
-    var pTag = t.progress === '未启动' ? '<span class="tag tag-notstarted">未启动</span>' :
-      t.progress === '进行中' ? '<span class="tag tag-progress">进行中</span>' : '';
-    var prio = t.priority === 'high' ? '<span class="priority-high">高优先级</span>' :
-      t.priority === 'medium' ? '<span class="priority-medium">中优先级</span>' : '<span class="priority-low">低优先级</span>';
+    var pTag = t.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
+      t.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' : '';
+    var prio = '<span class="priority-high">' + (t.priority || 'P2') + '</span>';
     html += '<div class="task-card card-progress">';
-    html += '<div class="card-title">' + t.title + '</div>';
-    html += '<div class="card-meta">' + pTag + ' <span class="region-tag">' + t.region + '</span> ' + prio + '</div>';
-    html += '<div class="card-meta" style="margin-top:4px"><span>&#128101; ' + t.assigneeName + '</span></div>';
-    html += '<div class="card-meta" style="margin-top:4px"><span>&#9200; 排期: ' + t.scheduledStart + ' ~ ' + t.scheduledEnd + '</span></div>';
+    html += '<div class="card-title">' + escapeHtml(t.title) + '</div>';
+    html += '<div class="card-meta">' + pTag + ' <span class="region-tag">' + escapeHtml(t.region) + '</span> ' + prio + '</div>';
+    html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(t.assigneeName) + '</span></div>';
+    html += '<div class="card-meta" style="margin-top:4px"><span>\u23F0 \u6392\u671f: ' + escapeHtml(t.scheduledStart) + ' ~ ' + escapeHtml(t.scheduledEnd) + '</span></div>';
     html += '</div>';
   });
 
   if (!filtered.length && !adminFiltered.length) {
-    html = '<div class="empty-state"><span class="empty-icon">&#128196;</span><div>暂无匹配的任务</div></div>';
+    html = '<div class="empty-state"><span class="empty-icon">\u{1F4C4}</span><div>\u6682\u65e0\u5339\u914d\u7684\u4efb\u52a1</div></div>';
   }
   document.getElementById('cardView').innerHTML = html + '</div>';
 }
@@ -1051,7 +1338,7 @@ function renderCard(filtered, adminFiltered) {
 function renderTable(filtered, adminFiltered) {
   var all = filtered.concat(adminFiltered.map(function(t) {
     return {
-      title: t.title + ' &#128279;',
+      title: t.title + ' \u{1F517}',
       progress: t.progress,
       testDate: '',
       freezeDate: t.scheduledEnd || '',
@@ -1088,18 +1375,18 @@ function renderTable(filtered, adminFiltered) {
   }
 
   var cols = [
-    { key: 'title', label: '工作内容', width: '300px' },
-    { key: 'progress', label: '进展', width: '80px' },
-    { key: 'assignee', label: '执行人', width: '100px' },
-    { key: 'region', label: '地区', width: '80px' },
-    { key: 'startDate', label: '启动日期', width: '110px' },
-    { key: 'freezeDate', label: '封板时间', width: '110px' },
-    { key: 'versionDate', label: '版更时间', width: '110px' }
+    { key: 'title', label: '\u5de5\u4f5c\u5185\u5bb9', width: '300px' },
+    { key: 'progress', label: '\u8fdb\u5c55', width: '80px' },
+    { key: 'assignee', label: '\u6267\u884c\u4eba', width: '100px' },
+    { key: 'region', label: '\u5730\u533a', width: '80px' },
+    { key: 'startDate', label: '\u542f\u52a8\u65e5\u671f', width: '110px' },
+    { key: 'freezeDate', label: '\u5c01\u677f\u65f6\u95f4', width: '110px' },
+    { key: 'versionDate', label: '\u7248\u66f4\u65f6\u95f4', width: '110px' }
   ];
 
   function sortIcon(k) {
-    if (sortField !== k) return '<span class="sort-icon">&#9650;</span>';
-    return '<span class="sort-icon active">' + (sortDir === 'asc' ? '&#9650;' : '&#9660;') + '</span>';
+    if (sortField !== k) return '<span class="sort-icon">\u25B2</span>';
+    return '<span class="sort-icon active">' + (sortDir === 'asc' ? '\u25B2' : '\u25BC') + '</span>';
   }
 
   var html = '<div class="table-wrapper"><table><thead><tr>';
@@ -1109,27 +1396,26 @@ function renderTable(filtered, adminFiltered) {
   html += '</tr></thead><tbody>';
 
   all.forEach(function(r) {
-    var pTag = r.progress === '未启动' ? '<span class="tag tag-notstarted">未启动</span>' :
-      r.progress === '进行中' ? '<span class="tag tag-progress">进行中</span>' :
+    var pTag = r.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
+      r.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' :
       '<span class="tag tag-qa">' + r.progress + '</span>';
-    var names = (r.assignee || []).map(function(p) { return '<span class="assignee-name">' + p.name + '</span>'; }).join(', ');
-    var regionTags = (r.region || []).map(function(x) { return '<span class="region-tag">' + x + '</span>'; }).join('');
+    var names = (r.assignee || []).map(function(p) { return '<span class="assignee-name">' + escapeHtml(p.name) + '</span>'; }).join(', ');
+    var regionTags = (r.region || []).map(function(x) { return '<span class="region-tag">' + escapeHtml(x) + '</span>'; }).join('');
     var prioHtml = '';
     if (r._isAdmin) {
-      prioHtml = r._priority === 'high' ? ' <span class="priority-high">&#9733;</span>' :
-        r._priority === 'medium' ? ' <span class="priority-medium">&#9733;</span>' : '';
+      prioHtml = ' <span class="priority-high">\u2605 ' + (r._priority || '') + '</span>';
     }
-    html += '<tr><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:normal;word-break:break-all">' + r.title + prioHtml + '</td>';
+    html += '<tr><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:normal;word-break:break-all">' + escapeHtml(r.title) + prioHtml + '</td>';
     html += '<td>' + pTag + '</td>';
     html += '<td>' + names + '</td>';
     html += '<td>' + regionTags + '</td>';
-    html += '<td>' + normalizeDate(r.startDate) + '</td>';
+    html += '<td>' + (normalizeDate(r.startDate) || '') + '</td>';
     html += '<td>' + (r.freezeDate || '') + '</td>';
     html += '<td>' + (r.versionDate || '') + '</td></tr>';
   });
 
   if (!all.length) {
-    html += '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-5)">暂无匹配的任务</td></tr>';
+    html += '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-5)">\u6682\u65e0\u5339\u914d\u7684\u4efb\u52a1</td></tr>';
   }
 
   html += '</tbody></table></div>';
@@ -1168,18 +1454,17 @@ function renderGantt(filtered, adminFiltered) {
   }));
 
   if (!all.length) {
-    document.getElementById('ganttView').innerHTML = '<div class="empty-state"><span class="empty-icon">&#128202;</span><div>暂无数据</div></div>';
+    document.getElementById('ganttView').innerHTML = '<div class="empty-state"><span class="empty-icon">\u{1F4CA}</span><div>\u6682\u65e0\u6570\u636e</div></div>';
     return;
   }
 
-  // Determine date range (plus some buffer)
+  // Determine date range
   var minDate = null, maxDate = null;
   all.forEach(function(r) {
     var sd = parseDate(normalizeDate(r.startDate));
     var ed = parseDate(normalizeDate(r.endDate));
     if (sd && (!minDate || sd < minDate)) minDate = sd;
     if (ed && (!maxDate || ed > maxDate)) maxDate = ed;
-    // Also consider freeze/version dates
     var fd = parseDate(r.freezeDate);
     if (fd && (!maxDate || fd > maxDate)) maxDate = fd;
     var vd = parseDate(r.versionDate);
@@ -1188,9 +1473,7 @@ function renderGantt(filtered, adminFiltered) {
 
   if (!minDate) minDate = new Date();
   if (!maxDate) maxDate = new Date();
-  // Add buffer
   minDate = getMonday(minDate);
-  // Extend to at least 8 weeks
   var msDiff = maxDate - minDate;
   var weeksNeeded = Math.max(8, Math.ceil(msDiff / (7 * 86400000)) + 3);
   var pixelPerDay = 24;
@@ -1200,7 +1483,7 @@ function renderGantt(filtered, adminFiltered) {
   var personMap = {};
   all.forEach(function(r) {
     var names = (r.assignee || []).map(function(p) { return p.name; });
-    if (!names.length) names = ['未指派'];
+    if (!names.length) names = ['\u672a\u6307\u6d3e'];
     names.forEach(function(n) {
       if (!personMap[n]) personMap[n] = [];
       personMap[n].push(r);
@@ -1225,14 +1508,13 @@ function renderGantt(filtered, adminFiltered) {
 
   var totalWidth = weekLabels.length * weekWidth;
 
-  // Build HTML
   var html = '<div class="gantt-wrapper"><div class="gantt-container">';
 
   // Header
   html += '<div class="gantt-header">';
-  html += '<div class="gantt-person-col">执行人</div>';
+  html += '<div class="gantt-person-col">\u6267\u884c\u4eba</div>';
   html += '<div class="gantt-timeline">';
-  weekLabels.forEach(function(wl, i) {
+  weekLabels.forEach(function(wl) {
     var cls = 'gantt-week-label';
     if (wl.isToday) cls += ' today';
     html += '<div class="' + cls + '" style="width:' + weekWidth + 'px">' + wl.label + '</div>';
@@ -1243,7 +1525,7 @@ function renderGantt(filtered, adminFiltered) {
   personNames.forEach(function(pName) {
     var tasks = personMap[pName];
     html += '<div class="gantt-person-group">';
-    html += '<div class="gantt-person-name">' + pName + ' <span class="dept-tag">(' + tasks.length + ')</span></div>';
+    html += '<div class="gantt-person-name">' + escapeHtml(pName) + ' <span class="dept-tag">(' + tasks.length + ')</span></div>';
     html += '<div class="gantt-row-timeline" style="position:relative;min-height:44px;width:' + totalWidth + 'px">';
 
     // Grid lines
@@ -1268,46 +1550,45 @@ function renderGantt(filtered, adminFiltered) {
 
       var left = Math.max(0, (startMs - minMs) / dayMs * pixelPerDay);
       var width = Math.max(pixelPerDay, (endMs - startMs) / dayMs * pixelPerDay + pixelPerDay);
-      // Clamp
       if (left + width > totalWidth) width = totalWidth - left;
       if (width < pixelPerDay) width = pixelPerDay;
 
       var progClass = 'progress-notstarted';
-      if (r.progress === '进行中') progClass = 'progress-progress';
-      else if (r.progress === 'QA验收中') progClass = 'progress-qa';
+      if (r.progress === '\u8fdb\u884c\u4e2d') progClass = 'progress-progress';
+      else if (r.progress === 'QA\u9a8c\u6536\u4e2d') progClass = 'progress-qa';
 
       var barTitle = r.title;
       if (barTitle.length > 12) barTitle = barTitle.substring(0, 12) + '..';
 
-      var escTitle = r.title.replace(/'/g, "\\'");
+      var escTitle = r.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
       var names = (r.assignee || []).map(function(p) { return p.name; }).join(', ');
       var regionStr = (r.region || []).join(', ');
 
       html += '<div class="gantt-bar ' + progClass + '" style="left:' + left + 'px;width:' + Math.max(30, width) + 'px" ';
-      html += 'onmouseenter="showGanttTooltip(event,'' + escTitle.replace(/"/g,'&quot;') + '','' + r.progress + '','' + names + '','' + regionStr + '','' + normalizeDate(r.startDate) + '','' + normalizeDate(r.endDate) + '','' + (r.freezeDate||'') + '','' + (r.versionDate||'') + '')" ';
+      html += 'onmouseenter="showGanttTooltip(event,\'' + escTitle + '\',\'' + r.progress + '\',\'' + names + '\',\'' + regionStr + '\',\'' + (normalizeDate(r.startDate)||'') + '\',\'' + (normalizeDate(r.endDate)||'') + '\',\'' + (r.freezeDate||'') + '\',\'' + (r.versionDate||'') + '\')" ';
       html += 'onmouseleave="hideGanttTooltip()">';
-      html += barTitle + '</div>';
+      html += escapeHtml(barTitle) + '</div>';
 
       // Milestones
       var fd = parseDate(r.freezeDate);
       if (fd && fd >= minDate) {
         var fLeft = (fd.getTime() - minMs) / dayMs * pixelPerDay;
         if (fLeft >= 0 && fLeft <= totalWidth) {
-          html += '<div class="gantt-milestone freeze" style="left:' + fLeft + 'px" title="封板: ' + r.freezeDate + '"></div>';
+          html += '<div class="gantt-milestone freeze" style="left:' + fLeft + 'px" title="\u5c01\u677f: ' + r.freezeDate + '"></div>';
         }
       }
       var vd = parseDate(r.versionDate);
       if (vd && vd >= minDate) {
         var vLeft = (vd.getTime() - minMs) / dayMs * pixelPerDay;
         if (vLeft >= 0 && vLeft <= totalWidth) {
-          html += '<div class="gantt-milestone version" style="left:' + vLeft + 'px" title="版更: ' + r.versionDate + '"></div>';
+          html += '<div class="gantt-milestone version" style="left:' + vLeft + 'px" title="\u7248\u66f4: ' + r.versionDate + '"></div>';
         }
       }
       var td = parseDate(r.testDate);
       if (td && td >= minDate) {
         var tLeft = (td.getTime() - minMs) / dayMs * pixelPerDay;
         if (tLeft >= 0 && tLeft <= totalWidth) {
-          html += '<div class="gantt-milestone test" style="left:' + tLeft + 'px" title="转测: ' + r.testDate + '"></div>';
+          html += '<div class="gantt-milestone test" style="left:' + tLeft + 'px" title="\u8f6c\u6d4b: ' + r.testDate + '"></div>';
         }
       }
     });
@@ -1322,12 +1603,12 @@ function renderGantt(filtered, adminFiltered) {
 // ======================== GANTT TOOLTIP ========================
 function showGanttTooltip(e, title, progress, assignee, region, startDate, endDate, freezeDate, versionDate) {
   var tip = document.getElementById('ganttTooltip');
-  var html = '<div class="tt-title">' + title + '</div>';
-  html += '<div class="tt-row"><span>进展: ' + progress + '</span><span>' + (assignee||'') + '</span></div>';
-  if (region) html += '<div class="tt-row"><span>地区: ' + region + '</span></div>';
+  var html = '<div class="tt-title">' + escapeHtml(title) + '</div>';
+  html += '<div class="tt-row"><span>\u8fdb\u5c55: ' + progress + '</span><span>' + (assignee||'') + '</span></div>';
+  if (region) html += '<div class="tt-row"><span>\u5730\u533a: ' + region + '</span></div>';
   html += '<div class="tt-row"><span>' + startDate + ' ~ ' + endDate + '</span></div>';
-  if (freezeDate) html += '<div class="tt-row"><span>封板: ' + freezeDate + '</span></div>';
-  if (versionDate) html += '<div class="tt-row"><span>版更: ' + versionDate + '</span></div>';
+  if (freezeDate) html += '<div class="tt-row"><span>\u5c01\u677f: ' + freezeDate + '</span></div>';
+  if (versionDate) html += '<div class="tt-row"><span>\u7248\u66f4: ' + versionDate + '</span></div>';
   tip.innerHTML = html;
   tip.style.display = 'block';
   var rect = e.target.getBoundingClientRect();
@@ -1355,14 +1636,25 @@ function switchView(view) {
   render();
 }
 
-// ======================== ADMIN ========================
+// ======================== HELPERS ========================
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+// ======================== ADMIN AUTH & MODALS ========================
 function openAdminLogin() {
-  if (adminAuthenticated) {
+  if (adminMode) {
     openAdminModal();
     return;
   }
   document.getElementById('adminPwdInput').value = '';
-  document.getElementById('loginError').textContent = '';
+  document.getElementById('loginError2').textContent = '';
   document.getElementById('adminLoginOverlay').classList.add('active');
   setTimeout(function() { document.getElementById('adminPwdInput').focus(); }, 100);
 }
@@ -1371,14 +1663,27 @@ function closeAdminLogin() {
   document.getElementById('adminLoginOverlay').classList.remove('active');
 }
 
-function verifyAdmin() {
+async function verifyAdmin() {
   var pwd = document.getElementById('adminPwdInput').value;
-  if (pwd === 'ROX_ADMIN_2026') {
-    adminAuthenticated = true;
-    closeAdminLogin();
-    openAdminModal();
-  } else {
-    document.getElementById('loginError').textContent = '口令错误，请重试';
+  if (!pwd) {
+    document.getElementById('loginError2').textContent = '\u8bf7\u8f93\u5165\u5bc6\u7801';
+    return;
+  }
+  try {
+    var hash = await sha256(pwd);
+    if (hash === HASHES.admin) {
+      adminMode = true;
+      // Update session
+      var exp = Date.now() + 7 * 24 * 60 * 60 * 1000;
+      localStorage.setItem('rox_session', JSON.stringify({ mode: 'admin', expires: exp }));
+      document.getElementById('adminBtn').textContent = '\u{1F512} \u7ba1\u7406\u5458';
+      closeAdminLogin();
+      openAdminModal();
+    } else {
+      document.getElementById('loginError2').textContent = '\u53e3\u4ee4\u9519\u8bef\uff0c\u8bf7\u91cd\u8bd5';
+    }
+  } catch(e) {
+    document.getElementById('loginError2').textContent = '\u9a8c\u8bc1\u5931\u8d25';
   }
 }
 
@@ -1394,17 +1699,16 @@ function closeAdminModal() {
 function renderAdminTasks() {
   var list = document.getElementById('adminTasksList');
   if (!adminTasks.length) {
-    list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-5)">暂无手动添加的任务</div>';
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-5)">\u6682\u65e0\u624b\u52a8\u6dfb\u52a0\u7684\u4efb\u52a1</div>';
     return;
   }
   var html = '';
   adminTasks.forEach(function(t, i) {
-    var prioTag = t.priority === 'high' ? '<span class="priority-high">高</span>' :
-      t.priority === 'medium' ? '<span class="priority-medium">中</span>' : '<span class="priority-low">低</span>';
+    var prioTag = '<span class="priority-high">' + (t.priority || 'P2') + '</span>';
     html += '<div class="admin-task-item">';
-    html += '<span class="at-title">' + t.title + '</span>';
-    html += '<span>' + prioTag + ' | ' + t.assigneeName + ' | ' + t.scheduledStart + '~' + t.scheduledEnd + '</span>';
-    html += '<div class="at-actions"><button class="btn btn-sm btn-danger" onclick="removeAdminTask(' + i + ')">删除</button></div>';
+    html += '<span class="at-title">' + escapeHtml(t.title) + '</span>';
+    html += '<span>' + prioTag + ' | ' + escapeHtml(t.assigneeName) + ' | ' + escapeHtml(t.scheduledStart) + '~' + escapeHtml(t.scheduledEnd) + '</span>';
+    html += '<div class="at-actions"><button class="btn btn-sm btn-danger" onclick="removeAdminTask(' + i + ')">\u5220\u9664</button></div>';
     html += '</div>';
   });
   list.innerHTML = html;
@@ -1412,7 +1716,7 @@ function renderAdminTasks() {
 
 function removeAdminTask(idx) {
   adminTasks.splice(idx, 1);
-  localStorage.setItem('rox_admin_tasks', JSON.stringify(adminTasks));
+  saveAdminTasks();
   renderAdminTasks();
   render();
 }
@@ -1423,13 +1727,14 @@ function addAdminTask() {
   var priority = document.getElementById('newTaskPriority').value;
   var assigneeName = document.getElementById('newTaskPerson').value;
   var region = document.getElementById('newTaskRegion').value;
+  var deadline = document.getElementById('newTaskDeadline').value;
 
-  if (!title) { alert('请输入工作内容'); return; }
-  if (!assigneeName) { alert('请选择执行人'); return; }
+  if (!title) { alert('\u8bf7\u8f93\u5165\u5de5\u4f5c\u5185\u5bb9'); return; }
+  if (!assigneeName) { alert('\u8bf7\u9009\u62e9\u6267\u884c\u4eba'); return; }
 
   // Calculate schedule - find next available slot
-  // Look at existing tasks for this person to find gap
-  var personTasks = DATA.records.filter(function(r) {
+  // Look at existing tasks for this person to find earliest gap
+  var personTasks = DATA.filter(function(r) {
     return r.assignee && r.assignee.some(function(p) { return p.name === assigneeName; });
   });
 
@@ -1452,47 +1757,71 @@ function addAdminTask() {
     return da - db;
   });
 
-  // Find earliest available slot (starting from today or next Monday)
+  // Find earliest available slot (starting from today)
   var today = new Date();
   today.setHours(0,0,0,0);
-  var candidateStart = getMonday(today);
+  var candidateStart = new Date(today);
 
-  var workDaysNeeded = Math.ceil(hours); // 1 person-day per day
+  var workDaysNeeded = Math.ceil(hours);
   var scheduledStart = null;
   var scheduledEnd = null;
 
-  // Simple algorithm: find first gap of workDaysNeeded consecutive days
-  // that doesn't overlap with existing tasks
-  var maxSearchDays = 120; // look ahead 4 months
-  for (var d = 0; d < maxSearchDays; d++) {
-    var slotStart = new Date(candidateStart);
-    slotStart.setDate(slotStart.getDate() + d);
-    var slotEnd = new Date(slotStart);
-    slotEnd.setDate(slotEnd.getDate() + workDaysNeeded - 1);
+  // If a deadline is set, use it as the upper bound
+  var deadlineDate = deadline ? parseDate(deadline) : null;
 
-    // Check overlap
-    var overlap = personTasks.some(function(t) {
-      var ts = parseDate(normalizeDate(t.startDate));
-      var te = parseDate(normalizeDate(t.endDate));
-      if (!ts || !te) return false;
-      return (slotStart <= te && slotEnd >= ts);
-    });
-
-    if (!overlap) {
-      scheduledStart = formatDate(slotStart);
-      scheduledEnd = formatDate(slotEnd);
-      break;
+  // Scan for earliest gap: try starting from each existing task's end date + 1
+  var candidates = [new Date(today)];
+  personTasks.forEach(function(t) {
+    var te = parseDate(normalizeDate(t.endDate));
+    if (te) {
+      var next = new Date(te);
+      next.setDate(next.getDate() + 1);
+      candidates.push(next);
     }
+  });
+
+  // Sort candidates
+  candidates.sort(function(a,b) { return a - b; });
+
+  var maxSearchDays = 120;
+  for (var ci = 0; ci < candidates.length; ci++) {
+    var baseStart = new Date(Math.max(candidates[ci].getTime(), today.getTime()));
+    for (var d = 0; d < maxSearchDays; d++) {
+      var slotStart = new Date(baseStart);
+      slotStart.setDate(slotStart.getDate() + d);
+      var slotEnd = new Date(slotStart);
+      slotEnd.setDate(slotEnd.getDate() + workDaysNeeded - 1);
+
+      // Check if slot exceeds deadline
+      if (deadlineDate && slotEnd > deadlineDate) {
+        break; // Try next candidate
+      }
+
+      // Check overlap
+      var overlap = personTasks.some(function(t) {
+        var ts = parseDate(normalizeDate(t.startDate));
+        var te = parseDate(normalizeDate(t.endDate));
+        if (!ts || !te) return false;
+        return (slotStart <= te && slotEnd >= ts);
+      });
+
+      if (!overlap) {
+        scheduledStart = formatDate(slotStart);
+        scheduledEnd = formatDate(slotEnd);
+        break;
+      }
+    }
+    if (scheduledStart) break;
   }
 
   if (!scheduledStart) {
-    alert('无法找到足够的空余排期时间，请调整工时或联系管理员');
+    alert('\u65e0\u6cd5\u627e\u5230\u8db3\u591f\u7684\u7a7a\u4f59\u6392\u671f\u65f6\u95f4\uff0c\u8bf7\u8c03\u6574\u5de5\u65f6\u6216\u8054\u7cfb\u7ba1\u7406\u5458');
     return;
   }
 
   var resultDiv = document.getElementById('scheduleResult');
   resultDiv.style.display = 'block';
-  resultDiv.innerHTML = '&#9989; 排期结果: <strong>' + assigneeName + '</strong> 于 <strong>' + scheduledStart + ' ~ ' + scheduledEnd + '</strong> 执行「' + title + '」（' + hours + '人天）';
+  resultDiv.innerHTML = '\u2705 \u6392\u671f\u7ed3\u679c: <strong>' + escapeHtml(assigneeName) + '</strong> \u4e8e <strong>' + scheduledStart + ' ~ ' + scheduledEnd + '</strong> \u6267\u884c\u300c' + escapeHtml(title) + '\u300d\uff08' + hours + '\u4eba\u5929\uff09';
 
   // Add task
   var newTask = {
@@ -1501,23 +1830,35 @@ function addAdminTask() {
     priority: priority,
     assigneeName: assigneeName,
     region: region,
-    progress: '未启动',
+    progress: '\u672a\u542f\u52a8',
     scheduledStart: scheduledStart,
     scheduledEnd: scheduledEnd,
     createdAt: new Date().toISOString()
   };
 
   adminTasks.push(newTask);
-  localStorage.setItem('rox_admin_tasks', JSON.stringify(adminTasks));
+  saveAdminTasks();
   renderAdminTasks();
 
   // Reset form
   document.getElementById('newTaskTitle').value = '';
+  var future = new Date();
+  future.setDate(future.getDate() + 7);
+  document.getElementById('newTaskDeadline').value = formatDateISO(future);
   render();
 }
 
 // ======================== START ========================
-document.addEventListener('DOMContentLoaded', init);
+if (!checkSession()) {
+  // Show login overlay - init will be called after login
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  // Focus input
+  setTimeout(function() { document.getElementById('loginInput').focus(); }, 300);
+  // Allow Enter key to login
+  document.getElementById('loginInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleLogin();
+  });
+}
 </script>
 </body>
 </html>
