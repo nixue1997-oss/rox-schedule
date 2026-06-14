@@ -684,6 +684,48 @@ table tr:last-child td {
   display: none;
 }
 
+
+/* ========== PERSON VIEW ========== */
+.person-dept-group { margin-bottom:16px;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-sm);overflow:hidden }
+.person-dept-header { background:var(--gray-2);padding:10px 16px;font-size:14px;font-weight:600;color:var(--gray-6);display:flex;align-items:center;gap:8px }
+.person-dept-header .dept-count { font-weight:400;font-size:12px;color:var(--gray-5) }
+.person-item { display:flex;align-items:flex-start;padding:10px 16px;border-bottom:1px solid var(--gray-2);transition:var(--transition) }
+.person-item:last-child { border-bottom:none }
+.person-item:hover { background:var(--gray-1) }
+.person-avatar { width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;margin-right:12px }
+.person-info { flex:1;min-width:0 }
+.person-name { font-size:14px;font-weight:600;color:var(--gray-7);margin-bottom:2px }
+.person-task-count { font-size:12px;color:var(--gray-5) }
+.person-tasks { padding-left:48px }
+.person-task-card { padding:8px 12px;margin:4px 0;background:var(--gray-1);border-radius:var(--radius-sm);border-left:3px solid var(--gray-4);font-size:13px;display:flex;align-items:center;gap:8px }
+.person-task-card.card-progress { border-left-color:var(--warning) }
+.person-task-card.card-notstarted { border-left-color:var(--primary) }
+.person-task-card.card-qa { border-left-color:var(--success) }
+.person-task-title { flex:1;color:var(--gray-7) }
+.person-task-meta { font-size:11px;color:var(--gray-5);white-space:nowrap }
+.person-no-tasks { padding:6px 12px 6px 48px;font-size:12px;color:var(--gray-4);font-style:italic }
+
+/* ========== FLOATING ADD BUTTON ========== */
+.fab-add { position:fixed;bottom:28px;right:28px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:28px;font-weight:300;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(51,112,255,0.4);z-index:200;transition:var(--transition);user-select:none }
+.fab-add:hover { transform:scale(1.1) rotate(90deg);box-shadow:0 6px 24px rgba(51,112,255,0.5) }
+
+/* ========== INLINE ADD TASK PANEL ========== */
+.add-task-panel { position:fixed;bottom:90px;right:24px;width:380px;max-width:92vw;background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);z-index:199;overflow:hidden;animation:slideUp .3s ease }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.add-task-header { display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--gray-1);font-size:14px;font-weight:600 }
+.add-task-close { background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray-5);padding:2px 6px;border-radius:4px }
+.add-task-close:hover { background:var(--gray-3) }
+.add-task-body { padding:12px 16px 16px }
+.add-task-row { margin-bottom:6px }
+
+/* ========== DELETE BUTTON ========== */
+.delete-btn { background:none;border:none;cursor:pointer;font-size:14px;color:var(--gray-4);padding:2px 6px;border-radius:4px;transition:var(--transition);opacity:.4;flex-shrink:0 }
+.delete-btn:hover { color:var(--danger);opacity:1;background:rgba(255,59,48,.08) }
+.card-delete { position:absolute;top:6px;right:6px }
+.table-delete { padding:2px 8px }
+.person-task-card .delete-btn { opacity:.2 }
+.person-task-card:hover .delete-btn { opacity:.6 }
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .header-inner { flex-direction: column; align-items: flex-start; }
@@ -744,12 +786,14 @@ table tr:last-child td {
   <!-- View Tabs -->
   <div class="view-tabs">
     <button class="view-tab active" data-view="card" onclick="switchView('card')">卡片视图</button>
+    <button class="view-tab" data-view="person" onclick="switchView('person')">人员视图</button>
     <button class="view-tab" data-view="table" onclick="switchView('table')">表格视图</button>
     <button class="view-tab" data-view="gantt" onclick="switchView('gantt')">甘特图</button>
   </div>
 
   <!-- Content Area -->
   <div id="cardView" class="fade-in"></div>
+  <div id="personView" class="fade-in" style="display:none"></div>
   <div id="tableView" class="fade-in" style="display:none"></div>
   <div id="ganttView" class="fade-in" style="display:none"></div>
 </div>
@@ -803,6 +847,39 @@ table tr:last-child td {
   </div>
 </div>
 
+
+<!-- ========== FLOATING ADD BUTTON ========== -->
+<div class="fab-add" id="fabAddBtn" onclick="toggleAddForm()" title="添加任务">+</div>
+
+<!-- ========== INLINE ADD TASK FORM ========== -->
+<div class="add-task-panel" id="addTaskPanel" style="display:none">
+  <div class="add-task-header">
+    <span>➕ 添加新任务</span>
+    <button class="add-task-close" onclick="toggleAddForm()">✖</button>
+  </div>
+  <div class="add-task-body">
+    <div class="add-task-row">
+      <textarea id="addTaskTitle" placeholder="输入任务描述..." rows="2" style="width:100%;padding:8px 10px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;"></textarea>
+    </div>
+    <div class="add-task-row" style="display:flex;gap:8px;flex-wrap:wrap">
+      <select id="addTaskPerson" style="flex:1;min-width:120px;padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;"><option value="">选择执行人</option></select>
+      <input type="number" id="addTaskHours" value="1" min="0.5" step="0.5" style="width:70px;padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;text-align:center" title="工时（天）">
+      <select id="addTaskRegion" style="width:80px;padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;">
+        <option value="">地区</option>
+        <option value="国服">国服</option>
+        <option value="日服">日服</option>
+        <option value="美服">美服</option>
+        <option value="欧服">欧服</option>
+      </select>
+      <input type="date" id="addTaskDeadline" style="padding:7px 8px;border:1.5px solid var(--gray-3);border-radius:8px;font-size:13px;">
+    </div>
+    <div class="add-task-row" style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-primary-solid" onclick="submitAddTask()" style="flex:1">➕ 添加并排期</button>
+      <button class="btn btn-outline" onclick="toggleAddForm()" style="color:var(--gray-6);border-color:var(--gray-3)">取消</button>
+    </div>
+    <div id="addTaskResult" class="schedule-result" style="margin-top:8px"></div>
+  </div>
+</div>
 <!-- ========== GANTT TOOLTIP ========== -->
 <div class="gantt-tooltip" id="ganttTooltip"></div>
 
@@ -994,12 +1071,14 @@ function render() {
   document.getElementById('filterStats').textContent = '\u5df2\u7b5b\u9009 ' + (filtered.length + adminFiltered.length) + ' / ' + (DATA.length + adminTasks.length) + ' \u4e2a\u4efb\u52a1';
 
   if (currentView === 'card') renderCard(filtered, adminFiltered);
+  else if (currentView === 'person') renderPersonView();
   else if (currentView === 'table') renderTable(filtered, adminFiltered);
   else if (currentView === 'gantt') renderGantt(filtered, adminFiltered);
 }
 
 function applyFilters() {
-  render();
+  if (currentView === 'person') renderPersonView();
+  else render();
 }
 
 // ======================== STATS ========================
@@ -1051,7 +1130,8 @@ function renderCard(filtered, adminFiltered) {
     if (r.freezeDate) dates.push('\u{1F4C4} \u5c01\u677f: ' + r.freezeDate);
     if (r.versionDate) dates.push('\u{1F4C5} \u7248\u66f4: ' + r.versionDate);
 
-    html += '<div class="task-card ' + cls + '">';
+    html += '<div class="task-card ' + cls + '" style="position:relative">';
+    html += '<button class="delete-btn card-delete" onclick="deleteTask(\'' + r.id + '\')" title="删除">✖</button>';
     html += '<div class="card-title">' + escapeHtml(r.title) + '</div>';
     html += '<div class="card-meta">' + pTag + regionTags + '</div>';
     html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(names) + '</span></div>';
@@ -1064,7 +1144,8 @@ function renderCard(filtered, adminFiltered) {
     var pTag = t.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
       t.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' : '';
     var prio = '<span class="priority-high">' + (t.priority || 'P2') + '</span>';
-    html += '<div class="task-card card-progress">';
+    html += '<div class="task-card card-progress" style="position:relative">';
+        html += '<button class="delete-btn card-delete" onclick="deleteAdminTask(' + adminFiltered.indexOf(t) + ')" title="删除">✖</button>';
     html += '<div class="card-title">' + escapeHtml(t.title) + '</div>';
     html += '<div class="card-meta">' + pTag + ' <span class="region-tag">' + escapeHtml(t.region) + '</span> ' + prio + '</div>';
     html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(t.assigneeName) + '</span></div>';
@@ -1159,7 +1240,7 @@ function renderTable(filtered, adminFiltered) {
   });
 
   if (!all.length) {
-    html += '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-5)">\u6682\u65e0\u5339\u914d\u7684\u4efb\u52a1</td></tr>';
+    html += '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-5)">\u6682\u65e0\u5339\u914d\u7684\u4efb\u52a1</td></tr>';
   }
 
   html += '</tbody></table></div>';
@@ -1374,7 +1455,7 @@ function switchView(view) {
   currentView = view;
   document.querySelectorAll('.view-tab').forEach(function(t) { t.classList.remove('active'); });
   document.querySelector('.view-tab[data-view="' + view + '"]').classList.add('active');
-  ['cardView','tableView','ganttView'].forEach(function(id) {
+  ['cardView','personView','tableView','ganttView'].forEach(function(id) {
     document.getElementById(id).style.display = id.indexOf(view) === 0 ? 'block' : 'none';
   });
   render();
@@ -1551,6 +1632,217 @@ function addAdminTask() {
   future.setDate(future.getDate() + 7);
   document.getElementById('newTaskDeadline').value = formatDateISO(future);
   render();
+}
+
+
+// ======================== PERSON VIEW ========================
+function renderPersonView() {
+  var hiddenIds = getHiddenIds();
+  var personTaskMap = {};
+  DATA.forEach(function(r) {
+    if (hiddenIds.indexOf(r.id) >= 0) return;
+    var names = (r.assignee || []).map(function(p) { return p.name; });
+    if (!names.length) names = ['未分配'];
+    names.forEach(function(n) {
+      if (!personTaskMap[n]) personTaskMap[n] = [];
+      personTaskMap[n].push(r);
+    });
+  });
+  adminTasks.forEach(function(t) {
+    var n = t.assigneeName;
+    if (!personTaskMap[n]) personTaskMap[n] = [];
+    personTaskMap[n].push(t);
+  });
+  var deptMap = {};
+  ALL_PEOPLE.forEach(function(p) {
+    if (!deptMap[p.dept]) deptMap[p.dept] = [];
+    deptMap[p.dept].push(p);
+  });
+  var sortedDepts = Object.keys(deptMap).sort();
+  var html = '';
+  sortedDepts.forEach(function(dept) {
+    var people = deptMap[dept].sort(function(a,b) { return a.name.localeCompare(b.name); });
+    html += '<div class="person-dept-group">';
+    html += '<div class="person-dept-header">' + escapeHtml(dept) + ' <span class="dept-count">(' + people.length + '人)</span></div>';
+    people.forEach(function(p) {
+      var tasks = personTaskMap[p.name] || [];
+      var avatarLetter = p.name.charAt(0);
+      var hiddenIdsCheck = getHiddenIds();
+      html += '<div class="person-item">';
+      html += '<div class="person-avatar">' + escapeHtml(avatarLetter) + '</div>';
+      html += '<div class="person-info">';
+      html += '<div class="person-name">' + escapeHtml(p.name) + ' <span class="person-task-count">(' + tasks.length + '个任务)</span></div>';
+      if (tasks.length > 0) {
+        html += '<div class="person-tasks">';
+        tasks.forEach(function(t) {
+          var title = t.title || '';
+          var pCls = 'card-notstarted';
+          var pLabel = '未启动';
+          if (t.progress === '进行中') { pCls = 'card-progress'; pLabel = '进行中'; }
+          else if (t.progress === 'QA验收中') { pCls = 'card-qa'; pLabel = 'QA验收中'; }
+          var regionStr = (t.region || []).join ? (t.region || []).join(',') : (t.region || '');
+          var tId = t.id || '';
+          var isAdmin = t.scheduledStart ? true : false;
+          html += '<div class="person-task-card ' + pCls + '">';
+          if (isAdmin) {
+            html += '<span class="person-task-title">' + escapeHtml(title) + ' <span class="priority-high">\u2605 P2</span></span>';
+            html += '<span class="person-task-meta">' + escapeHtml(t.scheduledStart || '') + ' ~ ' + escapeHtml(t.scheduledEnd || '') + '</span>';
+            html += '<button class="delete-btn" onclick="deleteAdminTaskByTitle(\'' + escapeHtml(title.replace(/'/g, "\\'")) + '\')" title="删除">\u2716</button>';
+          } else {
+            if (hiddenIdsCheck.indexOf(tId) >= 0) return;
+            html += '<span class="person-task-title">' + escapeHtml(title) + '</span>';
+            html += '<span class="person-task-meta">' + escapeHtml(regionStr) + ' | ' + pLabel + '</span>';
+            html += '<button class="delete-btn" onclick="deleteTask(\'' + tId + '\')" title="删除">\u2716</button>';
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+      } else {
+        html += '<div class="person-no-tasks">暂无任务</div>';
+      }
+      html += '</div></div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('personView').innerHTML = html || '<div class="empty-state"><span class="empty-icon">\u{1F465}</span><div>暂无人员数据</div></div>';
+  var totalVisible = DATA.filter(function(r) { return getHiddenIds().indexOf(r.id) < 0; }).length + adminTasks.length;
+  document.getElementById('filterStats').textContent = '显示 ' + ALL_PEOPLE.length + ' 人 | 任务 ' + totalVisible + ' / ' + (DATA.length + adminTasks.length);
+}
+
+function deleteAdminTaskByTitle(title) {
+  if (!confirm('确定要删除该任务吗？')) return;
+  for (var i = 0; i < adminTasks.length; i++) {
+    if (adminTasks[i].title === title) {
+      adminTasks.splice(i, 1);
+      saveAdminTasks();
+      renderPersonView();
+      render();
+      return;
+    }
+  }
+}
+
+// ======================== DELETE TASK ========================
+function getHiddenIds() {
+  try { return JSON.parse(localStorage.getItem('rox_hidden_ids') || '[]'); } catch(e) { return []; }
+}
+function saveHiddenIds(ids) {
+  localStorage.setItem('rox_hidden_ids', JSON.stringify(ids));
+}
+function deleteTask(id) {
+  if (!confirm('确定要删除该任务吗？')) return;
+  var ids = getHiddenIds();
+  if (ids.indexOf(id) === -1) ids.push(id);
+  saveHiddenIds(ids);
+  render();
+  if (currentView === 'person') renderPersonView();
+}
+function deleteTaskById(id) {
+  deleteTask(id);
+}
+
+// ======================== ADD TASK ========================
+function toggleAddForm() {
+  var panel = document.getElementById('addTaskPanel');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    var sel = document.getElementById('addTaskPerson');
+    if (sel.options.length <= 1) {
+      var deptMap = {};
+      ALL_PEOPLE.forEach(function(p) {
+        if (!deptMap[p.dept]) deptMap[p.dept] = [];
+        deptMap[p.dept].push(p);
+      });
+      var sortedDepts = Object.keys(deptMap).sort();
+      sortedDepts.forEach(function(dept) {
+        var optg = document.createElement('optgroup');
+        optg.label = dept;
+        deptMap[dept].sort(function(a,b) { return a.name.localeCompare(b.name); }).forEach(function(p) {
+          var opt = document.createElement('option');
+          opt.value = p.name;
+          opt.textContent = dept + ' - ' + p.name;
+          optg.appendChild(opt);
+        });
+        sel.appendChild(optg);
+      });
+    }
+    var future = new Date();
+    future.setDate(future.getDate() + 7);
+    document.getElementById('addTaskDeadline').value = formatDateISO(future);
+    setTimeout(function() { document.getElementById('addTaskTitle').focus(); }, 100);
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+function submitAddTask() {
+  var title = document.getElementById('addTaskTitle').value.trim();
+  var assigneeName = document.getElementById('addTaskPerson').value;
+  var hours = parseFloat(document.getElementById('addTaskHours').value) || 1;
+  var region = document.getElementById('addTaskRegion').value;
+  var deadline = document.getElementById('addTaskDeadline').value;
+  if (!title) { alert('请输入工作内容'); return; }
+  if (!assigneeName) { alert('请选择执行人'); return; }
+  var personTasks = DATA.filter(function(r) {
+    return r.assignee && r.assignee.some(function(p) { return p.name === assigneeName; });
+  });
+  adminTasks.filter(function(t) { return t.assigneeName === assigneeName; }).forEach(function(t) {
+    personTasks.push({ startDate: t.scheduledStart, endDate: t.scheduledEnd, title: t.title });
+  });
+  personTasks.sort(function(a, b) {
+    var da = parseDate(normalizeDate(a.startDate));
+    var db = parseDate(normalizeDate(b.startDate));
+    if (!da && !db) return 0; if (!da) return 1; if (!db) return -1;
+    return da - db;
+  });
+  var today = new Date(); today.setHours(0,0,0,0);
+  var workDaysNeeded = Math.ceil(hours);
+  var scheduledStart = null, scheduledEnd = null;
+  var deadlineDate = deadline ? parseDate(deadline) : null;
+  var candidates = [new Date(today)];
+  personTasks.forEach(function(t) {
+    var te = parseDate(normalizeDate(t.endDate));
+    if (te) { var next = new Date(te); next.setDate(next.getDate() + 1); candidates.push(next); }
+  });
+  candidates.sort(function(a,b) { return a - b; });
+  for (var ci = 0; ci < candidates.length; ci++) {
+    var baseStart = new Date(Math.max(candidates[ci].getTime(), today.getTime()));
+    for (var d = 0; d < 120; d++) {
+      var slotStart = new Date(baseStart); slotStart.setDate(slotStart.getDate() + d);
+      var slotEnd = new Date(slotStart); slotEnd.setDate(slotEnd.getDate() + workDaysNeeded - 1);
+      if (deadlineDate && slotEnd > deadlineDate) break;
+      var overlap = personTasks.some(function(t) {
+        var ts = parseDate(normalizeDate(t.startDate));
+        var te = parseDate(normalizeDate(t.endDate));
+        if (!ts || !te) return false;
+        return (slotStart <= te && slotEnd >= ts);
+      });
+      if (!overlap) { scheduledStart = formatDate(slotStart); scheduledEnd = formatDate(slotEnd); break; }
+    }
+    if (scheduledStart) break;
+  }
+  if (!scheduledStart) { alert('无法找到足够的空闲排期时间，请调整工时或联系管理员'); return; }
+  var resultDiv = document.getElementById('addTaskResult');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '\u2705 排期结果: <strong>' + escapeHtml(assigneeName) + '</strong> 于 <strong>' + scheduledStart + ' ~ ' + scheduledEnd + '</strong> 执行\u300c' + escapeHtml(title) + '\u300d\uff08' + hours + '人天\uff09';
+  var newTask = {
+    title: title, hours: hours, priority: 'P2', assigneeName: assigneeName,
+    region: region || '', progress: '未启动', scheduledStart: scheduledStart, scheduledEnd: scheduledEnd,
+    createdAt: new Date().toISOString()
+  };
+  adminTasks.push(newTask);
+  saveAdminTasks();
+  document.getElementById('addTaskTitle').value = '';
+  var future = new Date(); future.setDate(future.getDate() + 7);
+  document.getElementById('addTaskDeadline').value = formatDateISO(future);
+  render();
+  if (currentView === 'person') renderPersonView();
+}
+
+// ======================== UPDATE applyFilters for person view ========================
+function applyFilters() {
+  if (currentView === 'person') renderPersonView();
+  else render();
 }
 
 // ======================== START ========================

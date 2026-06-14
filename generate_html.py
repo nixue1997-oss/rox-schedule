@@ -5,6 +5,8 @@ Generate ROX project schedule HTML from clean_data.json
 
 import json
 import os
+import subprocess
+import sys
 
 def main():
     # ======================== READ DATA ========================
@@ -1611,8 +1613,24 @@ init();
     os.makedirs('/tmp/rox-schedule', exist_ok=True)
     with open('/tmp/rox-schedule/index.html', 'w', encoding='utf-8') as f:
         f.write(html)
-    print(f'HTML generated: /tmp/rox-schedule/index.html ({len(html)} bytes)')
+    print(f'Base HTML generated: /tmp/rox-schedule/index.html ({len(html)} bytes)')
     print(f'Total records: {len(records)}')
+
+    # ======================== APPLY ENHANCEMENTS ========================
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    enhance_script = os.path.join(script_dir, 'enhance_html.py')
+    if os.path.exists(enhance_script):
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, enhance_script, '/tmp/rox-schedule/index.html'],
+            capture_output=True, text=True
+        )
+        if result.returncode == 0:
+            print(result.stdout.strip())
+        else:
+            print(f'Enhance script error: {result.stderr.strip()}')
+    else:
+        print(f'Enhance script not found at: {enhance_script}')
 
 if __name__ == '__main__':
     main()
