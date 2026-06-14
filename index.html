@@ -1039,6 +1039,142 @@ table tr:last-child td { border-bottom: none; }
   .card-expand-row { flex-direction: column; }
   .card-expand-label { min-width: auto; }
 }
+
+/* ===== JIRA VIEW ===== */
+.jira-view-header {
+  padding: 16px;
+  background: var(--glass-bg);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  margin-bottom: 16px;
+}
+.jira-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+.jira-filter-row .filter-group label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.jira-filter-row .filter-group select,
+.jira-filter-row .filter-group input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: var(--text-primary);
+  font-size: 12px;
+  min-width: 140px;
+}
+.jira-filter-row .filter-group select:focus,
+.jira-filter-row .filter-group input:focus {
+  outline: none;
+  border-color: var(--accent-1);
+}
+.jira-stats {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(139, 126, 200, 0.08);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.jira-stats .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.jira-stats .stat-num {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent-1);
+}
+.jira-stats .stat-label {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.jira-table-wrap {
+  background: var(--glass-bg);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  overflow-x: auto;
+}
+.jira-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.jira-table th {
+  position: sticky;
+  top: 0;
+  background: rgba(139, 126, 200, 0.1);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+  z-index: 1;
+}
+.jira-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+.jira-table tr:hover td {
+  background: rgba(139, 126, 200, 0.05);
+}
+.jira-table .jira-key-cell a {
+  color: var(--accent-1);
+  text-decoration: none;
+  font-weight: 500;
+}
+.jira-table .jira-key-cell a:hover {
+  text-decoration: underline;
+}
+.jira-person-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  background: rgba(139, 126, 200, 0.12);
+  color: var(--text-secondary);
+  margin: 1px 2px;
+}
+.jira-progress-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.jira-progress-tag.todo { background: rgba(180,180,180,0.15); color: #999; }
+.jira-progress-tag.progress { background: rgba(100,149,237,0.12); color: cornflowerblue; }
+.jira-progress-tag.done { background: rgba(144,238,144,0.12); color: mediumseagreen; }
+.jira-progress-tag.blocked { background: rgba(239,83,80,0.12); color: #ef5350; }
+.jira-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .jira-filter-row { flex-direction: column; }
+  .jira-filter-row .filter-group select,
+  .jira-filter-row .filter-group input { width: 100%; }
+  .jira-stats { flex-direction: column; gap: 8px; }
+}
 </style>
 </head>
 <body>
@@ -1149,6 +1285,7 @@ table tr:last-child td { border-bottom: none; }
     <button class="view-tab" data-view="table" onclick="switchView('table')">表格视图</button>
     <button class="view-tab" data-view="gantt" onclick="switchView('gantt')">甘特图</button>
     <button class="view-tab" data-view="parentgantt" onclick="switchView('parentgantt')">子任务甘特</button>
+    <button class="view-tab" data-view="jira" onclick="switchView('jira')">Jira关联</button>
   </div>
 
   <!-- Content Area -->
@@ -1164,6 +1301,30 @@ table tr:last-child td { border-bottom: none; }
       <div class="ps-results" id="pgSuggest"></div>
     </div>
     <div id="pgResult"></div>
+  </div>
+  <div id="jiraView" class="fade-in" style="display:none">
+    <div class="jira-view-header">
+      <div class="jira-filter-row">
+        <div class="filter-group">
+          <label>执行人</label>
+          <select id="jiraPersonFilter" onchange="renderJiraView()">
+            <option value="ALL">全部人员</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>外放版本</label>
+          <select id="jiraVersionFilter" onchange="renderJiraView()">
+            <option value="ALL">全部版本</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>搜索</label>
+          <input type="text" id="jiraSearchInput" placeholder="搜索任务或Jira单号..." oninput="renderJiraView()">
+        </div>
+      </div>
+      <div class="jira-stats" id="jiraStats"></div>
+    </div>
+    <div class="jira-table-wrap" id="jiraTableWrap"></div>
   </div>
 </div>
 
@@ -1921,13 +2082,15 @@ function switchView(view) {
   currentView = view;
   document.querySelectorAll('.view-tab').forEach(function(t) { t.classList.remove('active'); });
   document.querySelector('.view-tab[data-view="' + view + '"]').classList.add('active');
-  ['cardView','personView','tableView','ganttView','parentGanttView'].forEach(function(id) {
+  ['cardView','personView','tableView','ganttView','parentGanttView','jiraView'].forEach(function(id) {
     var show = false;
     if (view === 'parentgantt' && id === 'parentGanttView') show = true;
-    else if (view !== 'parentgantt' && id.indexOf(view) === 0) show = true;
+    else if (view === 'jira' && id === 'jiraView') show = true;
+    else if (view !== 'parentgantt' && view !== 'jira' && id.indexOf(view) === 0) show = true;
     document.getElementById(id).style.display = show ? 'block' : 'none';
   });
-  render();
+  if (view === 'jira') { initJiraView(); renderJiraView(); }
+  else { render(); }
 }
 
 // ======================== HELPERS ========================
@@ -2210,9 +2373,30 @@ function onPgSearch(val) {
 }function showPgGroup(title) {
   document.getElementById('pgSearch').value = title;
   document.getElementById('pgSuggest').style.display = 'none';
+  // Strategy 1: prefix match
   var m = title.match(/^(\u3010[^\u3010]+\u3011\u3010\u603b\u3011\d{4})/);
   var pfx = m ? m[1] : title;
   var tasks = DATA.filter(function(r) { return r.title.indexOf(pfx) === 0; });
+  // Strategy 2: extract keyword and fuzzy match subtasks
+  if (tasks.length <= 1) {
+    var kw = title.replace(/^(\u3010[^\u3010]+\u3011)?(\u3010\u603b\u3011)?\d{4}\s?/, '');
+    if (kw.length >= 2) {
+      tasks = DATA.filter(function(r) { return fuzzyMatch(r.title, kw); });
+    }
+  }
+  // Strategy 3: find children via parentTask field
+  if (tasks.length > 0) {
+    var parentIds = tasks.map(function(r) { return r.id; });
+    var children = DATA.filter(function(r) {
+      return r.parentTask && parentIds.indexOf(r.parentTask) >= 0;
+    });
+    if (children.length > 0) {
+      var existIds = tasks.map(function(r) { return r.id; });
+      children.forEach(function(c) {
+        if (existIds.indexOf(c.id) < 0) tasks.push(c);
+      });
+    }
+  }
   if (tasks.length === 0) tasks = DATA.filter(function(r) { return r.title === title; });
   renderSimpleGantt(tasks, pfx);
 }
@@ -2686,6 +2870,113 @@ function renderJiraHtml(r) {
 function renderVersionHtml(r) {
   if (!r.extVersion) return '';
   return ' <span class="version-badge">' + escapeHtml(r.extVersion) + '</span>';
+}
+
+// ======================== JIRA VIEW ========================
+var _jiraViewInited = false;
+function initJiraView() {
+  if (_jiraViewInited) return;
+  _jiraViewInited = true;
+  // Populate person filter
+  var pSel = document.getElementById('jiraPersonFilter');
+  var peopleSet = {};
+  DATA.forEach(function(r) {
+    (r.assignee || []).forEach(function(p) {
+      if (p.name) peopleSet[p.name] = true;
+    });
+  });
+  Object.keys(peopleSet).sort().forEach(function(name) {
+    var opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    pSel.appendChild(opt);
+  });
+  // Populate version filter
+  var vSel = document.getElementById('jiraVersionFilter');
+  allVersions.forEach(function(v) {
+    var opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    vSel.appendChild(opt);
+  });
+}
+
+function renderJiraView() {
+  var personVal = document.getElementById('jiraPersonFilter').value;
+  var versionVal = document.getElementById('jiraVersionFilter').value;
+  var searchVal = (document.getElementById('jiraSearchInput').value || '').toLowerCase().trim();
+
+  // Filter tasks that have Jira keys
+  var tasks = DATA.filter(function(r) {
+    if (!r.jiraKey && !r.jiraUrl) return false;
+    if (personVal !== 'ALL') {
+      var names = (r.assignee || []).map(function(p) { return p.name; });
+      if (names.indexOf(personVal) < 0) return false;
+    }
+    if (versionVal !== 'ALL' && r.extVersion !== versionVal) return false;
+    if (searchVal && !fuzzyMatch(r.title, searchVal) && !(r.jiraKey || '').toLowerCase().indexOf(searchVal) >= 0) return false;
+    return true;
+  });
+
+  // Stats
+  var statsEl = document.getElementById('jiraStats');
+  var totalJira = tasks.length;
+  var peopleSet = {};
+  var versionSet = {};
+  var progressCount = { todo: 0, progress: 0, done: 0, other: 0 };
+  tasks.forEach(function(r) {
+    (r.assignee || []).forEach(function(p) { if (p.name) peopleSet[p.name] = true; });
+    if (r.extVersion) versionSet[r.extVersion] = true;
+    var p = (r.progress || '').toLowerCase();
+    if (p.indexOf('完成') >= 0 || p.indexOf('done') >= 0 || p.indexOf('closed') >= 0) progressCount.done++;
+    else if (p.indexOf('进行') >= 0 || p.indexOf('in prog') >= 0) progressCount.progress++;
+    else if (p.indexOf('未启动') >= 0 || p === '') progressCount.todo++;
+    else progressCount.other++;
+  });
+  statsEl.innerHTML =
+    '<div class="stat-item"><span class="stat-num">' + totalJira + '</span><span class="stat-label">Jira任务总数</span></div>' +
+    '<div class="stat-item"><span class="stat-num">' + Object.keys(peopleSet).length + '</span><span class="stat-label">涉及人员</span></div>' +
+    '<div class="stat-item"><span class="stat-num">' + Object.keys(versionSet).length + '</span><span class="stat-label">涉及版本</span></div>' +
+    '<div class="stat-item"><span class="stat-num" style="color:cornflowerblue">' + progressCount.progress + '</span><span class="stat-label">进行中</span></div>' +
+    '<div class="stat-item"><span class="stat-num" style="color:mediumseagreen">' + progressCount.done + '</span><span class="stat-label">已完成</span></div>';
+
+  // Table
+  var wrap = document.getElementById('jiraTableWrap');
+  if (tasks.length === 0) {
+    wrap.innerHTML = '<div class="jira-empty">暂无匹配的Jira任务</div>';
+    return;
+  }
+  // Sort by version date desc
+  tasks.sort(function(a, b) { return (b.versionDate || '').localeCompare(a.versionDate || ''); });
+
+  var html = '<table class="jira-table"><thead><tr>' +
+    '<th>工作内容</th>' +
+    '<th>Jira单号</th>' +
+    '<th>状态</th>' +
+    '<th>执行人</th>' +
+    '<th>地区</th>' +
+    '<th>外放版本</th>' +
+    '<th>版更时间</th>' +
+    '<th>上线时间</th>' +
+    '</tr></thead><tbody>';
+  tasks.forEach(function(r) {
+    var pCls = 'todo';
+    var p = (r.progress || '');
+    if (p.indexOf('进行') >= 0) pCls = 'progress';
+    else if (p.indexOf('完成') >= 0 || p.indexOf('Done') >= 0) pCls = 'done';
+    var names = (r.assignee || []).map(function(p) { return '<span class="jira-person-badge">' + escapeHtml(p.name) + '</span>'; }).join(' ');
+    var regions = (r.region || []).join(', ');
+    html += '<tr>' +
+      '<td>' + escapeHtml(r.title) + '</td>' +
+      '<td class="jira-key-cell">' + renderJiraHtml(r) + '</td>' +
+      '<td><span class="jira-progress-tag ' + pCls + '">' + escapeHtml(p) + '</span></td>' +
+      '<td>' + names + '</td>' +
+      '<td>' + escapeHtml(regions) + '</td>' +
+      '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(r.extVersion) + '</span>' : '-') + '</td>' +
+      '<td>' + (r.versionDate || '-') + '</td>' +
+      '<td>' + normalizeDate(r.onlineDate) + '</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
 }
 
 // ======================== START ========================
