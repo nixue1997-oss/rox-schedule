@@ -2423,6 +2423,7 @@ function onPgSearch(val) {{
     div.style.display = 'block';
   }}, 250);
 }}function showPgGroup(title) {{
+  var _origSearch = document.getElementById('pgSearch').value || '';
   document.getElementById('pgSearch').value = title;
   document.getElementById('pgSuggest').style.display = 'none';
   // Strategy 1: prefix match
@@ -2433,7 +2434,7 @@ function onPgSearch(val) {{
   var kw = title.replace(/^(\\u3010[^\\u3010]+\\u3011)?(\\u3010\\u603b\\u3011)?\\d{{4}}\\s?/, '');
   // If keyword extracted from title is too short, use the original search input as fallback
   if (kw.length < 2) {{
-    var searchVal = document.getElementById('pgSearch').value || '';
+    var searchVal = _origSearch || '';
     var cleanKw = searchVal.replace(/^(\\u3010[^\\u3010]+\\u3011)?(\\u3010\\u603b\\u3011)?\\d{{4}}\\s?/, '');
     if (cleanKw.length >= 2) kw = cleanKw;
   }}
