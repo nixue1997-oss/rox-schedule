@@ -2429,12 +2429,14 @@ function onPgSearch(val) {{
   var m = title.match(/^(\\u3010[^\\u3010]+\\u3011\\u3010\\u603b\\u3011\\d{{4}})/);
   var pfx = m ? m[1] : title;
   var tasks = DATA.filter(function(r) {{ return r.title.indexOf(pfx) === 0; }});
-  // Strategy 2: extract keyword and fuzzy match subtasks
-  if (tasks.length <= 1) {{
-    var kw = title.replace(/^(\\u3010[^\\u3010]+\\u3011)?(\\u3010\\u603b\\u3011)?\\d{{4}}\\s?/, '');
-    if (kw.length >= 2) {{
-      tasks = DATA.filter(function(r) {{ return fuzzyMatch(r.title, kw); }});
-    }}
+  // Strategy 2: extract keyword and fuzzy match subtasks (always add to Strategy 1 results)
+  var kw = title.replace(/^(\\u3010[^\\u3010]+\\u3011)?(\\u3010\\u603b\\u3011)?\\d{{4}}\\s?/, '');
+  if (kw.length >= 2) {{
+    var kwTasks = DATA.filter(function(r) {{ return fuzzyMatch(r.title, kw); }});
+    var existIds = tasks.map(function(r) {{ return r.id; }});
+    kwTasks.forEach(function(t) {{
+      if (existIds.indexOf(t.id) < 0) {{ tasks.push(t); existIds.push(t.id); }}
+    }});
   }}
   // Strategy 3: find children via parentTask field
   if (tasks.length > 0) {{
