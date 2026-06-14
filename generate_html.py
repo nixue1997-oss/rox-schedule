@@ -1120,7 +1120,8 @@ function renderCard(filtered, adminFiltered) {{
     var regionTags = (r.region || []).map(function(x) {{ return '<span class="region-tag">' + x + '</span>'; }}).join('');
     var names = (r.assignee || []).map(function(p) {{ return p.name; }}).join(', ');
     var dates = [];
-    if (r.startDate) dates.push('\\u{{1F4C5}} ' + normalizeDate(r.startDate));
+        if (r.startDate) dates.push('\\u{{1F4C5}} 启动: ' + normalizeDate(r.startDate));
+        if (r.endDate) dates.push('\\u23F0 结束: ' + normalizeDate(r.endDate));
     if (r.freezeDate) dates.push('\\u{{1F4C4}} \\u5c01\\u677f: ' + r.freezeDate);
     if (r.versionDate) dates.push('\\u{{1F4C5}} \\u7248\\u66f4: ' + r.versionDate);
 
@@ -1197,6 +1198,7 @@ function renderTable(filtered, adminFiltered) {{
     {{ key: 'assignee', label: '\\u6267\\u884c\\u4eba', width: '100px' }},
     {{ key: 'region', label: '\\u5730\\u533a', width: '80px' }},
     {{ key: 'startDate', label: '\\u542f\\u52a8\\u65e5\\u671f', width: '110px' }},
+    {{ key: 'endDate', label: '\u4efb\u52a1\u7ed3\u675f', width: '110px' }},
     {{ key: 'freezeDate', label: '\\u5c01\\u677f\\u65f6\\u95f4', width: '110px' }},
     {{ key: 'versionDate', label: '\\u7248\\u66f4\\u65f6\\u95f4', width: '110px' }}
   ];
@@ -1227,12 +1229,14 @@ function renderTable(filtered, adminFiltered) {{
     html += '<td>' + names + '</td>';
     html += '<td>' + regionTags + '</td>';
     html += '<td>' + (normalizeDate(r.startDate) || '') + '</td>';
+    html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
+    html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
     html += '<td>' + (r.freezeDate || '') + '</td>';
     html += '<td>' + (r.versionDate || '') + '</td></tr>';
   }});
 
   if (!all.length) {{
-    html += '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-5)">\\u6682\\u65e0\\u5339\\u914d\\u7684\\u4efb\\u52a1</td></tr>';
+    html += '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-5)">\\u6682\\u65e0\\u5339\\u914d\\u7684\\u4efb\\u52a1</td></tr>';
   }}
 
   html += '</tbody></table></div>';
