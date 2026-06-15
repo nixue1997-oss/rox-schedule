@@ -341,6 +341,8 @@ body::after {{
 
 /* ========== FILTER BAR - Glass Panel ========== */
 .filter-bar {{
+  position: relative;
+  z-index: 100;
   background: var(--glass-bg-strong);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -401,7 +403,7 @@ body::after {{
 .multi-select-trigger .ms-arrow {{ font-size: 10px; opacity: 0.4; flex-shrink: 0; }}
 .multi-select-panel {{
   position: absolute; top: 100%; left: 0; min-width: 100%;
-  z-index: 200;
+  z-index: 9999;
   background: var(--glass-bg-strong);
   backdrop-filter: var(--glass-blur-strong);
   -webkit-backdrop-filter: var(--glass-blur-strong);
@@ -496,6 +498,9 @@ body::after {{
   width: fit-content;
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-sm);
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 }}
 .view-tab {{
   padding: 8px 20px;
@@ -1927,7 +1932,6 @@ function renderTable(filtered, adminFiltered) {{
     html += '<td>' + regionTags + '</td>';
     html += '<td>' + (normalizeDate(r.startDate) || '') + '</td>';
     html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
-    html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
     html += '<td>' + (r.freezeDate || '') + '</td>';
     html += '<td>' + (r.versionDate || '') + '</td>';
     html += '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(VER_NAME_MAP[r.extVersion] || r.extVersion) + '</span>' : '') + '</td>';
@@ -3029,13 +3033,20 @@ function renderJiraHtml(r) {{
   var url = r.jiraUrl || '';
   // Extract URL from markdown format [KEY](URL)
   if (url && url.indexOf('](') >= 0) {{
-    var m = url.match(/\]\(([^)]+)\)/);
-    if (m) url = m[1];
-    // Also extract key from markdown if not already set
+    // Extract key from markdown first (before URL is replaced)
     if (!key) {{
       var km = url.match(/\[([^\]]+)\]/);
       if (km) key = km[1];
     }}
+    // Extract URL from markdown
+    var m = url.match(/\]\(([^)]+)\)/);
+    if (m) url = m[1];
+  }}
+  // If jiraUrl is actually a plain URL (no markdown), use it as-is
+  // If key is still empty, try to extract from URL path
+  if (!key && url) {{
+    var lastPart = url.split('/').pop();
+    if (lastPart && lastPart.indexOf('ROCN-') === 0) key = lastPart;
   }}
   var status = getJiraStatus(key);
   var statusHtml = '';
