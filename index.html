@@ -346,9 +346,7 @@ body::after {
 .multi-select-panel {
   position: absolute; top: 100%; left: 0; min-width: 100%;
   z-index: 9999;
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur-strong);
-  -webkit-backdrop-filter: var(--glass-blur-strong);
+  background: rgba(255,255,255,0.98);
   border: 1px solid var(--morandi-200);
   border-radius: var(--radius-md);
   max-height: 240px; overflow-y: auto;
@@ -378,8 +376,7 @@ body::after {
 .person-search input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--primary-glow); }
 .ps-results {
   position: absolute; top: 100%; left: 0; right: 0; z-index: 9999;
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur-strong);
+  background: rgba(255,255,255,0.98);
   border: 1px solid var(--morandi-200);
   border-radius: var(--radius-md);
   max-height: 200px; overflow-y: auto;
@@ -1706,6 +1703,8 @@ function render() {
   else if (currentView === 'table') renderTable(filtered, adminFiltered);
   else if (currentView === 'gantt') renderGantt(filtered, adminFiltered);
   else if (currentView === 'parentgantt') renderParentGantt(filtered, adminFiltered);
+  // Also refresh Jira view when main filters change
+  if (currentView === 'jira') renderJiraView();
 }
 
 function applyFilters() {
@@ -2082,7 +2081,7 @@ function renderGantt(filtered, adminFiltered) {
       var regionStr = (r.region || []).join(', ');
 
       html += '<div class="gantt-bar ' + progClass + '" style="left:' + left + 'px;width:' + Math.max(30, width) + 'px" ';
-      html += 'onmouseenter="showGanttTooltip(event,\'' + escTitle + '\',\'' + r.progress + '\',\'' + names + '\',\'' + regionStr + '\',\'' + (normalizeDate(r.startDate)||'') + '\',\'' + (normalizeDate(r.endDate)||'') + '\',\'' + (r.freezeDate||'') + '\',\'' + (r.versionDate||'') + '\')" ';
+      html += 'onmouseenter="showGanttTooltip(event,\'' + escTitle + '\',\'' + r.progress + '\',\'' + names + '\',\'' + regionStr + '\',\'' + (normalizeDate(r.startDate)||'') + '\',\'' + (normalizeDate(r.endDate)||'') + '\',\'' + (r.freezeDate||'') + '\',\'' + (r.versionDate||'') + '\',\'' + (r.extVersion||'') + '\',\'' + (r.jiraKey||'') + '\')" ';
       html += 'onmouseleave="hideGanttTooltip()">';
       html += escapeHtml(barTitle) + '</div>';
 
@@ -2118,7 +2117,7 @@ function renderGantt(filtered, adminFiltered) {
 }
 
 // ======================== GANTT TOOLTIP ========================
-function showGanttTooltip(e, title, progress, assignee, region, startDate, endDate, freezeDate, versionDate) {
+function showGanttTooltip(e, title, progress, assignee, region, startDate, endDate, freezeDate, versionDate, extVersion, jiraKey) {
   var tip = document.getElementById('ganttTooltip');
   var html = '<div class="tt-title">' + escapeHtml(title) + '</div>';
   html += '<div class="tt-row"><span>\u8fdb\u5c55: ' + progress + '</span><span>' + (assignee||'') + '</span></div>';
@@ -2126,8 +2125,11 @@ function showGanttTooltip(e, title, progress, assignee, region, startDate, endDa
   html += '<div class="tt-row"><span>' + startDate + ' ~ ' + endDate + '</span></div>';
   if (freezeDate) html += '<div class="tt-row"><span>\u5c01\u677f: ' + freezeDate + '</span></div>';
   if (versionDate) html += '<div class="tt-row"><span>\u7248\u66f4: ' + versionDate + '</span></div>';
-  if (typeof extVersion !== 'undefined' && extVersion) html += '<div class="tt-row"><span>\u5916\u653e\u7248\u672c: ' + extVersion + '</span></div>';
-  if (typeof jiraKey !== 'undefined' && jiraKey) html += '<div class="tt-row"><span>Jira: ' + jiraKey + '</span></div>';
+  if (extVersion) {
+    var evn = VER_NAME_MAP[extVersion] || extVersion;
+    html += '<div class="tt-row"><span>外放版本: ' + escapeHtml(evn) + '</span></div>';
+  }
+  if (jiraKey) html += '<div class="tt-row"><span>Jira: ' + escapeHtml(jiraKey) + '</span></div>';
   tip.innerHTML = html;
   tip.style.display = 'block';
   var rect = e.target.getBoundingClientRect();
@@ -2460,33 +2462,46 @@ function onPgSearch(val) {
       if (existIds.indexOf(t.id) < 0) { tasks.push(t); existIds.push(t.id); }
     });
   }
-  // Strategy 3: find children via title pattern matching
-  // Parent tasks have 【总】 in their titles; children share the same region+date prefix
-  if (tasks.length > 0) {
-    var parentPrefixes = [];
-    var existIds = tasks.map(function(r) { return r.id; });
-    tasks.forEach(function(r) {
-      var m = r.title.match(/^(【[^【]+】)【总】\d{4}/);
-      if (m) {
-        var regionPrefix = m[1]; // e.g. 【日服】
-        var dateMatch = r.title.match(/【总】(\d{4})/);
-        if (dateMatch) {
-          parentPrefixes.push(regionPrefix + dateMatch[1]); // e.g. 【日服】0630
-        }
-      }
-    });
-    if (parentPrefixes.length > 0) {
+  // Strategy 3: find sibling tasks sharing the same parent prefix
+  // For each parent task found, also include all tasks with the same 【地区】【总】NNNN prefix
+  var siblingPrefixes = [];
+  var existIds = tasks.map(function(r) { return r.id; });
+  tasks.forEach(function(r) {
+    var m = r.title.match(/^(【[^【]+】【总】\d{4})/);
+    if (m) siblingPrefixes.push(m[1]);
+  });
+  if (siblingPrefixes.length > 0) {
+    siblingPrefixes.forEach(function(pfx) {
       DATA.forEach(function(r) {
-        if (existIds.indexOf(r.id) >= 0) return; // already included
-        for (var i = 0; i < parentPrefixes.length; i++) {
-          if (r.title.indexOf(parentPrefixes[i]) === 0) {
-            tasks.push(r);
-            existIds.push(r.id);
-            break;
-          }
+        if (existIds.indexOf(r.id) >= 0) return;
+        if (r.title.indexOf(pfx) === 0) {
+          tasks.push(r);
+          existIds.push(r.id);
         }
       });
+    });
+  }
+  // Strategy 4: also try to find children by region+date prefix (for non-【总】child tasks)
+  // e.g. from 【ME】【总】0629, extract 【ME】0629 and look for child tasks
+  var childPrefixes = [];
+  tasks.forEach(function(r) {
+    var m = r.title.match(/^(【[^【]+】)【总】\d{4}/);
+    if (m) {
+      var regionPrefix = m[1];
+      var dateMatch = r.title.match(/【总】(\d{4})/);
+      if (dateMatch) childPrefixes.push(regionPrefix + dateMatch[1]);
     }
+  });
+  if (childPrefixes.length > 0) {
+    childPrefixes.forEach(function(pfx) {
+      DATA.forEach(function(r) {
+        if (existIds.indexOf(r.id) >= 0) return;
+        if (r.title.indexOf(pfx) === 0) {
+          tasks.push(r);
+          existIds.push(r.id);
+        }
+      });
+    });
   }
   if (tasks.length === 0) tasks = DATA.filter(function(r) { return r.title === title; });
   renderSimpleGantt(tasks, pfx);
