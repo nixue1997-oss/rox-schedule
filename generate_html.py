@@ -1812,7 +1812,7 @@ var _feishuAuth = {{
   // and replace this URL with the actual proxy address.
   proxyUrl: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:8787'
-    : 'https://rox-feishu-proxy.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev',
+    : 'https://rox-feishu-proxy.nixue-rox.workers.dev',
   // Allowed tenant_key(s) for \u9a8f\u68a6\u7f51\u7edc — get this from your first successful login
   allowedTenantKeys: [
     // '\u8bf7\u5728\u7b2c\u4e00\u6b21\u767b\u5f55\u540e\u5c06\u63a7\u5236\u53f0\u8f93\u51fa\u7684 tenant_key \u586b\u5199\u5230\u8fd9\u91cc'
