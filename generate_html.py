@@ -1806,11 +1806,17 @@ function formatDateISO(d) {{
 
 // ======================== FEISHU AUTH ========================
 var _feishuAuth = {{
-  // IMPORTANT: Replace these with your actual Feishu app credentials
-  appId: 'YOUR_FEISHU_APP_ID',
+  appId: 'cli_a9324dfceab81bd3',
   redirectUri: window.location.origin + window.location.pathname,
-  // Proxy URL for token exchange (e.g., Cloudflare Worker)
-  proxyUrl: 'https://your-proxy.example.com/feishu-auth',
+  // Backend proxy for token exchange — deploy the Cloudflare Worker or Python proxy first
+  // and replace this URL with the actual proxy address.
+  proxyUrl: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8787'
+    : 'https://rox-feishu-proxy.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev',
+  // Allowed tenant_key(s) for \u9a8f\u68a6\u7f51\u7edc — get this from your first successful login
+  allowedTenantKeys: [
+    // '\u8bf7\u5728\u7b2c\u4e00\u6b21\u767b\u5f55\u540e\u5c06\u63a7\u5236\u53f0\u8f93\u51fa\u7684 tenant_key \u586b\u5199\u5230\u8fd9\u91cc'
+  ],
   user: null
 }};
 
@@ -1828,7 +1834,6 @@ function handleFeishuCallback() {{
   var state = params.get('state');
   if (!code) return false;
 
-  // Show loading state
   var overlay = document.getElementById('authOverlay');
   var btn = overlay.querySelector('.auth-btn');
   if (btn) {{
@@ -1836,7 +1841,6 @@ function handleFeishuCallback() {{
     btn.disabled = true;
   }}
 
-  // Exchange code for token via proxy
   fetch(_feishuAuth.proxyUrl, {{
     method: 'POST',
     headers: {{ 'Content-Type': 'application/json' }},
@@ -1848,15 +1852,24 @@ function handleFeishuCallback() {{
       showAuthError(data.error);
       return;
     }}
-    if (data.company !== '\u9a8f\u68a6\u7f51\u7edc') {{
-      showAuthError('\u60a8\u4e0d\u662f\u9a8f\u68a6\u7f51\u7edc\u5458\u5de5\uff0c\u65e0\u6cd5\u8bbf\u95ee\u6b64\u7cfb\u7edf');
+
+    // Tenant-based access control: verify the user belongs to \u9a8f\u68a6\u7f51\u7edc
+    var allowed = _feishuAuth.allowedTenantKeys;
+    if (allowed.length > 0) {{
+      if (allowed.indexOf(data.tenant_key) === -1) {{
+        showAuthError('\u60a8\u4e0d\u662f\u9a8f\u68a6\u7f51\u7edc\u5458\u5de5\uff0c\u65e0\u6cd5\u8bbf\u95ee\u6b64\u7cfb\u7edf\u3002\\n\u60a8\u7684\u4f01\u4e1a\u6807\u8bc6\uff1a' + data.tenant_key + '\\n\u60a8\u7684\u59d3\u540d\uff1a' + data.name);
+        return;
+      }}
+    }} else {{
+      // First-time setup: no tenant keys configured yet — show the user's tenant_key
+      console.log('[Rox Auth] \u4f01\u4e1a\u6807\u8bc6 (tenant_key):', data.tenant_key, '\u7528\u6237:', data.name);
+      showAuthError('\u8ba4\u8bc1\u6210\u529f\uff01\u4f46\u4f01\u4e1a\u767d\u540d\u5355\u5c1a\u672a\u914d\u7f6e\u3002\\n\u8bf7\u5c06\u4ee5\u4e0b tenant_key \u6dfb\u52a0\u5230\u4ee3\u7801\u4e2d\u7684 allowedTenantKeys \u5217\u8868\uff1a\\n' + data.tenant_key + '\\n\u7528\u6237\uff1a' + data.name);
       return;
     }}
-    // Auth success
+
     _feishuAuth.user = data;
     localStorage.setItem('rox_auth_user', JSON.stringify(data));
     localStorage.setItem('rox_auth_ts', Date.now());
-    // Clean URL
     if (window.history && window.history.replaceState) {{
       window.history.replaceState({{}}, document.title, state || window.location.pathname);
     }}
@@ -1873,6 +1886,7 @@ function showAuthError(msg) {{
   if (errorEl) {{
     errorEl.textContent = msg;
     errorEl.style.display = 'block';
+    errorEl.style.whiteSpace = 'pre-line';
   }}
   var btn = document.querySelector('.auth-btn');
   if (btn) {{
@@ -1887,12 +1901,10 @@ function hideAuthOverlay() {{
 }}
 
 function checkFeishuAuth() {{
-  // Check for cached auth
   var cached = localStorage.getItem('rox_auth_user');
   var ts = localStorage.getItem('rox_auth_ts');
   if (cached && ts) {{
     var age = Date.now() - parseInt(ts);
-    // Cache valid for 24 hours
     if (age < 24 * 60 * 60 * 1000) {{
       try {{
         _feishuAuth.user = JSON.parse(cached);
@@ -1901,17 +1913,14 @@ function checkFeishuAuth() {{
       }} catch(e) {{}}
     }}
   }}
-
-  // Check for OAuth callback
   if (handleFeishuCallback()) return;
-
-  // Show auth overlay
   var overlay = document.getElementById('authOverlay');
   if (overlay) overlay.classList.remove('hidden');
 }}
 
 // ======================== INIT ========================
 function init() {{
+  checkFeishuAuth();
   // Extract filter options
   var regionSet = {{}}, progSet = {{}}, personSet = {{}};
   DATA.forEach(function(r) {{

@@ -1748,11 +1748,17 @@ function formatDateISO(d) {
 
 // ======================== FEISHU AUTH ========================
 var _feishuAuth = {
-  // IMPORTANT: Replace these with your actual Feishu app credentials
-  appId: 'YOUR_FEISHU_APP_ID',
+  appId: 'cli_a9324dfceab81bd3',
   redirectUri: window.location.origin + window.location.pathname,
-  // Proxy URL for token exchange (e.g., Cloudflare Worker)
-  proxyUrl: 'https://your-proxy.example.com/feishu-auth',
+  // Backend proxy for token exchange — deploy the Cloudflare Worker or Python proxy first
+  // and replace this URL with the actual proxy address.
+  proxyUrl: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8787'
+    : 'https://rox-feishu-proxy.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev',
+  // Allowed tenant_key(s) for 骏梦网络 — get this from your first successful login
+  allowedTenantKeys: [
+    // '请在第一次登录后将控制台输出的 tenant_key 填写到这里'
+  ],
   user: null
 };
 
@@ -1770,7 +1776,6 @@ function handleFeishuCallback() {
   var state = params.get('state');
   if (!code) return false;
 
-  // Show loading state
   var overlay = document.getElementById('authOverlay');
   var btn = overlay.querySelector('.auth-btn');
   if (btn) {
@@ -1778,7 +1783,6 @@ function handleFeishuCallback() {
     btn.disabled = true;
   }
 
-  // Exchange code for token via proxy
   fetch(_feishuAuth.proxyUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1790,15 +1794,24 @@ function handleFeishuCallback() {
       showAuthError(data.error);
       return;
     }
-    if (data.company !== '骏梦网络') {
-      showAuthError('您不是骏梦网络员工，无法访问此系统');
+
+    // Tenant-based access control: verify the user belongs to 骏梦网络
+    var allowed = _feishuAuth.allowedTenantKeys;
+    if (allowed.length > 0) {
+      if (allowed.indexOf(data.tenant_key) === -1) {
+        showAuthError('您不是骏梦网络员工，无法访问此系统。\n您的企业标识：' + data.tenant_key + '\n您的姓名：' + data.name);
+        return;
+      }
+    } else {
+      // First-time setup: no tenant keys configured yet — show the user's tenant_key
+      console.log('[Rox Auth] 企业标识 (tenant_key):', data.tenant_key, '用户:', data.name);
+      showAuthError('认证成功！但企业白名单尚未配置。\n请将以下 tenant_key 添加到代码中的 allowedTenantKeys 列表：\n' + data.tenant_key + '\n用户：' + data.name);
       return;
     }
-    // Auth success
+
     _feishuAuth.user = data;
     localStorage.setItem('rox_auth_user', JSON.stringify(data));
     localStorage.setItem('rox_auth_ts', Date.now());
-    // Clean URL
     if (window.history && window.history.replaceState) {
       window.history.replaceState({}, document.title, state || window.location.pathname);
     }
@@ -1815,6 +1828,7 @@ function showAuthError(msg) {
   if (errorEl) {
     errorEl.textContent = msg;
     errorEl.style.display = 'block';
+    errorEl.style.whiteSpace = 'pre-line';
   }
   var btn = document.querySelector('.auth-btn');
   if (btn) {
@@ -1829,12 +1843,10 @@ function hideAuthOverlay() {
 }
 
 function checkFeishuAuth() {
-  // Check for cached auth
   var cached = localStorage.getItem('rox_auth_user');
   var ts = localStorage.getItem('rox_auth_ts');
   if (cached && ts) {
     var age = Date.now() - parseInt(ts);
-    // Cache valid for 24 hours
     if (age < 24 * 60 * 60 * 1000) {
       try {
         _feishuAuth.user = JSON.parse(cached);
@@ -1843,17 +1855,14 @@ function checkFeishuAuth() {
       } catch(e) {}
     }
   }
-
-  // Check for OAuth callback
   if (handleFeishuCallback()) return;
-
-  // Show auth overlay
   var overlay = document.getElementById('authOverlay');
   if (overlay) overlay.classList.remove('hidden');
 }
 
 // ======================== INIT ========================
 function init() {
+  checkFeishuAuth();
   // Extract filter options
   var regionSet = {}, progSet = {}, personSet = {};
   DATA.forEach(function(r) {
