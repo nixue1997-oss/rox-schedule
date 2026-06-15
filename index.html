@@ -2525,9 +2525,8 @@ function renderSimpleGantt(tasks, label) {
   s.setDate(s.getDate() - 7);
   var e = new Date(me); e.setDate(e.getDate() + 14);
   var td = Math.ceil((e - s) / (1000*60*60*24));
-  var today = new Date(); today.setHours(0,0,0,0);
 
-  var h = '<div class="pg-group-title">' + label + '</div>';
+var h = '<div class="pg-group-title">' + label + '</div>';
   h += '<div class="pg-group-subtitle">\u5171 ' + tasks.length + ' \u4e2a\u4efb\u52a1 | ' + ms.toISOString().substring(0,10) + ' ~ ' + me.toISOString().substring(0,10) + '</div>';
   h += '<div style="overflow-x:auto;font-size:12px;border:1px solid var(--gray-3);border-radius:8px">';
 
@@ -2915,15 +2914,16 @@ function toggleCardExpand(id) {
   var overlay = document.createElement('div');
   overlay.className = 'card-expand-overlay';
   overlay.innerHTML = '<div class="card-expand-popup">' +
-    '<button class="popup-close" onclick="this.closest('.card-expand-overlay').remove()">✕</button>' +
+    '<button class="popup-close">✕</button>' +
     '<div class="popup-title">' + escapeHtml(row.title) + (verName ? ' <span class="version-badge">' + escapeHtml(verName) + '</span>' : '') + '</div>' +
     '<div class="popup-meta">' + pTag + ' ' + regionTags + ' ' + renderJiraHtml(row) + '</div>' +
     buildCardExpandHtml(row) +
     '</div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('.popup-close').addEventListener('click', function() { overlay.remove(); });
   overlay.addEventListener('click', function(e) {
     if (e.target === overlay) overlay.remove();
   });
-  document.body.appendChild(overlay);
 }
 document.addEventListener('click', function(e) {
   var card = e.target.closest('.task-card[data-id]');
