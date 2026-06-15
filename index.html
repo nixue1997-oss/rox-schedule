@@ -529,6 +529,99 @@ table tr:last-child td { border-bottom: none; }
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
 }
+
+/* ========== KANBAN BOARD ========== */
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  min-height: 300px;
+  align-items: flex-start;
+}
+.kanban-column {
+  flex: 1;
+  min-width: 300px;
+  max-width: 420px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 250px);
+}
+.kanban-col-header {
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+.kanban-col-icon {
+  font-size: 16px;
+}
+.kanban-col-label {
+  flex: 1;
+}
+.kanban-col-count {
+  background: var(--morandi-200);
+  color: var(--morandi-600);
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.kanban-col-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+.kanban-notstarted .kanban-col-header {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(123,140,222,0.06);
+}
+.kanban-progress .kanban-col-header {
+  border-color: var(--warning);
+  color: #b45309;
+  background: rgba(245,158,11,0.06);
+}
+.kanban-qa .kanban-col-header {
+  border-color: var(--success);
+  color: #047857;
+  background: rgba(16,185,129,0.06);
+}
+.kanban-col-body .task-card {
+  margin-bottom: 0;
+}
+.kanban-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--gray-4);
+  font-size: 13px;
+  font-style: italic;
+}
+@media (max-width: 900px) {
+  .kanban-board {
+    flex-direction: column;
+  }
+  .kanban-column {
+    max-width: 100%;
+    min-width: 100%;
+    max-height: none;
+  }
+}
+
 .task-card {
   background: var(--wash-card);
   backdrop-filter: var(--glass-blur);
@@ -779,6 +872,17 @@ table tr:last-child td { border-bottom: none; }
 .person-task-card.card-progress { border-left-color: var(--warning); }
 .person-task-card.card-notstarted { border-left-color: var(--primary); }
 .person-task-card.card-qa { border-left-color: var(--success); }
+
+.person-tasks-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 .person-task-title { flex:1; color: var(--morandi-700); }
 .person-task-meta { font-size:11px; color: var(--morandi-400); white-space:nowrap; }
 .person-no-tasks { padding:6px 12px 6px 48px; font-size:12px; color: var(--morandi-400); font-style:italic; }
@@ -994,6 +1098,87 @@ table tr:last-child td { border-bottom: none; }
   cursor: pointer;
 }
 .sv-delete:hover { opacity: 1; color: #e57373; }
+
+
+/* ========== FEISHU AUTH ========== */
+.auth-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+.auth-overlay.hidden {
+  display: none;
+}
+.auth-card {
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: 20px;
+  padding: 48px 40px;
+  text-align: center;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  max-width: 400px;
+  width: 90%;
+}
+.auth-logo {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--morandi-800);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+.auth-desc {
+  font-size: 14px;
+  color: var(--gray-5);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #3370ff, #2860e0);
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(51,112,255,0.3);
+  letter-spacing: 0.3px;
+}
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(51,112,255,0.4);
+}
+.auth-btn:active {
+  transform: translateY(0);
+}
+.auth-btn-icon {
+  font-size: 20px;
+}
+.auth-error {
+  margin-top: 16px;
+  color: #ef4444;
+  font-size: 13px;
+  background: rgba(239,68,68,0.08);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
 
 /* ===== CARD EXPAND ===== */
 .task-card { cursor: pointer; }
@@ -1247,6 +1432,20 @@ table tr:last-child td { border-bottom: none; }
       <button class="btn btn-outline btn-sm" id="adminBtn" onclick="openAdminModal()">0̇0̇ 管理员</button>
       <span style="font-size:12px;opacity:0.7" id="headerInfo"></span>
     </div>
+  </div>
+</div>
+
+
+<!-- ========== FEISHU AUTH OVERLAY ========== -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-logo">🔒</div>
+    <h2 class="auth-title">骏梦网络 任务管理系统</h2>
+    <p class="auth-desc">请使用飞书账号登录查看<br>仅限骏梦网络员工访问</p>
+    <button class="auth-btn" onclick="startFeishuAuth()">
+      <span class="auth-btn-icon">📖</span> 飞书登录
+    </button>
+    <p class="auth-error" id="authError" style="display:none"></p>
   </div>
 </div>
 
@@ -1546,6 +1745,113 @@ function formatDateISO(d) {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
+
+// ======================== FEISHU AUTH ========================
+var _feishuAuth = {
+  // IMPORTANT: Replace these with your actual Feishu app credentials
+  appId: 'YOUR_FEISHU_APP_ID',
+  redirectUri: window.location.origin + window.location.pathname,
+  // Proxy URL for token exchange (e.g., Cloudflare Worker)
+  proxyUrl: 'https://your-proxy.example.com/feishu-auth',
+  user: null
+};
+
+function startFeishuAuth() {
+  var authUrl = 'https://open.feishu.cn/open-apis/authen/v1/authorize' +
+    '?app_id=' + encodeURIComponent(_feishuAuth.appId) +
+    '&redirect_uri=' + encodeURIComponent(_feishuAuth.redirectUri) +
+    '&state=' + encodeURIComponent(window.location.pathname);
+  window.location.href = authUrl;
+}
+
+function handleFeishuCallback() {
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+  var state = params.get('state');
+  if (!code) return false;
+
+  // Show loading state
+  var overlay = document.getElementById('authOverlay');
+  var btn = overlay.querySelector('.auth-btn');
+  if (btn) {
+    btn.textContent = '登录中...';
+    btn.disabled = true;
+  }
+
+  // Exchange code for token via proxy
+  fetch(_feishuAuth.proxyUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code: code, redirectUri: _feishuAuth.redirectUri })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.error) {
+      showAuthError(data.error);
+      return;
+    }
+    if (data.company !== '骏梦网络') {
+      showAuthError('您不是骏梦网络员工，无法访问此系统');
+      return;
+    }
+    // Auth success
+    _feishuAuth.user = data;
+    localStorage.setItem('rox_auth_user', JSON.stringify(data));
+    localStorage.setItem('rox_auth_ts', Date.now());
+    // Clean URL
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, state || window.location.pathname);
+    }
+    hideAuthOverlay();
+  })
+  .catch(function(err) {
+    showAuthError('登录失败，请重试: ' + err.message);
+  });
+  return true;
+}
+
+function showAuthError(msg) {
+  var errorEl = document.getElementById('authError');
+  if (errorEl) {
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+  }
+  var btn = document.querySelector('.auth-btn');
+  if (btn) {
+    btn.textContent = '📖 飞书登录';
+    btn.disabled = false;
+  }
+}
+
+function hideAuthOverlay() {
+  var overlay = document.getElementById('authOverlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+
+function checkFeishuAuth() {
+  // Check for cached auth
+  var cached = localStorage.getItem('rox_auth_user');
+  var ts = localStorage.getItem('rox_auth_ts');
+  if (cached && ts) {
+    var age = Date.now() - parseInt(ts);
+    // Cache valid for 24 hours
+    if (age < 24 * 60 * 60 * 1000) {
+      try {
+        _feishuAuth.user = JSON.parse(cached);
+        hideAuthOverlay();
+        return;
+      } catch(e) {}
+    }
+  }
+
+  // Check for OAuth callback
+  if (handleFeishuCallback()) return;
+
+  // Show auth overlay
+  var overlay = document.getElementById('authOverlay');
+  if (overlay) overlay.classList.remove('hidden');
+}
+
 // ======================== INIT ========================
 function init() {
   // Extract filter options
@@ -1746,52 +2052,110 @@ function renderStats(filtered, adminFiltered) {
 
 // ======================== CARD VIEW ========================
 function renderCard(filtered, adminFiltered) {
-  var html = '<div class="card-grid">';
-  filtered.forEach(function(r) {
-    var cls = 'card-notstarted';
-    if (r.progress === '\u8fdb\u884c\u4e2d') cls = 'card-progress';
-    else if (r.progress === 'QA\u9a8c\u6536\u4e2d') cls = 'card-qa';
-    var pTag = r.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
-      r.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' :
-      '<span class="tag tag-qa">' + r.progress + '</span>';
-    var regionTags = (r.region || []).map(function(x) { return '<span class="region-tag">' + x + '</span>'; }).join('');
-    var names = (r.assignee || []).map(function(p) { return p.name; }).join(', ');
-    var dates = [];
-        if (r.startDate) dates.push('\u{1F4C5} 启动: ' + normalizeDate(r.startDate));
-        if (r.endDate) dates.push('\u23F0 结束: ' + normalizeDate(r.endDate));
-    if (r.freezeDate) dates.push('\u{1F4C4} \u5c01\u677f: ' + r.freezeDate);
-    if (r.versionDate) dates.push('\u{1F4C5} \u7248\u66f4: ' + r.versionDate);
+  var totalCount = filtered.length + adminFiltered.length;
+  var html = '';
 
-    var jiraHtml = renderJiraHtml(r);
-    var verHtml = renderVersionHtml(r);
-    html += '<div class="task-card ' + cls + '" data-id="' + r.id + '">';
-    html += '<div class="card-title">' + escapeHtml(r.title) + verHtml + '</div>';
-    html += '<div class="card-meta">' + pTag + regionTags + (jiraHtml ? ' ' + jiraHtml : '') + '</div>';
-    html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(names) + '</span></div>';
-    if (dates.length) html += '<div class="card-meta" style="margin-top:4px">' + dates.join(' | ') + '</div>';
-    html += '<div class="card-expand" id="card-expand-' + r.id + '" style="display:none">';
-    html += buildCardExpandHtml(r);
-    html += '</div>';
-    html += '</div>';
-  });
-
-  // Admin tasks
-  adminFiltered.forEach(function(t) {
-    var pTag = t.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
-      t.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' : '';
-    var prio = '<span class="priority-high">' + (t.priority || 'P2') + '</span>';
-    html += '<div class="task-card card-progress">';
-    html += '<div class="card-title">' + escapeHtml(t.title) + '</div>';
-    html += '<div class="card-meta">' + pTag + ' <span class="region-tag">' + escapeHtml(t.region) + '</span> ' + prio + '</div>';
-    html += '<div class="card-meta" style="margin-top:4px"><span>\u{1F465} ' + escapeHtml(t.assigneeName) + '</span></div>';
-    html += '<div class="card-meta" style="margin-top:4px"><span>\u23F0 \u6392\u671f: ' + escapeHtml(t.scheduledStart) + ' ~ ' + escapeHtml(t.scheduledEnd) + '</span></div>';
-    html += '</div>';
-  });
-
-  if (!filtered.length && !adminFiltered.length) {
-    html = '<div class="empty-state"><span class="empty-icon">\u{1F4C4}</span><div>\u6682\u65e0\u5339\u914d\u7684\u4efb\u52a1</div></div>';
+  if (totalCount === 0) {
+    html = '<div class="empty-state"><span class="empty-icon">📋</span><div>暂无匹配的任务</div></div>';
+    document.getElementById('cardView').innerHTML = html;
+    return;
   }
-  document.getElementById('cardView').innerHTML = html + '</div>';
+
+  // Define kanban columns
+  var columns = [
+    { key: '未启动', label: '未启动', cls: 'kanban-notstarted', icon: '○' },
+    { key: '进行中', label: '进行中', cls: 'kanban-progress', icon: '◐' },
+    { key: 'QA验收中', label: 'QA验收', cls: 'kanban-qa', icon: '✓' }
+  ];
+
+  // Group tasks into columns
+  var buckets = {};
+  columns.forEach(function(col) { buckets[col.key] = []; });
+  var unassigned = [];
+
+  filtered.forEach(function(r) {
+    var key = r.progress || '';
+    if (buckets[key]) {
+      buckets[key].push(r);
+    } else {
+      unassigned.push(r);
+    }
+  });
+
+  // Admin tasks go to "in progress" column
+  adminFiltered.forEach(function(t) {
+    buckets['进行中'].push(t);
+  });
+
+  // Render a single task card for kanban
+  function renderKanbanCard(r, isAdmin) {
+    var cls = 'card-notstarted';
+    if (r.progress === '进行中' || isAdmin) cls = 'card-progress';
+    else if (r.progress === 'QA验收中') cls = 'card-qa';
+
+    var pTag = '';
+    if (isAdmin) {
+      pTag = '<span class="tag tag-progress">' + (r.progress || '进行中') + '</span>';
+    } else {
+      pTag = r.progress === '未启动' ? '<span class="tag tag-notstarted">未启动</span>' :
+        r.progress === '进行中' ? '<span class="tag tag-progress">进行中</span>' :
+        '<span class="tag tag-qa">' + (r.progress || '') + '</span>';
+    }
+
+    var regionTags = (r.region || []).map(function(x) { return '<span class="region-tag">' + x + '</span>'; }).join('');
+    var names = '';
+    if (isAdmin) {
+      names = escapeHtml(r.assigneeName || '');
+    } else {
+      names = (r.assignee || []).map(function(p) { return p.name; }).join(', ');
+    }
+
+    var dates = [];
+    if (r.startDate) dates.push('★ 启动: ' + normalizeDate(r.startDate));
+    if (r.endDate) dates.push('⏰ 结束: ' + normalizeDate(r.endDate));
+    if (r.freezeDate) dates.push('📄 封板: ' + r.freezeDate);
+
+    var jiraHtml = isAdmin ? '' : renderJiraHtml(r);
+    var verHtml = isAdmin ? '' : renderVersionHtml(r);
+
+    var card = '<div class="task-card ' + cls + '" data-id="' + (r.id || '') + '">';
+    card += '<div class="card-title">' + escapeHtml(r.title) + verHtml + '</div>';
+    card += '<div class="card-meta">' + pTag + ' ' + regionTags + (jiraHtml ? ' ' + jiraHtml : '') + '</div>';
+    card += '<div class="card-meta" style="margin-top:4px"><span>👥 ' + escapeHtml(names) + '</span></div>';
+    if (dates.length) card += '<div class="card-meta" style="margin-top:4px">' + dates.join(' | ') + '</div>';
+    if (!isAdmin) {
+      card += '<div class="card-expand" id="card-expand-' + r.id + '" style="display:none">';
+      card += buildCardExpandHtml(r);
+      card += '</div>';
+    }
+    card += '</div>';
+    return card;
+  }
+
+  html += '<div class="kanban-board">';
+  columns.forEach(function(col) {
+    var tasks = buckets[col.key] || [];
+    // Admin tasks are in the progress bucket
+    html += '<div class="kanban-column ' + col.cls + '">';
+    html += '<div class="kanban-col-header">';
+    html += '<span class="kanban-col-icon">' + col.icon + '</span>';
+    html += '<span class="kanban-col-label">' + col.label + '</span>';
+    html += '<span class="kanban-col-count">' + tasks.length + '</span>';
+    html += '</div>';
+    html += '<div class="kanban-col-body">';
+    tasks.forEach(function(t) {
+      var isAdmin = adminFiltered.indexOf(t) >= 0;
+      html += renderKanbanCard(t, isAdmin);
+    });
+    if (tasks.length === 0) {
+      html += '<div class="kanban-empty">暂无任务</div>';
+    }
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  document.getElementById('cardView').innerHTML = html;
 }
 
 // ======================== TABLE VIEW ========================
@@ -2385,6 +2749,23 @@ function onMsChange(key) {
   applyFilters();
 }
 
+// ======================== PERSON SEARCH
+
+function updateMsTrigger(key) {
+  var cbs = document.querySelectorAll('#msCheckboxes_' + key + ' input[type=checkbox]');
+  var checked = [];
+  cbs.forEach(function(c) { if (c.checked) checked.push(c.value); });
+  var trigger = document.querySelector('#ms' + key.charAt(0).toUpperCase() + key.slice(1) + ' .ms-label');
+  if (trigger) {
+    if (checked.length === 0) { trigger.textContent = '无'; }
+    else if (checked.length === cbs.length) { trigger.textContent = '全部'; }
+    else if (checked.length <= 2) { trigger.textContent = checked.join(', '); }
+    else { trigger.textContent = checked.length + '个'; }
+  }
+  var allCb = document.querySelector('#msPanel_' + key + ' input[data-all]');
+  if (allCb) allCb.checked = checked.length === cbs.length;
+}
+
 // ======================== PERSON SEARCH ========================
 var _psData = [];
 function onPersonSearch(val) {
@@ -2596,12 +2977,17 @@ function renderPersonView() {
   var statsDiv = document.getElementById('personStats');
 
   if (filtered.length === 0) {
-    div.innerHTML = '<div class="empty-state"><span class="empty-icon">\👤</span><div>\u6682\u65e0\u6570\u636e</div></div>';
+    div.innerHTML = '<div class="empty-state"><span class="empty-icon">👤</span><div>暂无数据</div></div>';
     return;
   }
 
-  // Group by assignee
-  var peopleMap = {};
+  // Build person-to-dept map
+  var personDept = {};
+  ALL_PEOPLE.forEach(function(ap) { personDept[ap.name] = ap.dept; });
+
+  // Group by department then person
+  var deptMap = {};
+  var deptPersonSet = {}; // track persons per dept
   filtered.forEach(function(r) {
     var names = [];
     if (r.assigneeName) {
@@ -2609,55 +2995,104 @@ function renderPersonView() {
     } else if (r.assignee) {
       r.assignee.forEach(function(p) { names.push(p.name); });
     }
-    if (names.length === 0) names.push('\u672a\u5206\u914d');
+    if (names.length === 0) names.push('未分配');
     names.forEach(function(n) {
-      if (!peopleMap[n]) peopleMap[n] = [];
-      peopleMap[n].push(r);
+      var dept = personDept[n] || '未分配';
+      if (!deptMap[dept]) { deptMap[dept] = {}; deptPersonSet[dept] = {}; }
+      if (!deptMap[dept][n]) deptMap[dept][n] = [];
+      deptMap[dept][n].push(r);
+      deptPersonSet[dept][n] = true;
     });
   });
 
-  var people = Object.keys(peopleMap).sort(function(a, b) {
-    return peopleMap[b].length - peopleMap[a].length;
-  });
+  // Preferred department order
+  var deptOrder = ['客户端组','服务端组','系统策划','战斗策划','数值策划','关卡策划','副本策划','美术','原画','动作','特效','场景','音效','测试','运营','市场','商务','技术支持','行政','未分配'];
+
+  var totalPersons = 0;
+  var totalTasks = 0;
 
   var html = '';
-  people.forEach(function(person) {
-    var tasks = peopleMap[person];
-    var done = tasks.filter(function(t) { return t.progress === 'QA\u9a8c\u6536\u4e2d'; }).length;
-    var inProgress = tasks.filter(function(t) { return t.progress === '\u8fdb\u884c\u4e2d'; }).length;
-    var notStarted = tasks.length - done - inProgress;
 
-    var dept = '';
-    ALL_PEOPLE.forEach(function(ap) { if (ap.name === person) dept = ap.dept; });
-
-    html += '<div class="person-card">';
-    html += '<h4>' + person + (dept ? ' <span style="font-size:11px;color:var(--gray-5);font-weight:400">' + dept + '</span>' : '') + '</h4>';
-    html += '<div class="person-stats">';
-    html += '<div class="person-stat">\u603b\u4efb\u52a1 <strong>' + tasks.length + '</strong></div>';
-    if (done > 0) html += '<div class="person-stat">\u5df2\u5b8c\u6210 <strong>' + done + '</strong></div>';
-    if (inProgress > 0) html += '<div class="person-stat">\u8fdb\u884c\u4e2d <strong>' + inProgress + '</strong></div>';
-    if (notStarted > 0) html += '<div class="person-stat">\u672a\u542f\u52a8 <strong>' + notStarted + '</strong></div>';
-    html += '</div>';
-
-    tasks.sort(function(a,b) {
-      var oa = a.progress === '\u8fdb\u884c\u4e2d' ? 0 : a.progress === 'QA\u9a8c\u6536\u4e2d' ? 2 : 1;
-      var ob = b.progress === '\u8fdb\u884c\u4e2d' ? 0 : b.progress === 'QA\u9a8c\u6536\u4e2d' ? 2 : 1;
-      return oa - ob;
+  function renderDeptGroup(dept, people) {
+    var personNames = Object.keys(people).sort(function(a,b) {
+      return people[b].length - people[a].length;
     });
+    var personCount = personNames.length;
+    var deptTotal = 0;
+    personNames.forEach(function(n) { deptTotal += people[n].length; });
+    totalPersons += personCount;
+    totalTasks += deptTotal;
 
-    tasks.forEach(function(t) {
-      var pc = '';
-      if (t.progress === '\u8fdb\u884c\u4e2d') pc = 'var(--warning)';
-      else if (t.progress === 'QA\u9a8c\u6536\u4e2d') pc = 'var(--success)';
-      else if (t.progress === '\u672a\u542f\u52a8') pc = 'var(--gray-4)';
-      var ts = t.title.length > 30 ? t.title.substring(0,30) + '...' : t.title;
-      html += '<div class="person-task">' + ts;
-      if (t.progress) html += '<span class="pt-progress" style="background:' + pc + ';color:#fff">' + t.progress + '</span>';
-      html += '</div>';
+    var deptHtml = '<div class="person-dept-group">';
+    deptHtml += '<div class="person-dept-header">' + dept + ' <span class="dept-count">' + personCount + '人 · ' + deptTotal + '任务</span></div>';
+
+    personNames.forEach(function(person) {
+      var tasks = people[person];
+      var done = tasks.filter(function(t) { return t.progress === 'QA验收中'; }).length;
+      var inProgress = tasks.filter(function(t) { return t.progress === '进行中'; }).length;
+      var notStarted = tasks.length - done - inProgress;
+
+      var initials = person.length >= 2 ? person.substring(0, 2) : person.charAt(0);
+
+      deptHtml += '<div class="person-item">';
+      // Left side: avatar + info
+      deptHtml += '<div style="display:flex;align-items:flex-start;min-width:160px;flex-shrink:0">';
+      deptHtml += '<div class="person-avatar">' + initials + '</div>';
+      deptHtml += '<div class="person-info">';
+      deptHtml += '<div class="person-name">' + person + '</div>';
+      var statsParts = [];
+      if (inProgress > 0) statsParts.push('进行中 <strong>' + inProgress + '</strong>');
+      if (done > 0) statsParts.push('已完成 <strong>' + done + '</strong>');
+      if (notStarted > 0) statsParts.push('未启动 <strong>' + notStarted + '</strong>');
+      deptHtml += '<div class="person-task-count">总' + tasks.length + '任务' + (statsParts.length ? ' · ' + statsParts.join(' · ') : '') + '</div>';
+      deptHtml += '</div>';
+      deptHtml += '</div>';
+
+      // Right side: task cards
+      deptHtml += '<div class="person-tasks-right">';
+      tasks.sort(function(a,b) {
+        var oa = a.progress === '进行中' ? 0 : a.progress === 'QA验收中' ? 2 : 1;
+        var ob = b.progress === '进行中' ? 0 : b.progress === 'QA验收中' ? 2 : 1;
+        return oa - ob;
+      });
+      tasks.forEach(function(t) {
+        var pCls = 'card-notstarted';
+        var pLabel = '未启动';
+        var pColor = 'var(--gray-4)';
+        if (t.progress === '进行中') { pCls = 'card-progress'; pLabel = '进行中'; pColor = 'var(--warning)'; }
+        else if (t.progress === 'QA验收中') { pCls = 'card-qa'; pLabel = 'QA验收'; pColor = 'var(--success)'; }
+        var ts = t.title.length > 35 ? t.title.substring(0,35) + '...' : t.title;
+        var regionTags = (t.region || []).map(function(x) { return '<span class="region-tag">' + x + '</span>'; }).join('');
+        deptHtml += '<div class="person-task-card ' + pCls + '">';
+        deptHtml += '<span class="person-task-title">' + escapeHtml(ts) + '</span>';
+        deptHtml += '<span class="pt-progress" style="background:' + pColor + ';color:#fff;font-size:10px;padding:1px 6px;border-radius:4px;white-space:nowrap">' + pLabel + '</span>';
+        if (regionTags) deptHtml += regionTags;
+        deptHtml += '</div>';
+      });
+      deptHtml += '</div>';
+      deptHtml += '</div>';
     });
-    html += '</div>';
+    deptHtml += '</div>';
+    return deptHtml;
+  }
+
+  // Render in preferred order
+  deptOrder.forEach(function(dept) {
+    var people = deptMap[dept];
+    if (people) html += renderDeptGroup(dept, people);
   });
+
+  // Render any remaining departments not in preferred order
+  var handled = {};
+  deptOrder.forEach(function(d) { handled[d] = true; });
+  Object.keys(deptMap).sort().forEach(function(dept) {
+    if (!handled[dept] && deptMap[dept]) {
+      html += renderDeptGroup(dept, deptMap[dept]);
+    }
+  });
+
   div.innerHTML = html;
+  if (statsDiv) statsDiv.textContent = '共 ' + totalPersons + ' 人 · ' + totalTasks + ' 任务';
 }
 
 // ======================== DELETE TASK ========================
