@@ -671,6 +671,7 @@ table tr:last-child td {{ border-bottom: none; }}
   font-weight: 500;
 }}
 .gantt-week-label.today {{ background: var(--primary-bg); font-weight: 700; color: var(--primary); }}
+.gantt-week-label.weekend {{ background: rgba(0,0,0,0.03); color: var(--text-muted); }}
 .gantt-person-group {{ display: flex; border-bottom: 1px solid var(--morandi-100); }}
 .gantt-person-group:hover {{ background: rgba(123,140,222,0.03); }}
 .gantt-person-name {{
@@ -1982,12 +1983,15 @@ function renderGantt(filtered, adminFiltered) {{
     return;
   }}
 
-  // Determine date range
-  var minDate = null, maxDate = null;
+  // Determine date range: start from 7 days before today
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var minDate = new Date(today);
+  minDate.setDate(minDate.getDate() - 7);
+  var maxDate = null;
   all.forEach(function(r) {{
     var sd = parseDate(normalizeDate(r.startDate));
     var ed = parseDate(normalizeDate(r.endDate));
-    if (sd && (!minDate || sd < minDate)) minDate = sd;
     if (ed && (!maxDate || ed > maxDate)) maxDate = ed;
     var fd = parseDate(r.freezeDate);
     if (fd && (!maxDate || fd > maxDate)) maxDate = fd;
@@ -1995,13 +1999,11 @@ function renderGantt(filtered, adminFiltered) {{
     if (vd && (!maxDate || vd > maxDate)) maxDate = vd;
   }});
 
-  if (!minDate) minDate = new Date();
-  if (!maxDate) maxDate = new Date();
-  minDate = getMonday(minDate);
+  if (!maxDate) maxDate = new Date(today);
+  maxDate.setDate(maxDate.getDate() + 30);
   var msDiff = maxDate - minDate;
-  var weeksNeeded = Math.max(8, Math.ceil(msDiff / (7 * 86400000)) + 3);
+  var daysNeeded = Math.max(60, Math.ceil(msDiff / 86400000) + 7);
   var pixelPerDay = 24;
-  var weekWidth = pixelPerDay * 7;
 
   // Group by person
   var personMap = {{}};
@@ -2045,21 +2047,19 @@ function renderGantt(filtered, adminFiltered) {{
 
   var personNames = Object.keys(personMap).sort();
 
-  // Generate week labels
-  var weekLabels = [];
-  for (var w = 0; w < weeksNeeded; w++) {{
-    var monday = new Date(minDate);
-    monday.setDate(monday.getDate() + w * 7);
-    var month = monday.getMonth() + 1;
-    var day = monday.getDate();
-    var isToday = false;
-    var today = new Date();
-    var diffDays = Math.round((monday - getMonday(today)) / 86400000);
-    if (diffDays === 0) isToday = true;
-    weekLabels.push({{ date: monday, label: month + '/' + day, isToday: isToday }});
+  // Generate day labels
+  var dayLabels = [];
+  for (var w = 0; w < daysNeeded; w++) {{
+    var dayDate = new Date(minDate);
+    dayDate.setDate(dayDate.getDate() + w);
+    var month = dayDate.getMonth() + 1;
+    var dayD = dayDate.getDate();
+    var isToday = dayDate.getTime() === today.getTime();
+    var isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
+    dayLabels.push({{ date: dayDate, label: month + '/' + dayD, isToday: isToday, isWeekend: isWeekend }});
   }}
 
-  var totalWidth = weekLabels.length * weekWidth;
+  var totalWidth = dayLabels.length * pixelPerDay;
 
   var html = '<div class="gantt-wrapper"><div class="gantt-container">';
 
@@ -2067,10 +2067,11 @@ function renderGantt(filtered, adminFiltered) {{
   html += '<div class="gantt-header">';
   html += '<div class="gantt-person-col">\\u6267\\u884c\\u4eba</div>';
   html += '<div class="gantt-timeline">';
-  weekLabels.forEach(function(wl) {{
+  dayLabels.forEach(function(wl) {{
     var cls = 'gantt-week-label';
     if (wl.isToday) cls += ' today';
-    html += '<div class="' + cls + '" style="width:' + weekWidth + 'px">' + wl.label + '</div>';
+    if (wl.isWeekend) cls += ' weekend';
+    html += '<div class="' + cls + '" style="width:' + pixelPerDay + 'px">' + wl.label + '</div>';
   }});
   html += '</div></div>';
 
@@ -2094,8 +2095,8 @@ function renderGantt(filtered, adminFiltered) {{
 
     // Grid lines
     html += '<div class="gantt-gridlines" style="display:flex;position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none">';
-    weekLabels.forEach(function() {{
-      html += '<div class="gantt-gridline" style="width:' + weekWidth + 'px"></div>';
+    dayLabels.forEach(function() {{
+      html += '<div class="gantt-gridline" style="width:' + pixelPerDay + 'px"></div>';
     }});
     html += '</div>';
 
@@ -2575,7 +2576,11 @@ function renderSimpleGantt(tasks, label) {{
   }});
   if (!ms && !me) {{ div.innerHTML = '<div style=\"padding:20px\">\\u6682\\u65e0\\u65e5\\u671f</div>'; return; }}
   if (!ms) ms = me; if (!me) me = ms;
-  var s = new Date(ms); s.setDate(s.getDate() - 7);
+  var today = new Date(); today.setHours(0,0,0,0);
+  var s = new Date(today); s.setDate(s.getDate() - 7);
+  // Ensure s is not after the earliest task
+  if (ms && ms < s) s = new Date(ms);
+  s.setDate(s.getDate() - 7);
   var e = new Date(me); e.setDate(e.getDate() + 14);
   var td = Math.ceil((e - s) / (1000*60*60*24));
   var today = new Date(); today.setHours(0,0,0,0);
@@ -3096,6 +3101,8 @@ function renderJiraView() {{
   var personVal = document.getElementById('jiraPersonFilter').value;
   var versionVal = document.getElementById('jiraVersionFilter').value;
   var searchVal = (document.getElementById('jiraSearchInput').value || '').toLowerCase().trim();
+  var deptVal = (document.getElementById('filterDept') || {{}}).value || 'ALL';
+  var depts = deptVal === 'ALL' ? [] : deptVal.split(',');
 
   // Filter tasks that have Jira keys
   var tasks = DATA.filter(function(r) {{
@@ -3107,6 +3114,13 @@ function renderJiraView() {{
     if (versionVal !== 'ALL') {{
       var vn = VER_NAME_MAP[r.extVersion] || r.extVersion;
       if (vn !== versionVal) return false;
+    }}
+    if (depts.length > 0) {{
+      var rDepts = [];
+      if (r.assignee) r.assignee.forEach(function(p) {{
+        ALL_PEOPLE.forEach(function(ap) {{ if (ap.name === p.name && ap.dept) rDepts.push(ap.dept); }});
+      }});
+      if (!depts.some(function(d) {{ return rDepts.indexOf(d) >= 0; }})) return false;
     }}
     if (searchVal && !fuzzyMatch(r.title, searchVal) && !(r.jiraKey || '').toLowerCase().indexOf(searchVal) >= 0) return false;
     return true;
