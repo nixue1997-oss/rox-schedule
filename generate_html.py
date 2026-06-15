@@ -44,6 +44,12 @@ def main():
     # Only need to escape </script> which would break HTML parsing
     data_json_safe = data_json_str.replace('</', '<\\/')
 
+    # Load version name mapping
+    with open('/tmp/ver_name_map.json', 'r', encoding='utf-8') as f:
+        ver_name_map = json.load(f)
+    ver_map_json_str = json.dumps(ver_name_map, ensure_ascii=False)
+    ver_map_json_safe = ver_map_json_str.replace('</', '<\\/')
+
     # Serialize all_people data
     people_json_str = json.dumps(all_people_data, ensure_ascii=False)
     people_json_safe = people_json_str.replace('</', '<\\/')
@@ -414,7 +420,7 @@ body::after {{
 .multi-select-panel input[type=checkbox] {{ margin: 0; flex-shrink: 0; accent-color: var(--primary); }}
 
 /* Person search */
-.person-search {{ position: relative; }}
+.person-search {{ position: relative; z-index: 10; }}
 .person-search input {{
   padding: 6px 12px;
   border: 1px solid var(--morandi-200);
@@ -427,7 +433,7 @@ body::after {{
 }}
 .person-search input:focus {{ border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--primary-glow); }}
 .ps-results {{
-  position: absolute; top: 100%; left: 0; right: 0; z-index: 200;
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 9999;
   background: var(--glass-bg-strong);
   backdrop-filter: var(--glass-blur-strong);
   border: 1px solid var(--morandi-200);
@@ -1046,32 +1052,89 @@ table tr:last-child td {{ border-bottom: none; }}
 
 /* ===== CARD EXPAND ===== */
 .task-card {{ cursor: pointer; }}
-.card-expand {{
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, padding 0.35s ease, opacity 0.25s ease;
-  opacity: 0;
-  padding: 0 12px;
-  margin-top: 0;
-  border-top: 1px solid transparent;
+/* Glass morphism card overlay */
+.card-expand-overlay {{
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: overlayFadeIn 0.2s ease;
 }}
-.card-expand.open {{
-  max-height: 600px;
-  opacity: 1;
-  padding: 10px 12px;
-  margin-top: 8px;
-  border-top: 1px solid var(--glass-border);
+@keyframes overlayFadeIn {{
+  from {{ opacity: 0; }} to {{ opacity: 1; }}
+}}
+.card-expand-popup {{
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 20px;
+  padding: 32px 36px;
+  max-width: 560px;
+  width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.06);
+  animation: popupSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}}
+@keyframes popupSlideIn {{
+  from {{ opacity: 0; transform: translateY(20px) scale(0.96); }}
+  to {{ opacity: 1; transform: translateY(0) scale(1); }}
+}}
+.card-expand-popup .popup-close {{
+  position: absolute;
+  top: 16px; right: 20px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #999;
+  transition: all 0.2s;
+  line-height: 1;
+}}
+.card-expand-popup .popup-close:hover {{
+  background: rgba(0,0,0,0.06);
+  color: #555;
+}}
+.card-expand-popup .popup-title {{
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--morandi-800);
+  margin-bottom: 20px;
+  padding-right: 40px;
+  line-height: 1.5;
+}}
+.card-expand-popup .popup-meta {{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
 }}
 .card-expand-row {{
   display: flex;
-  padding: 3px 0;
-  font-size: 12px;
-  line-height: 1.5;
+  padding: 8px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
 }}
 .card-expand-label {{
   color: var(--text-muted);
-  min-width: 70px;
+  min-width: 80px;
   flex-shrink: 0;
+  font-weight: 500;
 }}
 .card-expand-value {{
   color: var(--text-secondary);
@@ -1468,12 +1531,14 @@ table tr:last-child td {{ border-bottom: none; }}
 <!-- ========== DATA EMBEDDED AS JSON ========== -->
 <script id="__DATA__" type="application/json">{data_json_safe}</script>
 <script id="__PEOPLE__" type="application/json">{people_json_safe}</script>
+<script id="__VER_MAP__" type="application/json">{ver_map_json_safe}</script>
 
 <!-- ========== APPLICATION SCRIPT ========== -->
 <script>
 // ======================== DATA LOADING ========================
 var DATA = JSON.parse(document.getElementById('__DATA__').textContent);
 var ALL_PEOPLE = JSON.parse(document.getElementById('__PEOPLE__').textContent);
+var VER_NAME_MAP = JSON.parse(document.getElementById('__VER_MAP__').textContent);
 
 
 // ======================== STATE ========================
@@ -1654,7 +1719,10 @@ function getFilteredData() {{
     }}
     if (search && !fuzzyMatch(r.title, search)) return false;
     var versionVal = (document.getElementById('filterVersion') || {{}}).value || 'ALL';
-    if (versionVal !== 'ALL' && r.extVersion !== versionVal) return false;
+    if (versionVal !== 'ALL') {{
+      var vn = VER_NAME_MAP[r.extVersion] || r.extVersion;
+      if (vn !== versionVal) return false;
+    }}
     return true;
   }});
 
@@ -1754,7 +1822,7 @@ function renderCard(filtered, adminFiltered) {{
     html += '<div class="card-meta">' + pTag + regionTags + (jiraHtml ? ' ' + jiraHtml : '') + '</div>';
     html += '<div class="card-meta" style="margin-top:4px"><span>\\u{{1F465}} ' + escapeHtml(names) + '</span></div>';
     if (dates.length) html += '<div class="card-meta" style="margin-top:4px">' + dates.join(' | ') + '</div>';
-    html += '<div class="card-expand" id="card-expand-' + r.id + '">';
+    html += '<div class="card-expand" id="card-expand-' + r.id + '" style="display:none">';
     html += buildCardExpandHtml(r);
     html += '</div>';
     html += '</div>';
@@ -1862,7 +1930,7 @@ function renderTable(filtered, adminFiltered) {{
     html += '<td>' + (r.endDate ? normalizeDate(r.endDate) : '') + '</td>';
     html += '<td>' + (r.freezeDate || '') + '</td>';
     html += '<td>' + (r.versionDate || '') + '</td>';
-    html += '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(r.extVersion) + '</span>' : '') + '</td>';
+    html += '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(VER_NAME_MAP[r.extVersion] || r.extVersion) + '</span>' : '') + '</td>';
     html += '<td>' + renderJiraHtml(r) + '</td></tr>';
   }});
 
@@ -2445,16 +2513,31 @@ function onPgSearch(val) {{
       if (existIds.indexOf(t.id) < 0) {{ tasks.push(t); existIds.push(t.id); }}
     }});
   }}
-  // Strategy 3: find children via parentTask field
+  // Strategy 3: find children via title pattern matching
+  // Parent tasks have 【总】 in their titles; children share the same region+date prefix
   if (tasks.length > 0) {{
-    var parentIds = tasks.map(function(r) {{ return r.id; }});
-    var children = DATA.filter(function(r) {{
-      return r.parentTask && parentIds.indexOf(r.parentTask) >= 0;
+    var parentPrefixes = [];
+    var existIds = tasks.map(function(r) {{ return r.id; }});
+    tasks.forEach(function(r) {{
+      var m = r.title.match(/^(\u3010[^\u3010]+\u3011)\u3010\u603b\u3011\d{{4}}/);
+      if (m) {{
+        var regionPrefix = m[1]; // e.g. 【日服】
+        var dateMatch = r.title.match(/\u3010\u603b\u3011(\d{{4}})/);
+        if (dateMatch) {{
+          parentPrefixes.push(regionPrefix + dateMatch[1]); // e.g. 【日服】0630
+        }}
+      }}
     }});
-    if (children.length > 0) {{
-      var existIds = tasks.map(function(r) {{ return r.id; }});
-      children.forEach(function(c) {{
-        if (existIds.indexOf(c.id) < 0) tasks.push(c);
+    if (parentPrefixes.length > 0) {{
+      DATA.forEach(function(r) {{
+        if (existIds.indexOf(r.id) >= 0) return; // already included
+        for (var i = 0; i < parentPrefixes.length; i++) {{
+          if (r.title.indexOf(parentPrefixes[i]) === 0) {{
+            tasks.push(r);
+            existIds.push(r.id);
+            break;
+          }}
+        }}
       }});
     }}
   }}
@@ -2760,14 +2843,18 @@ function initVersions() {{
   var vSet = {{}};
   DATA.forEach(function(r) {{
     var v = r.extVersion || '';
-    if (v) vSet[v] = true;
+    if (v) {{
+      var vn = VER_NAME_MAP[v] || v;
+      vSet[vn] = v; // store display name -> record id
+    }}
   }});
-  allVersions = Object.keys(vSet).sort(function(a,b) {{ return b.localeCompare(a); }});
+  var names = Object.keys(vSet).sort(function(a,b) {{ return a.localeCompare(b); }});
+  allVersions = names;
   var sel = document.getElementById('filterVersion');
   if (sel && sel.options.length <= 1) {{
-    allVersions.forEach(function(v) {{
+    names.forEach(function(vn) {{
       var opt = document.createElement('option');
-      opt.value = v; opt.textContent = v;
+      opt.value = vn; opt.textContent = vn;
       sel.appendChild(opt);
     }});
   }}
@@ -2855,15 +2942,37 @@ function renderSavedViews() {{
 }}
 
 // ======================== CARD EXPAND ========================
-var _expandedCard = null;
 function toggleCardExpand(id) {{
-  var el = document.getElementById('card-expand-' + id);
-  if (!el) return;
-  if (_expandedCard && _expandedCard !== el) {{
-    _expandedCard.classList.remove('open');
+  // Close any existing popup
+  var existing = document.querySelector('.card-expand-overlay');
+  if (existing) {{
+    existing.remove();
+    return;
   }}
-  el.classList.toggle('open');
-  _expandedCard = el.classList.contains('open') ? el : null;
+  // Find the card data
+  var cardEl = document.querySelector('.task-card[data-id="' + id + '"]');
+  if (!cardEl) return;
+  var row = DATA.find(function(r) {{ return r.id === id; }});
+  if (!row) return;
+  // Build popup HTML
+  var regionTags = (row.region || []).map(function(x) {{ return '<span class="region-tag">' + x + '</span>'; }}).join('');
+  var names = (row.assignee || []).map(function(p) {{ return p.name; }}).join(', ');
+  var pTag = row.progress === '\u672a\u542f\u52a8' ? '<span class="tag tag-notstarted">\u672a\u542f\u52a8</span>' :
+    row.progress === '\u8fdb\u884c\u4e2d' ? '<span class="tag tag-progress">\u8fdb\u884c\u4e2d</span>' :
+    '<span class="tag tag-qa">' + escapeHtml(row.progress) + '</span>';
+  var verName = VER_NAME_MAP[row.extVersion] || row.extVersion || '';
+  var overlay = document.createElement('div');
+  overlay.className = 'card-expand-overlay';
+  overlay.innerHTML = '<div class="card-expand-popup">' +
+    '<button class="popup-close" onclick="this.closest(\'.card-expand-overlay\').remove()">\u2715</button>' +
+    '<div class="popup-title">' + escapeHtml(row.title) + (verName ? ' <span class="version-badge">' + escapeHtml(verName) + '</span>' : '') + '</div>' +
+    '<div class="popup-meta">' + pTag + ' ' + regionTags + ' ' + renderJiraHtml(row) + '</div>' +
+    buildCardExpandHtml(row) +
+    '</div>';
+  overlay.addEventListener('click', function(e) {{
+    if (e.target === overlay) overlay.remove();
+  }});
+  document.body.appendChild(overlay);
 }}
 document.addEventListener('click', function(e) {{
   var card = e.target.closest('.task-card[data-id]');
@@ -2877,7 +2986,8 @@ function buildCardExpandHtml(r) {{
     html += '<div class="card-expand-row"><span class="card-expand-label">Jira\u5355\u53f7</span><span class="card-expand-value">' + renderJiraHtml(r) + '</span></div>';
   }}
   if (r.extVersion) {{
-    html += '<div class="card-expand-row"><span class="card-expand-label">\u5916\u653e\u7248\u672c</span><span class="card-expand-value"><span class="version-badge">' + escapeHtml(r.extVersion) + '</span></span></div>';
+    var evn = VER_NAME_MAP[r.extVersion] || r.extVersion;
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5916\u653e\u7248\u672c</span><span class="card-expand-value"><span class="version-badge">' + escapeHtml(evn) + '</span></span></div>';
   }}
   if (r.testDate) {{
     html += '<div class="card-expand-row"><span class="card-expand-label">\u8f6c\u6d4b\u65f6\u95f4</span><span class="card-expand-value">' + r.testDate + '</span></div>';
@@ -2917,6 +3027,16 @@ function renderJiraHtml(r) {{
   if (!r.jiraKey && !r.jiraUrl) return '';
   var key = r.jiraKey || '';
   var url = r.jiraUrl || '';
+  // Extract URL from markdown format [KEY](URL)
+  if (url && url.indexOf('](') >= 0) {{
+    var m = url.match(/\]\(([^)]+)\)/);
+    if (m) url = m[1];
+    // Also extract key from markdown if not already set
+    if (!key) {{
+      var km = url.match(/\[([^\]]+)\]/);
+      if (km) key = km[1];
+    }}
+  }}
   var status = getJiraStatus(key);
   var statusHtml = '';
   if (status) {{
@@ -2930,7 +3050,8 @@ function renderJiraHtml(r) {{
 }}
 function renderVersionHtml(r) {{
   if (!r.extVersion) return '';
-  return ' <span class="version-badge">' + escapeHtml(r.extVersion) + '</span>';
+  var vn = VER_NAME_MAP[r.extVersion] || r.extVersion;
+  return ' <span class="version-badge">' + escapeHtml(vn) + '</span>';
 }}
 
 // ======================== JIRA VIEW ========================
@@ -2972,7 +3093,10 @@ function renderJiraView() {{
       var names = (r.assignee || []).map(function(p) {{ return p.name; }});
       if (names.indexOf(personVal) < 0) return false;
     }}
-    if (versionVal !== 'ALL' && r.extVersion !== versionVal) return false;
+    if (versionVal !== 'ALL') {{
+      var vn = VER_NAME_MAP[r.extVersion] || r.extVersion;
+      if (vn !== versionVal) return false;
+    }}
     if (searchVal && !fuzzyMatch(r.title, searchVal) && !(r.jiraKey || '').toLowerCase().indexOf(searchVal) >= 0) return false;
     return true;
   }});
@@ -3031,7 +3155,7 @@ function renderJiraView() {{
       '<td><span class="jira-progress-tag ' + pCls + '">' + escapeHtml(p) + '</span></td>' +
       '<td>' + names + '</td>' +
       '<td>' + escapeHtml(regions) + '</td>' +
-      '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(r.extVersion) + '</span>' : '-') + '</td>' +
+      '<td>' + (r.extVersion ? '<span class="version-badge">' + escapeHtml(VER_NAME_MAP[r.extVersion] || r.extVersion) + '</span>' : '-') + '</td>' +
       '<td>' + (r.versionDate || '-') + '</td>' +
       '<td>' + normalizeDate(r.onlineDate) + '</td>' +
       '</tr>';
