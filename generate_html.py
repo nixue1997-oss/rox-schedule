@@ -20,21 +20,54 @@ def main():
     records = []
     for r in raw_data['records']:
         records.append({
+            # Core
             'title': r['工作内容'],
+            'taskName': r.get('任务名称', ''),
+            'taskDesc': r.get('任务描述', ''),
             'progress': r['进展'][0] if r.get('进展') else '',
-            'testDate': r.get('最晚转测时间', ''),
-            'freezeDate': r.get('封板时间', ''),
-            'versionDate': r.get('版更时间', ''),
-            'onlineDate': r.get('上线时间（功能owner维护）', ''),
+            'devType': r.get('开发类别', []),
+            'priority': r.get('优先级', []),
+            'month': r.get('月份', []),
+            'region': r.get('地区', []),
+            'versionServer': r.get('版本服', ''),
+            # People
+            'assignee': r.get('执行人', []),
+            'owner': r.get('owner', ''),
+            'qa': r.get('QA', []),
+            'lastUpdater': r.get('最后更新人', []),
+            # Dates
             'startDate': r.get('启动日期', ''),
             'endDate': r.get('任务结束', ''),
-            'assignee': r.get('执行人', []),
-            'region': r.get('地区', []),
-            'id': r.get('_id', ''),
+            'testDate': r.get('最晚转测时间', ''),
+            'freezeDate': r.get('封板时间', ''),
+            'packageDate': r.get('封包时间', ''),
+            'versionDate': r.get('版更时间', ''),
+            'onlineDate': r.get('上线时间（功能owner维护）', ''),
+            'thirdPartyDate': r.get('三方时间', ''),
+            'l10nStart': r.get('本地化开始', ''),
+            'l10nImport': r.get('翻译导入', ''),
+            'l10nReturn': r.get('本地化返回', ''),
+            'artFontIn': r.get('美术字入版', ''),
+            'artFontDeadline': r.get('美术字最晚提需时间', ''),
+            'lastUpdateTime': r.get('最后更新时间', ''),
+            # Art & L10n
+            'artFont': r.get('美术字', []),
+            'returnStatus': r.get('返回状态', []),
+            'importStatus': r.get('导入状态', []),
+            # Jira
             'jiraUrl': r.get('JIRA单', ''),
+            'jiraStatus': r.get('Jira 状态', []),
+            'jiraProjectKey': r.get('Jira 项目 Key', []),
+            'jiraTaskType': r.get('Jira 任务类型', ''),
             'jiraKey': r.get('Jira Key', ''),
+            'subtaskResult': r.get('子任务创建结果', ''),
+            # Relations
             'extVersion': r.get('对外版本', ''),
-            'parentTask': r.get('本表--父记录', '')
+            'parentTask': r.get('本表--父记录', ''),
+            # Attachments
+            'attachments': r.get('相关附件', []),
+            # ID
+            'id': r.get('_id', '')
         })
 
     # Serialize to JSON string for safe embedding
@@ -2266,15 +2299,17 @@ function renderTable(filtered, adminFiltered) {{
   }}
 
   var cols = [
-    {{ key: 'title', label: '\\u5de5\\u4f5c\\u5185\\u5bb9', width: '300px' }},
+    {{ key: 'title', label: '\\u5de5\\u4f5c\\u5185\\u5bb9', width: '280px' }},
     {{ key: 'progress', label: '\\u8fdb\\u5c55', width: '80px' }},
+    {{ key: 'priority', label: '\\u4f18\\u5148\\u7ea7', width: '70px' }},
+    {{ key: 'devType', label: '\\u5f00\\u53d1\\u7c7b\\u522b', width: '100px' }},
     {{ key: 'assignee', label: '\\u6267\\u884c\\u4eba', width: '100px' }},
     {{ key: 'region', label: '\\u5730\\u533a', width: '80px' }},
-    {{ key: 'startDate', label: '\\u542f\\u52a8\\u65e5\\u671f', width: '110px' }},
-    {{ key: 'endDate', label: '\u4efb\u52a1\u7ed3\u675f', width: '110px' }},
-    {{ key: 'freezeDate', label: '\\u5c01\\u677f\\u65f6\\u95f4', width: '110px' }},
-    {{ key: 'versionDate', label: '\\u7248\\u66f4\\u65f6\\u95f4', width: '110px' }},
-    {{ key: 'extVersion', label: '\\u5916\\u653e\\u7248\\u672c', width: '130px' }},
+    {{ key: 'startDate', label: '\\u542f\\u52a8\\u65e5\\u671f', width: '100px' }},
+    {{ key: 'endDate', label: '\u4efb\u52a1\u7ed3\u675f', width: '100px' }},
+    {{ key: 'freezeDate', label: '\\u5c01\\u677f\\u65f6\\u95f4', width: '100px' }},
+    {{ key: 'versionDate', label: '\\u7248\\u66f4\\u65f6\\u95f4', width: '100px' }},
+    {{ key: 'extVersion', label: '\\u5916\\u653e\\u7248\\u672c', width: '120px' }},
     {{ key: 'jiraKey', label: 'Jira\\u5355\\u53f7', width: '130px' }}
   ];
 
@@ -2299,8 +2334,10 @@ function renderTable(filtered, adminFiltered) {{
     if (r._isAdmin) {{
       prioHtml = ' <span class="priority-high">\\u2605 ' + (r._priority || '') + '</span>';
     }}
-    html += '<tr><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:normal;word-break:break-all">' + escapeHtml(r.title) + prioHtml + '</td>';
+    html += '<tr><td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:normal;word-break:break-all">' + escapeHtml(r.title) + prioHtml + '</td>';
     html += '<td>' + pTag + '</td>';
+    html += '<td>' + (r.priority && r.priority.length ? r.priority.join(', ') : '') + '</td>';
+    html += '<td>' + (r.devType && r.devType.length ? r.devType.map(function(x) {{ return '<span class="tag tag-progress">' + escapeHtml(x) + '</span>'; }}).join(' ') : '') + '</td>';
     html += '<td>' + names + '</td>';
     html += '<td>' + regionTags + '</td>';
     html += '<td>' + (normalizeDate(r.startDate) || '') + '</td>';
@@ -2312,7 +2349,7 @@ function renderTable(filtered, adminFiltered) {{
   }});
 
   if (!all.length) {{
-    html += '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--gray-5)">\\u6682\\u65e0\\u5339\\u914d\\u7684\\u4efb\\u52a1</td></tr>';
+    html += '<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--gray-5)">\\u6682\\u65e0\\u5339\\u914d\\u7684\\u4efb\\u52a1</td></tr>';
   }}
 
   html += '</tbody></table></div>';
@@ -3450,12 +3487,48 @@ document.addEventListener('click', function(e) {{
 }});
 function buildCardExpandHtml(r) {{
   var html = '';
-  if (r.jiraKey || r.jiraUrl) {{
-    html += '<div class="card-expand-row"><span class="card-expand-label">Jira\u5355\u53f7</span><span class="card-expand-value">' + renderJiraHtml(r) + '</span></div>';
+  // Core info
+  if (r.taskName && r.taskName !== r.title) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u4efb\u52a1\u540d\u79f0</span><span class="card-expand-value">' + escapeHtml(r.taskName) + '</span></div>';
   }}
-  if (r.extVersion) {{
-    var evn = VER_NAME_MAP[r.extVersion] || r.extVersion;
-    html += '<div class="card-expand-row"><span class="card-expand-label">\u5916\u653e\u7248\u672c</span><span class="card-expand-value"><span class="version-badge">' + escapeHtml(evn) + '</span></span></div>';
+  if (r.taskDesc) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u4efb\u52a1\u63cf\u8ff0</span><span class="card-expand-value">' + escapeHtml(r.taskDesc) + '</span></div>';
+  }}
+  if (r.devType && r.devType.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5f00\u53d1\u7c7b\u522b</span><span class="card-expand-value">' + r.devType.map(function(x) {{ return '<span class="tag tag-progress">' + escapeHtml(x) + '</span>'; }}).join(' ') + '</span></div>';
+  }}
+  if (r.priority && r.priority.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u4f18\u5148\u7ea7</span><span class="card-expand-value">' + r.priority.map(function(x) {{ return '<span class="priority-badge">' + escapeHtml(x) + '</span>'; }}).join(' ') + '</span></div>';
+  }}
+  if (r.month && r.month.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u6708\u4efd</span><span class="card-expand-value">' + escapeHtml(r.month.join(', ')) + '</span></div>';
+  }}
+  if (r.versionServer) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7248\u672c\u670d</span><span class="card-expand-value">' + escapeHtml(r.versionServer) + '</span></div>';
+  }}
+  // People
+  if (r.owner) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">owner</span><span class="card-expand-value">' + escapeHtml(r.owner) + '</span></div>';
+  }}
+  var names = (r.assignee || []).map(function(p) {{ return p.name; }}).join(', ');
+  if (names) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u6267\u884c\u4eba</span><span class="card-expand-value">' + escapeHtml(names) + '</span></div>';
+  }}
+  if (r.qa && r.qa.length) {{
+    var qaNames = r.qa.map(function(p) {{ return p.name; }}).join(', ');
+    html += '<div class="card-expand-row"><span class="card-expand-label">QA</span><span class="card-expand-value">' + escapeHtml(qaNames) + '</span></div>';
+  }}
+  // Regions
+  var regions = (r.region || []).join(', ');
+  if (regions) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5730\u533a</span><span class="card-expand-value">' + escapeHtml(regions) + '</span></div>';
+  }}
+  // Dates
+  if (r.startDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u542f\u52a8\u65e5\u671f</span><span class="card-expand-value">' + normalizeDate(r.startDate) + '</span></div>';
+  }}
+  if (r.endDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u4efb\u52a1\u7ed3\u675f</span><span class="card-expand-value">' + normalizeDate(r.endDate) + '</span></div>';
   }}
   if (r.testDate) {{
     html += '<div class="card-expand-row"><span class="card-expand-label">\u8f6c\u6d4b\u65f6\u95f4</span><span class="card-expand-value">' + r.testDate + '</span></div>';
@@ -3463,19 +3536,75 @@ function buildCardExpandHtml(r) {{
   if (r.freezeDate) {{
     html += '<div class="card-expand-row"><span class="card-expand-label">\u5c01\u677f\u65f6\u95f4</span><span class="card-expand-value">' + r.freezeDate + '</span></div>';
   }}
+  if (r.packageDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5c01\u5305\u65f6\u95f4</span><span class="card-expand-value">' + r.packageDate + '</span></div>';
+  }}
+  if (r.versionDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7248\u66f4\u65f6\u95f4</span><span class="card-expand-value">' + r.versionDate + '</span></div>';
+  }}
   if (r.onlineDate) {{
     html += '<div class="card-expand-row"><span class="card-expand-label">\u4e0a\u7ebf\u65f6\u95f4</span><span class="card-expand-value">' + normalizeDate(r.onlineDate) + '</span></div>';
+  }}
+  if (r.thirdPartyDate) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u4e09\u65b9\u65f6\u95f4</span><span class="card-expand-value">' + r.thirdPartyDate + '</span></div>';
+  }}
+  // L10n dates
+  if (r.l10nStart) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u672c\u5730\u5316\u5f00\u59cb</span><span class="card-expand-value">' + normalizeDate(r.l10nStart) + '</span></div>';
+  }}
+  if (r.l10nImport) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7ffb\u8bd1\u5bfc\u5165</span><span class="card-expand-value">' + normalizeDate(r.l10nImport) + '</span></div>';
+  }}
+  if (r.l10nReturn) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u672c\u5730\u5316\u8fd4\u56de</span><span class="card-expand-value">' + normalizeDate(r.l10nReturn) + '</span></div>';
+  }}
+  // Art font
+  if (r.artFont && r.artFont.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7f8e\u672f\u5b57</span><span class="card-expand-value">' + escapeHtml(r.artFont.join(', ')) + '</span></div>';
+  }}
+  if (r.artFontIn) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7f8e\u672f\u5b57\u5165\u7248</span><span class="card-expand-value">' + normalizeDate(r.artFontIn) + '</span></div>';
+  }}
+  if (r.artFontDeadline) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u7f8e\u672f\u5b57\u6700\u665a\u63d0\u9700</span><span class="card-expand-value">' + r.artFontDeadline + '</span></div>';
+  }}
+  if (r.returnStatus && r.returnStatus.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u8fd4\u56de\u72b6\u6001</span><span class="card-expand-value">' + escapeHtml(r.returnStatus.join(', ')) + '</span></div>';
+  }}
+  if (r.importStatus && r.importStatus.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5bfc\u5165\u72b6\u6001</span><span class="card-expand-value">' + escapeHtml(r.importStatus.join(', ')) + '</span></div>';
+  }}
+  // Jira
+  if (r.jiraKey || r.jiraUrl) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">Jira\u5355\u53f7</span><span class="card-expand-value">' + renderJiraHtml(r) + '</span></div>';
+  }}
+  if (r.jiraStatus && r.jiraStatus.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">Jira \u72b6\u6001</span><span class="card-expand-value">' + escapeHtml(r.jiraStatus.join(', ')) + '</span></div>';
+  }}
+  if (r.jiraProjectKey && r.jiraProjectKey.length) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">Jira \u9879\u76ee Key</span><span class="card-expand-value">' + escapeHtml(r.jiraProjectKey.join(', ')) + '</span></div>';
+  }}
+  if (r.jiraTaskType) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">Jira \u4efb\u52a1\u7c7b\u578b</span><span class="card-expand-value">' + escapeHtml(r.jiraTaskType) + '</span></div>';
+  }}
+  if (r.subtaskResult) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5b50\u4efb\u52a1\u521b\u5efa</span><span class="card-expand-value">' + escapeHtml(r.subtaskResult) + '</span></div>';
+  }}
+  // Relations
+  if (r.extVersion) {{
+    var evn = VER_NAME_MAP[r.extVersion] || r.extVersion;
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u5916\u653e\u7248\u672c</span><span class="card-expand-value"><span class="version-badge">' + escapeHtml(evn) + '</span></span></div>';
   }}
   if (r.parentTask) {{
     html += '<div class="card-expand-row"><span class="card-expand-label">\u7236\u4efb\u52a1</span><span class="card-expand-value">' + escapeHtml(r.parentTask) + '</span></div>';
   }}
-  var names = (r.assignee || []).map(function(p) {{ return p.name; }}).join(', ');
-  if (names) {{
-    html += '<div class="card-expand-row"><span class="card-expand-label">\u6267\u884c\u4eba</span><span class="card-expand-value">' + escapeHtml(names) + '</span></div>';
+  // Last update info
+  if (r.lastUpdater && r.lastUpdater.length) {{
+    var luName = r.lastUpdater[0].name || '';
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u6700\u540e\u66f4\u65b0\u4eba</span><span class="card-expand-value">' + escapeHtml(luName) + '</span></div>';
   }}
-  var regions = (r.region || []).join(', ');
-  if (regions) {{
-    html += '<div class="card-expand-row"><span class="card-expand-label">\u5730\u533a</span><span class="card-expand-value">' + escapeHtml(regions) + '</span></div>';
+  if (r.lastUpdateTime) {{
+    html += '<div class="card-expand-row"><span class="card-expand-label">\u6700\u540e\u66f4\u65b0\u65f6\u95f4</span><span class="card-expand-value">' + r.lastUpdateTime + '</span></div>';
   }}
   return html;
 }}
