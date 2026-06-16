@@ -1,4 +1,4 @@
-Base HTML generated: /tmp/rox-schedule/index.html (430642 bytes)
+Base HTML generated: /tmp/rox-schedule/index.html (431038 bytes)
 Total records: 273
 rt" content="width=device-width, initial-scale=1.0">
 <title>ROX开发阶段项目排期看板</title>
@@ -1588,17 +1588,16 @@ function formatDateISO(d) {
 var _feishuAuth = {
   appId: 'cli_a9324dfceab81bd3',
   redirectUri: window.location.origin + window.location.pathname,
-  // Backend proxy for token exchange — deploy the Cloudflare Worker or Python proxy first
-  // and replace this URL with the actual proxy address.
-  proxyUrl: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:8787'
-    : 'https://rox-feishu-proxy.nixue-rox.workers.dev',
-  // Allowed tenant_key(s) for 骏梦网络 — get this from your first successful login
+  proxyUrls: [
+    'http://localhost:8787',
+    'https://rox-feishu-proxy.nixue-rox.workers.dev'
+  ],
   allowedTenantKeys: [
-    '130f720d844f575f', // 骏梦网络
+    '130f720d844f575f',
   ],
   user: null
 };
+
 
 function startFeishuAuth() {
   var authUrl = 'https://open.feishu.cn/open-apis/authen/v1/authorize' +
@@ -1606,6 +1605,54 @@ function startFeishuAuth() {
     '&redirect_uri=' + encodeURIComponent(_feishuAuth.redirectUri) +
     '&state=' + encodeURIComponent(window.location.pathname);
   window.location.href = authUrl;
+}
+
+function callProxy(code, state) {
+  var urls = _feishuAuth.proxyUrls.slice();
+  var workingUrl = localStorage.getItem('rox_proxy_url');
+  if (workingUrl) {
+    urls = [workingUrl].concat(urls.filter(function(u) { return u !== workingUrl; }));
+  }
+
+  function tryNext() {
+    var url = urls.shift();
+    if (!url) {
+      showAuthError(
+        '✅ 飞书授权成功！但代理服务不可用。
+
+' +
+        '如使用本地环境，请确保代理已启动:
+' +
+        '⭐ cd ~/feishu-proxy-working && python3 feishu_proxy.py
+' +
+        '然后访问 http://localhost:8080'
+      );
+      return;
+    }
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, redirectUri: _feishuAuth.redirectUri })
+    })
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      if (data.error) {
+        showAuthError(data.error);
+        return;
+      }
+      try { localStorage.setItem('rox_proxy_url', url); } catch(e) {}
+      handleAuthSuccess(data, state);
+    })
+    .catch(function() {
+      console.warn('[Rox Auth] Proxy unreachable:', url);
+      tryNext();
+    });
+  }
+  tryNext();
 }
 
 function handleFeishuCallback() {
@@ -1621,44 +1668,46 @@ function handleFeishuCallback() {
     btn.disabled = true;
   }
 
-  fetch(_feishuAuth.proxyUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code: code, redirectUri: _feishuAuth.redirectUri })
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-    if (data.error) {
-      showAuthError(data.error);
-      return;
-    }
-
-    // Tenant-based access control: verify the user belongs to 骏梦网络
-    var allowed = _feishuAuth.allowedTenantKeys;
-    if (allowed.length > 0) {
-      if (allowed.indexOf(data.tenant_key) === -1) {
-        showAuthError('您不是骏梦网络员工，无法访问此系统。\n您的企业标识：' + data.tenant_key + '\n您的姓名：' + data.name);
-        return;
-      }
-    } else {
-      // First-time setup: no tenant keys configured yet — show the user's tenant_key
-      console.log('[Rox Auth] 企业标识 (tenant_key):', data.tenant_key, '用户:', data.name);
-      showAuthError('认证成功！但企业白名单尚未配置。\n请将以下 tenant_key 添加到代码中的 allowedTenantKeys 列表：\n' + data.tenant_key + '\n用户：' + data.name);
-      return;
-    }
-
-    _feishuAuth.user = data;
-    localStorage.setItem('rox_auth_user', JSON.stringify(data));
-    localStorage.setItem('rox_auth_ts', Date.now());
-    if (window.history && window.history.replaceState) {
-      window.history.replaceState({}, document.title, state || window.location.pathname);
-    }
-    hideAuthOverlay();
-  })
-  .catch(function(err) {
-    showAuthError('登录失败，请重试: ' + err.message);
-  });
+  callProxy(code, state);
   return true;
+}
+
+function handleAuthSuccess(data, state) {
+  var allowed = _feishuAuth.allowedTenantKeys;
+  if (allowed.length > 0) {
+    if (allowed.indexOf(data.tenant_key) === -1) {
+      showAuthError(
+        '您不是骏梦网络员工，无法访问此系统。
+
+' +
+        '您的企业标识：' + data.tenant_key + '
+' +
+        '您的姓名：' + data.name
+      );
+      return;
+    }
+  } else {
+    console.log('[Rox Auth] Tenant key:', data.tenant_key, 'User:', data.name);
+    showAuthError(
+      '认证成功！但企业白名单尚未配置。
+
+' +
+      '请将以下 tenant_key 添加到 allowedTenantKeys:
+' +
+      data.tenant_key + '
+' +
+      '用户：' + data.name
+    );
+    return;
+  }
+
+  _feishuAuth.user = data;
+  localStorage.setItem('rox_auth_user', JSON.stringify(data));
+  localStorage.setItem('rox_auth_ts', Date.now());
+  if (window.history && window.history.replaceState) {
+    window.history.replaceState({}, document.title, state || window.location.pathname);
+  }
+  hideAuthOverlay();
 }
 
 function showAuthError(msg) {

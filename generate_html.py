@@ -1681,17 +1681,16 @@ function formatDateISO(d) {{
 var _feishuAuth = {{
   appId: 'cli_a9324dfceab81bd3',
   redirectUri: window.location.origin + window.location.pathname,
-  // Backend proxy for token exchange — deploy the Cloudflare Worker or Python proxy first
-  // and replace this URL with the actual proxy address.
-  proxyUrl: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:8787'
-    : 'https://rox-feishu-proxy.nixue-rox.workers.dev',
-  // Allowed tenant_key(s) for \u9a8f\u68a6\u7f51\u7edc — get this from your first successful login
+  proxyUrls: [
+    'http://localhost:8787',
+    'https://rox-feishu-proxy.nixue-rox.workers.dev'
+  ],
   allowedTenantKeys: [
-    '130f720d844f575f', // 骏梦网络
+    '130f720d844f575f',
   ],
   user: null
 }};
+
 
 function startFeishuAuth() {{
   var authUrl = 'https://open.feishu.cn/open-apis/authen/v1/authorize' +
@@ -1699,6 +1698,50 @@ function startFeishuAuth() {{
     '&redirect_uri=' + encodeURIComponent(_feishuAuth.redirectUri) +
     '&state=' + encodeURIComponent(window.location.pathname);
   window.location.href = authUrl;
+}}
+
+function callProxy(code, state) {{
+  var urls = _feishuAuth.proxyUrls.slice();
+  var workingUrl = localStorage.getItem('rox_proxy_url');
+  if (workingUrl) {{
+    urls = [workingUrl].concat(urls.filter(function(u) {{ return u !== workingUrl; }}));
+  }}
+
+  function tryNext() {{
+    var url = urls.shift();
+    if (!url) {{
+      showAuthError(
+        '\u2705 \u98de\u4e66\u6388\u6743\u6210\u529f\uff01\u4f46\u4ee3\u7406\u670d\u52a1\u4e0d\u53ef\u7528\u3002\n\n' +
+        '\u5982\u4f7f\u7528\u672c\u5730\u73af\u5883\uff0c\u8bf7\u786e\u4fdd\u4ee3\u7406\u5df2\u542f\u52a8:\n' +
+        '\u2b50 cd ~/feishu-proxy-working && python3 feishu_proxy.py\n' +
+        '\u7136\u540e\u8bbf\u95ee http://localhost:8080'
+      );
+      return;
+    }}
+
+    fetch(url, {{
+      method: 'POST',
+      headers: {{ 'Content-Type': 'application/json' }},
+      body: JSON.stringify({{ code: code, redirectUri: _feishuAuth.redirectUri }})
+    }})
+    .then(function(res) {{
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }})
+    .then(function(data) {{
+      if (data.error) {{
+        showAuthError(data.error);
+        return;
+      }}
+      try {{ localStorage.setItem('rox_proxy_url', url); }} catch(e) {{}}
+      handleAuthSuccess(data, state);
+    }})
+    .catch(function() {{
+      console.warn('[Rox Auth] Proxy unreachable:', url);
+      tryNext();
+    }});
+  }}
+  tryNext();
 }}
 
 function handleFeishuCallback() {{
@@ -1714,44 +1757,39 @@ function handleFeishuCallback() {{
     btn.disabled = true;
   }}
 
-  fetch(_feishuAuth.proxyUrl, {{
-    method: 'POST',
-    headers: {{ 'Content-Type': 'application/json' }},
-    body: JSON.stringify({{ code: code, redirectUri: _feishuAuth.redirectUri }})
-  }})
-  .then(function(res) {{ return res.json(); }})
-  .then(function(data) {{
-    if (data.error) {{
-      showAuthError(data.error);
-      return;
-    }}
-
-    // Tenant-based access control: verify the user belongs to \u9a8f\u68a6\u7f51\u7edc
-    var allowed = _feishuAuth.allowedTenantKeys;
-    if (allowed.length > 0) {{
-      if (allowed.indexOf(data.tenant_key) === -1) {{
-        showAuthError('\u60a8\u4e0d\u662f\u9a8f\u68a6\u7f51\u7edc\u5458\u5de5\uff0c\u65e0\u6cd5\u8bbf\u95ee\u6b64\u7cfb\u7edf\u3002\\n\u60a8\u7684\u4f01\u4e1a\u6807\u8bc6\uff1a' + data.tenant_key + '\\n\u60a8\u7684\u59d3\u540d\uff1a' + data.name);
-        return;
-      }}
-    }} else {{
-      // First-time setup: no tenant keys configured yet — show the user's tenant_key
-      console.log('[Rox Auth] \u4f01\u4e1a\u6807\u8bc6 (tenant_key):', data.tenant_key, '\u7528\u6237:', data.name);
-      showAuthError('\u8ba4\u8bc1\u6210\u529f\uff01\u4f46\u4f01\u4e1a\u767d\u540d\u5355\u5c1a\u672a\u914d\u7f6e\u3002\\n\u8bf7\u5c06\u4ee5\u4e0b tenant_key \u6dfb\u52a0\u5230\u4ee3\u7801\u4e2d\u7684 allowedTenantKeys \u5217\u8868\uff1a\\n' + data.tenant_key + '\\n\u7528\u6237\uff1a' + data.name);
-      return;
-    }}
-
-    _feishuAuth.user = data;
-    localStorage.setItem('rox_auth_user', JSON.stringify(data));
-    localStorage.setItem('rox_auth_ts', Date.now());
-    if (window.history && window.history.replaceState) {{
-      window.history.replaceState({{}}, document.title, state || window.location.pathname);
-    }}
-    hideAuthOverlay();
-  }})
-  .catch(function(err) {{
-    showAuthError('\u767b\u5f55\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5: ' + err.message);
-  }});
+  callProxy(code, state);
   return true;
+}}
+
+function handleAuthSuccess(data, state) {{
+  var allowed = _feishuAuth.allowedTenantKeys;
+  if (allowed.length > 0) {{
+    if (allowed.indexOf(data.tenant_key) === -1) {{
+      showAuthError(
+        '\u60a8\u4e0d\u662f\u9a8f\u68a6\u7f51\u7edc\u5458\u5de5\uff0c\u65e0\u6cd5\u8bbf\u95ee\u6b64\u7cfb\u7edf\u3002\n\n' +
+        '\u60a8\u7684\u4f01\u4e1a\u6807\u8bc6\uff1a' + data.tenant_key + '\n' +
+        '\u60a8\u7684\u59d3\u540d\uff1a' + data.name
+      );
+      return;
+    }}
+  }} else {{
+    console.log('[Rox Auth] Tenant key:', data.tenant_key, 'User:', data.name);
+    showAuthError(
+      '\u8ba4\u8bc1\u6210\u529f\uff01\u4f46\u4f01\u4e1a\u767d\u540d\u5355\u5c1a\u672a\u914d\u7f6e\u3002\n\n' +
+      '\u8bf7\u5c06\u4ee5\u4e0b tenant_key \u6dfb\u52a0\u5230 allowedTenantKeys:\n' +
+      data.tenant_key + '\n' +
+      '\u7528\u6237\uff1a' + data.name
+    );
+    return;
+  }}
+
+  _feishuAuth.user = data;
+  localStorage.setItem('rox_auth_user', JSON.stringify(data));
+  localStorage.setItem('rox_auth_ts', Date.now());
+  if (window.history && window.history.replaceState) {{
+    window.history.replaceState({{}}, document.title, state || window.location.pathname);
+  }}
+  hideAuthOverlay();
 }}
 
 function showAuthError(msg) {{
