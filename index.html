@@ -131,9 +131,9 @@ body::before {
   gap: 8px;
 }
 .container {
-  max-width: 1440px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 24px 28px;
+  padding: 24px 40px;
   position: relative;
   z-index: 1;
 }
@@ -511,7 +511,7 @@ table tr:last-child td { border-bottom: none; }
 .kanban-column {
   flex: 1;
   min-width: 300px;
-  max-width: 420px;
+  max-width: 500px;
   background: var(--bg-card);
   border: var(--border-card);
   border-radius: var(--radius-md);
@@ -614,6 +614,8 @@ table tr:last-child td { border-bottom: none; }
   line-height: 1.5;
   color: var(--text-primary);
   padding-left: 6px;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 .task-card .card-meta {
   display: flex;
