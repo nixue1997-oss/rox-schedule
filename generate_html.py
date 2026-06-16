@@ -3671,8 +3671,8 @@ init();
     os.makedirs('/tmp/rox-schedule', exist_ok=True)
     with open('/tmp/rox-schedule/index.html', 'w', encoding='utf-8') as f:
         f.write(html)
-    print(f'Base HTML generated: /tmp/rox-schedule/index.html ({len(html)} bytes)')
-    print(f'Total records: {len(records)}')
+    print(f'Base HTML generated: /tmp/rox-schedule/index.html ({len(html)} bytes)', file=sys.stderr)
+    print(f'Total records: {len(records)}', file=sys.stderr)
 
 if __name__ == '__main__':
     main()
