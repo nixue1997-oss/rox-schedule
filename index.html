@@ -584,11 +584,15 @@ table tr:last-child td { border-bottom: none; }
   background: var(--bg-surface);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
+  padding: 18px 16px;
   transition: var(--transition);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 70px;
 }
 .task-card::before {
   content: '';
