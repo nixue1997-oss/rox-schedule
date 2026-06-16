@@ -1714,9 +1714,9 @@ function callProxy(code, state) {{
     var url = urls.shift();
     if (!url) {{
       showAuthError(
-        '\u2705 \u98de\u4e66\u6388\u6743\u6210\u529f\uff01\u4f46\u4ee3\u7406\u670d\u52a1\u4e0d\u53ef\u7528\u3002\n\n' +
-        '\u5982\u4f7f\u7528\u672c\u5730\u73af\u5883\uff0c\u8bf7\u786e\u4fdd\u4ee3\u7406\u5df2\u542f\u52a8:\n' +
-        '\u2b50 cd ~/feishu-proxy-working && python3 feishu_proxy.py\n' +
+        '\u2705 \u98de\u4e66\u6388\u6743\u6210\u529f\uff01\u4f46\u4ee3\u7406\u670d\u52a1\u4e0d\u53ef\u7528\u3002\\n\\n' +
+        '\u5982\u4f7f\u7528\u672c\u5730\u73af\u5883\uff0c\u8bf7\u786e\u4fdd\u4ee3\u7406\u5df2\u542f\u52a8:\\n' +
+        '\u2b50 cd ~/feishu-proxy-working && python3 feishu_proxy.py\\n' +
         '\u7136\u540e\u8bbf\u95ee http://localhost:8080'
       );
       return;
@@ -1769,8 +1769,8 @@ function handleAuthSuccess(data, state) {{
   if (allowed.length > 0) {{
     if (allowed.indexOf(data.tenant_key) === -1) {{
       showAuthError(
-        '\u60a8\u4e0d\u662f\u9a8f\u68a6\u7f51\u7edc\u5458\u5de5\uff0c\u65e0\u6cd5\u8bbf\u95ee\u6b64\u7cfb\u7edf\u3002\n\n' +
-        '\u60a8\u7684\u4f01\u4e1a\u6807\u8bc6\uff1a' + data.tenant_key + '\n' +
+        '\u60a8\u4e0d\u662f\u9a8f\u68a6\u7f51\u7edc\u5458\u5de5\uff0c\u65e0\u6cd5\u8bbf\u95ee\u6b64\u7cfb\u7edf\u3002\\n\\n' +
+        '\u60a8\u7684\u4f01\u4e1a\u6807\u8bc6\uff1a' + data.tenant_key + '\\n' +
         '\u60a8\u7684\u59d3\u540d\uff1a' + data.name
       );
       return;
@@ -1778,9 +1778,9 @@ function handleAuthSuccess(data, state) {{
   }} else {{
     console.log('[Rox Auth] Tenant key:', data.tenant_key, 'User:', data.name);
     showAuthError(
-      '\u8ba4\u8bc1\u6210\u529f\uff01\u4f46\u4f01\u4e1a\u767d\u540d\u5355\u5c1a\u672a\u914d\u7f6e\u3002\n\n' +
-      '\u8bf7\u5c06\u4ee5\u4e0b tenant_key \u6dfb\u52a0\u5230 allowedTenantKeys:\n' +
-      data.tenant_key + '\n' +
+      '\u8ba4\u8bc1\u6210\u529f\uff01\u4f46\u4f01\u4e1a\u767d\u540d\u5355\u5c1a\u672a\u914d\u7f6e\u3002\\n\\n' +
+      '\u8bf7\u5c06\u4ee5\u4e0b tenant_key \u6dfb\u52a0\u5230 allowedTenantKeys:\\n' +
+      data.tenant_key + '\\n' +
       '\u7528\u6237\uff1a' + data.name
     );
     return;

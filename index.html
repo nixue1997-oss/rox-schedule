@@ -1623,13 +1623,9 @@ function callProxy(code, state) {
     var url = urls.shift();
     if (!url) {
       showAuthError(
-        '✅ 飞书授权成功！但代理服务不可用。
-
-' +
-        '如使用本地环境，请确保代理已启动:
-' +
-        '⭐ cd ~/feishu-proxy-working && python3 feishu_proxy.py
-' +
+        '✅ 飞书授权成功！但代理服务不可用。\n\n' +
+        '如使用本地环境，请确保代理已启动:\n' +
+        '⭐ cd ~/feishu-proxy-working && python3 feishu_proxy.py\n' +
         '然后访问 http://localhost:8080'
       );
       return;
@@ -1682,11 +1678,8 @@ function handleAuthSuccess(data, state) {
   if (allowed.length > 0) {
     if (allowed.indexOf(data.tenant_key) === -1) {
       showAuthError(
-        '您不是骏梦网络员工，无法访问此系统。
-
-' +
-        '您的企业标识：' + data.tenant_key + '
-' +
+        '您不是骏梦网络员工，无法访问此系统。\n\n' +
+        '您的企业标识：' + data.tenant_key + '\n' +
         '您的姓名：' + data.name
       );
       return;
@@ -1694,13 +1687,9 @@ function handleAuthSuccess(data, state) {
   } else {
     console.log('[Rox Auth] Tenant key:', data.tenant_key, 'User:', data.name);
     showAuthError(
-      '认证成功！但企业白名单尚未配置。
-
-' +
-      '请将以下 tenant_key 添加到 allowedTenantKeys:
-' +
-      data.tenant_key + '
-' +
+      '认证成功！但企业白名单尚未配置。\n\n' +
+      '请将以下 tenant_key 添加到 allowedTenantKeys:\n' +
+      data.tenant_key + '\n' +
       '用户：' + data.name
     );
     return;
