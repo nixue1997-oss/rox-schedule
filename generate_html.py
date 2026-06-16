@@ -1691,6 +1691,9 @@ var _feishuAuth = {{
   user: null
 }};
 
+// ---- Auth toggle: set to false to re-enable Feishu login ----
+var _AUTH_DISABLED = true;
+
 
 function startFeishuAuth() {{
   var authUrl = 'https://open.feishu.cn/open-apis/authen/v1/authorize' +
@@ -1812,6 +1815,7 @@ function hideAuthOverlay() {{
 }}
 
 function checkFeishuAuth() {{
+  if (_AUTH_DISABLED) {{ hideAuthOverlay(); return; }}
   var cached = localStorage.getItem('rox_auth_user');
   var ts = localStorage.getItem('rox_auth_ts');
   if (cached && ts) {{

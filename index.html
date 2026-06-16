@@ -1,4 +1,4 @@
-Base HTML generated: /tmp/rox-schedule/index.html (1647655 bytes)
+Base HTML generated: /tmp/rox-schedule/index.html (1647801 bytes)
 Total records: 1513
 " content="width=device-width, initial-scale=1.0">
 <title>ROX开发阶段项目排期看板</title>
@@ -1598,6 +1598,9 @@ var _feishuAuth = {
   user: null
 };
 
+// ---- Auth toggle: set to false to re-enable Feishu login ----
+var _AUTH_DISABLED = true;
+
 
 function startFeishuAuth() {
   var authUrl = 'https://open.feishu.cn/open-apis/authen/v1/authorize' +
@@ -1730,6 +1733,7 @@ function hideAuthOverlay() {
 }
 
 function checkFeishuAuth() {
+  if (_AUTH_DISABLED) { hideAuthOverlay(); return; }
   var cached = localStorage.getItem('rox_auth_user');
   var ts = localStorage.getItem('rox_auth_ts');
   if (cached && ts) {
