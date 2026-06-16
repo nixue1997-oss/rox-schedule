@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Fetch records from Feishu view (all 37 fields) + full table extra fields (parent, Jira Key)."""
+"""Fetch ALL records from Feishu full table (no view filter), extract all fields."""
 import json, os, subprocess, sys
 
 BASE_TOKEN = os.environ.get('BASE_TOKEN', 'ByUibD4rxaBmHlswtT5cz3PsnNf')
 TABLE_ID = 'tblCQ1JwLliZON3a'
-VIEW_ID = 'vewpI8lyYw'
 
 def fetch_page(table_id, offset, limit=200, view_id=None):
     cmd = [
@@ -44,45 +43,13 @@ def fetch_all(table_id, view_id=None):
         page += 1
     return {'fields': fields, 'field_ids': field_ids, 'rows': all_rows, 'record_ids': all_record_ids}
 
-# ========== Phase 1: Fetch from view (37 fields) ==========
-print('Phase 1: Fetching from view vewpI8lyYw...')
-view_data = fetch_all(TABLE_ID, VIEW_ID)
-print(f'  Total: {len(view_data["rows"])} records, {len(view_data["fields"])} fields')
-
-# ========== Phase 2: Fetch full table for extra fields (parent, Jira Key) ==========
-print('\nPhase 2: Fetching full table for extra fields (parent, Jira Key)...')
+# ========== Phase 1: Fetch ALL records from full table (no view filter) ==========
+print('Phase 1: Fetching ALL records from full table (no view filter)...')
 full_data = fetch_all(TABLE_ID)
-print(f'  Total: {len(full_data["rows"])} full records, {len(full_data["fields"])} fields')
+print(f'  Total: {len(full_data["rows"])} records, {len(full_data["fields"])} fields')
 
-# Build extra field map by record_id
+# ========== Phase 2: Map all records with all fields ==========
 full_fidx = {name: i for i, name in enumerate(full_data['fields'])}
-view_rid_set = set(view_data['record_ids'])
-
-extra_fields = {}
-for ri, row in enumerate(full_data['rows']):
-    rid = full_data['record_ids'][ri]
-    if rid not in view_rid_set:
-        continue
-    def gf(name):
-        idx = full_fidx.get(name)
-        if idx is None or idx >= len(row): return None
-        return row[idx]
-    
-    parent_raw = gf('\u672c\u8868--\u7236\u8bb0\u5f55')
-    parent_task = parent_raw[0]['id'] if isinstance(parent_raw, list) and len(parent_raw) > 0 else ''
-    
-    jira_key_raw = gf('Jira Key')
-    jira_key = jira_key_raw if isinstance(jira_key_raw, str) else (jira_key_raw[0] if isinstance(jira_key_raw, list) and len(jira_key_raw) > 0 else '')
-    
-    extra_fields[rid] = {
-        'parentTask': parent_task,
-        'jiraKey': jira_key,
-    }
-
-print(f'  Merged extra fields for {len(extra_fields)} records')
-
-# ========== Phase 3: Map view records with all fields ==========
-view_fidx = {name: i for i, name in enumerate(view_data['fields'])}
 
 def get_val(row, name, fidx):
     """Get value from row by field name, with proper type handling."""
@@ -128,10 +95,22 @@ def safe_date(val):
     return str(val)
 
 records = []
-for ri, row in enumerate(view_data['rows']):
-    rid = view_data['record_ids'][ri]
-    v = lambda name: get_val(row, name, view_fidx)
-    extra = extra_fields.get(rid, {})
+for ri, row in enumerate(full_data['rows']):
+    rid = full_data['record_ids'][ri]
+    v = lambda name: get_val(row, name, full_fidx)
+    
+    # Compute parentTask from the row directly
+    parent_raw = v('\u672c\u8868--\u7236\u8bb0\u5f55')
+    parent_task = parent_raw[0]['id'] if isinstance(parent_raw, list) and len(parent_raw) > 0 and isinstance(parent_raw[0], dict) else ''
+    
+    # Compute jiraKey from the row directly
+    jira_key_raw = v('Jira Key')
+    if isinstance(jira_key_raw, str):
+        jira_key = jira_key_raw
+    elif isinstance(jira_key_raw, list) and len(jira_key_raw) > 0:
+        jira_key = jira_key_raw[0] if isinstance(jira_key_raw[0], str) else ''
+    else:
+        jira_key = ''
     
     records.append({
         # Core fields
@@ -177,12 +156,12 @@ for ri, row in enumerate(view_data['rows']):
         'Jira \u72b6\u6001': safe_select(v('Jira \u72b6\u6001')),
         'Jira \u9879\u76ee Key': safe_select(v('Jira \u9879\u76ee Key')),
         'Jira \u4efb\u52a1\u7c7b\u578b': safe_str(v('Jira \u4efb\u52a1\u7c7b\u578b')),
-        'Jira Key': extra.get('jiraKey', ''),
+        'Jira Key': jira_key,
         '\u5b50\u4efb\u52a1\u521b\u5efa\u7ed3\u679c': safe_str(v('\u5b50\u4efb\u52a1\u521b\u5efa\u7ed3\u679c')),
         
         # Relations
         '\u5bf9\u5916\u7248\u672c': safe_link(v('\u5bf9\u5916\u7248\u672c')),
-        '\u672c\u8868--\u7236\u8bb0\u5f55': extra.get('parentTask', ''),
+        '\u672c\u8868--\u7236\u8bb0\u5f55': parent_task,
         
         # Attachments
         '\u76f8\u5173\u9644\u4ef6': v('\u76f8\u5173\u9644\u4ef6') if v('\u76f8\u5173\u9644\u4ef6') else [],
