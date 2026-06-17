@@ -1850,7 +1850,7 @@ function init() {{
     if (r.assignee) r.assignee.forEach(function(p) {{ personSet[p.name] = true; }});
   }});
   allRegions = Object.keys(regionSet).sort();
-  var progOrder = ['\u672a\u542f\u52a8', '\u8fdb\u884c\u4e2d', 'QA\u9a8c\u6536\u4e2d'];
+  var progOrder = ['\u672a\u542f\u52a8', '\u8fdb\u884c\u4e2d', 'QA\u9a8c\u6536\u4e2d', '\u5b8c\u6210', '\u5f52\u6863', '\u505c\u6ede', '\u81ea\u9a8c\u4e2d', '\u5f00\u53d1\u4e2d'];
   allProgress = progOrder.filter(function(p) {{ return progSet[p]; }});
   if (allProgress.length === 0) allProgress = Object.keys(progSet);
   allPeople = ALL_PEOPLE.map(function(p) {{ return p.name; }});

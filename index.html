@@ -1759,7 +1759,7 @@ function init() {
     if (r.assignee) r.assignee.forEach(function(p) { personSet[p.name] = true; });
   });
   allRegions = Object.keys(regionSet).sort();
-  var progOrder = ['未启动', '进行中', 'QA验收中'];
+  var progOrder = ['未启动', '进行中', 'QA验收中', '完成', '归档', '停滞', '自验中', '开发中'];
   allProgress = progOrder.filter(function(p) { return progSet[p]; });
   if (allProgress.length === 0) allProgress = Object.keys(progSet);
   allPeople = ALL_PEOPLE.map(function(p) { return p.name; });
